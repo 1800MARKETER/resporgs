@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} (group) — Resporgs.com preview{% endblock %}
+{% block content %}
+<article class="profile">
+  <header class="profile-head">
+    {% if logo %}
+      <div class="logo-wrap"><img src="{{ logo }}" alt="{{ title }} logo" class="logo"></div>
+    {% endif %}
+    <div class="heading-block">
+      <p class="tags"><a class="tag tag-grp" href="/groups">← All groups</a></p>
+      <h1>{{ title }} <span class="code">group</span></h1>
+      {% if description %}<p class="alias">{{ description }}</p>{% endif %}
+      {% if website and "tollfreenumbers.com" not in website|lower and "resporgs.com" not in website|lower %}
+        <p><a href="{{ website }}" target="_blank" rel="noopener">{{ website }}</a></p>
+      {% endif %}
+    </div>
+  </header>
+
+  <section class="glance">
+    <h2>Group at a glance</h2>
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Member RespOrgs</div>
+        <div class="stat-value">{{ members|length }}</div>
+      </div>
+      <div class="stat stat-wide">
+        <div class="stat-label">Combined active numbers</div>
+        <div class="stat-value">{{ "{:,}".format(total_inventory) }}</div>
+        {% if inv_rank_label %}<div class="stat-sub">{{ inv_rank_label }} of all groups</div>{% endif %}
+        {% if rank_chart %}
+        <div class="rank-bars">
+          {% for r in rank_chart %}
+          <div class="rank-row {% if r.is_self %}self{% endif %}">
+            <a href="/group/{{ r.slug }}" class="rank-name">#{{ r.rank }} {{ r.title }}</a>
+            <div class="rank-bar-track"><div class="rank-bar-fill" style="width: {{ (r.pct * 100)|round(1) }}%"></div></div>
+            <span class="rank-val">{{ "{:,}".format(r.inventory) }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      <div class="stat">
+        <div class="stat-label">Change over 4 years</div>
+        <div class="stat-value {% if delta > 0 %}pos{% elif delta < 0 %}neg{% endif %}">
+          {{ "{:+,}".format(delta) }}
+        </div>
+        <div class="stat-sub">{{ "{:+.1f}%".format(pct_change) }}</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Group Opportunism Index</div>
+        <div class="stat-value {% if opp_idx > 0.2 %}neg{% elif opp_idx < 0.03 %}pos{% else %}mid{% endif %}">
+          {{ "{:.2f}%".format(opp_idx * 100) }}
+        </div>
+        <div class="stat-sub">
+          Harvested {{ "{:,}".format(total_harv) }} / acquired {{ "{:,}".format(total_acq) }}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {% if circles %}
+  <section>
+    <h2>Member RespOrgs</h2>
+    <div class="member-circles">
+      {% for c in circles %}
+      <a class="mc-circle" href="/r/{{ c.rpfx }}" title="{{ c.title }} — {{ '{:,}'.format(c.inventory) }} numbers"
+         style="width: {{ c.size }}px; height: {{ c.size }}px; font-size: {{ (c.size * 0.28)|round|int }}px;">
+        {% if c.logo %}
+          <img src="{{ c.logo }}" alt="{{ c.title }} logo">
+        {% else %}
+          <span class="mc-label">{{ c.rpfx }}</span>
+        {% endif %}
+      </a>
+      {% endfor %}
+    </div>
+    <p class="mc-tip">Circle size is proportional to number of active numbers. Click a circle for the resporg's full profile.</p>
+  </section>
+  {% endif %}
+
+  {% if npa_chart %}
+  <section>
+    <h2>Inventory by NPA</h2>
+    <div class="chart-wrap">
+      <div class="npa-bars">
+        {% set max_h = 140 %}
+        {% for b in npa_chart %}
+        <div class="npa-bar">
+          <div class="npa-bar-count">{{ "{:,}".format(b.count) }}</div>
+          <div class="npa-bar-col" style="height: {{ (b.pct * max_h)|round|int }}px;"></div>
+          <div class="npa-bar-label">{{ b.npa }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if body %}
+  <section class="summary-block">
+    <h2>About this group</h2>
+    <p>{{ body|replace('\n\n','</p><p>')|safe }}</p>
+  </section>
+  {% endif %}
+
+  <details class="trajectory-table">
+    <summary>Member list in tabular form</summary>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>Code</th><th>Name</th>
+          <th class="num">Active numbers</th>
+          <th class="num">Vanity %</th>
+          <th class="num">Median age (mo)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for m in members %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td><a href="/r/{{ m.rpfx }}" class="mono">{{ m.rpfx }}</a></td>
+          <td><a href="/r/{{ m.rpfx }}">{{ m.title or "(not in directory)" }}</a></td>
+          <td class="num">{{ "{:,}".format(m.inventory) }}</td>
+          <td class="num">{% if m.mm_pct is not none %}{{ "{:.1f}%".format(m.mm_pct * 100) }}{% else %}<span class="dim">—</span>{% endif %}</td>
+          <td class="num">{% if m.median_age is not none %}{{ m.median_age }}{% else %}<span class="dim">—</span>{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </details>
+
+  {% if trajectory %}
+  <section class="trajectory">
+    <h2>Combined trajectory</h2>
+    {% if trajectory_svg %}
+    <div class="chart-wrap">
+      <div class="chart-key">
+        <span><span class="ck-line"></span>Total active inventory</span>
+        <span><span class="ck-bar"></span>Numbers harvested from disconnect pool that month</span>
+      </div>
+      {{ trajectory_svg|safe }}
+    </div>
+    {% endif %}
+    <details class="trajectory-table">
+      <summary>Show monthly numbers</summary>
+      <table>
+        <thead>
+          <tr><th>Month</th><th class="num">Inventory</th><th class="num">Acquired</th><th class="num">Harvested</th><th class="num">Lost</th></tr>
+        </thead>
+        <tbody>
+          {% for row in trajectory %}
+          <tr>
+            <td class="mono">{{ row.month }}</td>
+            <td class="num">{{ "{:,}".format(row.inventory) }}</td>
+            <td class="num">{{ "{:,}".format(row.acquired) }}</td>
+            <td class="num">{{ "{:,}".format(row.harvested) }}</td>
+            <td class="num">{{ "{:,}".format(row.lost) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </details>
+  </section>
+  {% endif %}
+
+  {% if top_inbound or top_outbound or top_harvest_from %}
+  <section class="flow">
+    <h2>Cross-group flows (to/from entities outside this group)</h2>
+    <div class="partner-row">
+      {% if top_inbound %}
+      <div>
+        <h4>Top inbound sources (outsiders → this group)</h4>
+        <table class="compact">
+          {% for src, n, name in top_inbound %}
+          <tr><td><a class="mono" href="/r/{{ src }}">{{ src }}</a></td><td class="num">{{ "{:,}".format(n) }}</td><td>{{ name }}</td></tr>
+          {% endfor %}
+        </table>
+      </div>
+      {% endif %}
+      {% if top_outbound %}
+      <div>
+        <h4>Top outbound destinations (this group → outsiders)</h4>
+        <table class="compact">
+          {% for dst, n, name in top_outbound %}
+          <tr><td><a class="mono" href="/r/{{ dst }}">{{ dst }}</a></td><td class="num">{{ "{:,}".format(n) }}</td><td>{{ name }}</td></tr>
+          {% endfor %}
+        </table>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+  {% endif %}
+</article>
+{% endblock %}

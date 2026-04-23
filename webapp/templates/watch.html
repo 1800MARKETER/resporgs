@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Watch a toll-free number — Resporgs.com preview{% endblock %}
+{% block content %}
+
+{% if submitted %}
+<h1>You're on the list</h1>
+<p>We'll email <strong>{{ email }}</strong> when <strong>{{ target }}</strong> changes status or moves to a different RespOrg.</p>
+<p>Updates come from Somos's monthly snapshot — expect alerts within a few days of each status change.</p>
+<p><a href="/watch">Watch another number</a> · <a href="/">Back to directory</a></p>
+
+{% else %}
+<h1>Watch a toll-free number</h1>
+<p class="summary">
+  Tell us the number you care about and we'll email you the moment it changes resporgs, goes into disconnect, or comes back from aging.
+  Free; unsubscribe anytime. You'll hear from <code>bill@tollfreenumber.com</code>.
+</p>
+
+<form method="post" action="/watch" class="lead-form">
+  <label>
+    Email address
+    <input type="email" name="email" required placeholder="you@example.com">
+  </label>
+  <label>
+    Number to watch <span class="dim">(or a RespOrg code like <code>MY</code>)</span>
+    <input type="text" name="target" required value="{{ prefill }}" placeholder="1-800-FLOWERS, 8003569377, MY">
+  </label>
+  <label>
+    Context <span class="dim">(optional — tell us why you're watching this)</span>
+    <textarea name="comments" rows="3" placeholder="e.g., 'Used to own this number before it was disconnected'"></textarea>
+  </label>
+  <button type="submit">Watch it</button>
+</form>
+
+<p class="dim" style="margin-top:20px;">
+  <strong>What we track:</strong> any change in the RespOrg that controls the number, any change in status (Working, Transit, Disconnect, Reserved), and when numbers enter or leave Somos's registry.
+</p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+{% block title %}Frequently asked questions — Resporgs.com{% endblock %}
+{% block content %}
+<h1>Frequently asked questions about RespOrgs</h1>
+<p class="summary">
+  This is the stuff we've been explaining for 20+ years every time someone runs into the hidden side of the toll-free number industry.
+  If something's missing, use <a href="/ask">Ask a question</a> and we'll add it.
+</p>
+
+<section class="faq">
+  <h2>Basics</h2>
+
+  <details open>
+    <summary>What is a RespOrg?</summary>
+    <p>
+      Short for <strong>Responsible Organization</strong>. The entity registered with Somos (the national toll-free number registry)
+      that manages a specific toll-free number. Every working toll-free number in North America is controlled by exactly one RespOrg
+      at any given time — the RespOrg can activate it, release it, transfer it, or let it drop into disconnect.
+    </p>
+    <p>
+      RespOrgs aren't necessarily the phone carrier that actually connects your call. They're the industry-facing layer above the
+      carriers. Some RespOrgs are carriers themselves (AT&T, Verizon, Twilio, Bandwidth). Others are resellers, aggregators, or specialists
+      that make a living reserving and brokering numbers.
+    </p>
+  </details>
+
+  <details>
+    <summary>Who is Somos?</summary>
+    <p>
+      Somos is the nonprofit that operates the toll-free registry under authority from the FCC. Every RespOrg interacts with Somos
+      to reserve, activate, transfer, and disconnect toll-free numbers. Somos publishes a monthly "Number Status Report" which is the
+      source data for all of the analysis on this site.
+    </p>
+  </details>
+
+  <details>
+    <summary>What do the different status values mean?</summary>
+    <ul>
+      <li><strong>WORKING</strong> — actively in service, reachable when you dial it.</li>
+      <li><strong>TRANSIT</strong> — mid-transfer between RespOrgs (brief intermediate state).</li>
+      <li><strong>DISCONN</strong> — the number was released from service and is now aging in a pool.</li>
+      <li><strong>RESERVED</strong> — held for future activation, not yet in service.</li>
+      <li><strong>SPARE</strong> — unassigned. Available for any RespOrg to claim from Somos's pool. (Not shown in snapshots — it's the absence of an active status.)</li>
+      <li><strong>UNAVAIL / ASSIGNED</strong> — rare edge states.</li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>What are the different toll-free prefixes (NPAs)?</summary>
+    <p>
+      The toll-free prefixes were released over time as the earlier ones filled up. Oldest first:
+    </p>
+    <ul>
+      <li><strong>800</strong> — introduced 1966. The original and still the most valuable.</li>
+      <li><strong>888</strong> — 1996</li>
+      <li><strong>877</strong> — 1998</li>
+      <li><strong>866</strong> — 2000</li>
+      <li><strong>855</strong> — 2010</li>
+      <li><strong>844</strong> — 2013</li>
+      <li><strong>833</strong> — 2017. Still actively being released — a single 850,000-number block was opened in December 2023.</li>
+    </ul>
+    <p>Behind the scenes, Somos is expected to open 822 next when 833 is exhausted.</p>
+  </details>
+
+  <h2>Finding and managing numbers</h2>
+
+  <details>
+    <summary>How do I find out which RespOrg controls my toll-free number?</summary>
+    <p>
+      Use the <a href="/number">number lookup</a> at the top of this site. Paste any toll-free number in any format
+      (1-800-FLOWERS, 8003569377, 800-356-9377) and we'll show the current RespOrg plus the full 4-year ownership history.
+    </p>
+  </details>
+
+  <details>
+    <summary>Can I switch my toll-free number to a different RespOrg?</summary>
+    <p>
+      Yes, if you own it. Any RespOrg is required to release numbers their customers own on request. Contact your current RespOrg
+      and ask for a release to the new RespOrg's code. If they refuse or don't respond, Somos has a formal dispute process.
+    </p>
+    <p>
+      Sharks sometimes hold numbers and won't release them even when a customer has a legitimate claim. If you're stuck,
+      <a href="/ask">ask us</a> — we've helped thousands of customers navigate releases over the years.
+    </p>
+  </details>
+
+  <details>
+    <summary>Why can't I reach a RespOrg on the phone or website?</summary>
+    <p>
+      Somos doesn't require RespOrgs to publish contact information publicly, and many don't. Some RespOrgs are pure number-holding
+      operations with no customer-facing presence at all. If you land on this site because your carrier told you "RespOrg X has the
+      number you want," we can usually help.
+    </p>
+  </details>
+
+  <details>
+    <summary>I used to own a number and now it's getting scammy calls. What happened?</summary>
+    <p>
+      When you disconnected the number, it went into an aging pool for 45–90 days. After aging, it returned to Somos's spare pool,
+      where any RespOrg could claim it. Specific RespOrgs (the "sharks") specialize in harvesting recognizable numbers the moment
+      they become available, then run misdial-marketing operations on them.
+    </p>
+    <p>
+      Unfortunately, once a number has been through disconnect, there's no way to retroactively prevent the harvest. The best
+      defense is to never let a number you care about go into disconnect in the first place — even if you're not using it, keep
+      it active with the original RespOrg.
+    </p>
+  </details>
+
+  <h2 id="opportunism">Industry patterns</h2>
+
+  <details>
+    <summary>Why do some RespOrgs have 100× more numbers than others?</summary>
+    <p>
+      The industry is dominated by a handful of wholesale carriers — Twilio (5.4M numbers), Bandwidth (6.8M), Verizon Business (4.5M),
+      AT&T (2.2M) — that each serve thousands of business customers. On the other end, many RespOrgs exist only to hold a handful of
+      numbers for a single corporate client, or to operate niche businesses like vanity number brokering or misdial marketing.
+    </p>
+  </details>
+
+  <details>
+    <summary>Are there sharks in this industry?</summary>
+    <p>
+      Yes. Some RespOrgs build their business model around harvesting numbers the moment they come out of disconnect — often
+      well-known vanity numbers whose previous owners stopped paying, or numbers tied to defunct businesses whose callers haven't
+      yet updated their records. The harvester then runs "misdial marketing" against the residual call traffic.
+    </p>
+  </details>
+
+  <details>
+    <summary>What is the Opportunism Index?</summary>
+    <p>
+      It's our measure of how much of a RespOrg's new inventory comes from numbers that were previously owned by <em>other</em>
+      RespOrgs and went through the disconnect pool. A legitimate carrier has an Opportunism Index near zero — they only reactivate
+      their own disconnected numbers, they don't race for other people's.
+    </p>
+    <ul>
+      <li><strong>Below 5%</strong>: legitimate carrier. Accepts new customers and occasionally wins ports from competitors.</li>
+      <li><strong>5% – 20%</strong>: mixed. Often vanity brokers and specialty firms.</li>
+      <li><strong>Above 20%</strong>: harvesting is a core part of the business model.</li>
+      <li><strong>Above 50%</strong>: almost everything they hold came from somebody else's disconnects. Classic shark behavior.</li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>What is a group?</summary>
+    <p>
+      Many of the 500+ RespOrg codes in the industry are not actually independent companies — they're shell codes operated by the
+      same underlying organization. A <strong>group</strong> is our mapping of those relationships. Some groups are disclosed
+      publicly (AT&T operates under 11 codes; Lumen under 11). Others are quietly operated by a single entity using distinct-sounding
+      names to blur their footprint.
+    </p>
+    <p>
+      Groups like Primetel, Flotrax, and Haven Partners are the most aggressive consolidators. Primetel alone operates 18 different
+      RespOrg codes and holds over 5 million toll-free numbers — more than AT&T's total inventory.
+    </p>
+  </details>
+
+  <details>
+    <summary>Who is Primetel?</summary>
+    <p>
+      A single organization operating under 18 separate RespOrg codes — including Mayfair Communication, WireStar, Crossbow Telecom,
+      Yorkshire Telecom, Unilink, Zipline, Bluekey, Beckham, PrimeTel itself, Nextway, Coore, and the Flotrax family (Flotrax, AB,
+      HU, OD, OQ, RY, JD). Combined, Primetel controls over 5.2 million toll-free numbers, making it larger than AT&T.
+    </p>
+    <p>
+      Primetel almost never sells or releases numbers to customers at any price. We've called them "The Black Hole" for 20 years
+      because numbers that enter their system almost never come back out. Their Opportunism Index is moderate because most of their
+      inventory is long-held rather than freshly harvested — but spikes in harvest activity (like the April 2026 Lumen dump)
+      consistently see Primetel take the biggest share.
+    </p>
+  </details>
+
+  <details>
+    <summary>Where does this data come from?</summary>
+    <p>
+      Somos publishes a "Number Status Report" monthly containing the status and current RespOrg of every active toll-free number
+      in the registry. We subscribe to that report, parse it, and compute diffs between consecutive months to reveal transfers,
+      disconnects, first-assignments, and harvest events. The analysis on this site covers 42 monthly snapshots from June 2022
+      through April 2026 — roughly 4 years of complete industry activity.
+    </p>
+  </details>
+</section>
+
+<p class="cta-row" style="margin-top:48px;">
+  <a class="btn" href="/ask">Ask a question that's not answered here</a>
+</p>
+{% endblock %}

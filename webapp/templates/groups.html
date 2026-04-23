@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Groups — Resporgs.com preview{% endblock %}
+{% block content %}
+<h1>RespOrg groups</h1>
+<p class="summary">{{ groups|length }} groups with identified member resporgs · Click any row to see the combined picture.</p>
+
+<table class="directory">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Group</th>
+      <th class="num">Members</th>
+      <th class="num">Combined inventory</th>
+      <th class="num">Group Opp.Idx</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for g in groups %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td><a href="/group/{{ g.slug }}"><strong>{{ g.title }}</strong></a></td>
+      <td class="num">{{ g.members }}</td>
+      <td class="num">{{ "{:,}".format(g.inventory) }}</td>
+      <td class="num {% if g.opp_idx > 0.2 %}neg{% elif g.opp_idx < 0.03 %}pos{% else %}mid{% endif %}">
+        {{ "{:.2f}%".format(g.opp_idx * 100) }}
+      </td>
+      <td class="dim">{{ g.description }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

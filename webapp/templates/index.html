@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero-banner-wrap">
+  <img src="/static/img/hero.jpg" alt="Resporgs.com" class="hero-banner-clean">
+</section>
+
+<section class="hero-text">
+  <h1>The toll-free industry, visible.</h1>
+  <p class="hero-sub">
+    Look up any toll-free number's 4-year ownership history, or research the companies that control them.
+  </p>
+  <form action="/search" method="get" class="hero-search">
+    <input type="text" name="q" placeholder="1-800-FLOWERS, 8003569377, Bandwidth, Mayfair…" autofocus>
+    <button type="submit">Search</button>
+  </form>
+  <p class="hero-tip dim">Enter a toll-free number for its history, or a company name for its profile.</p>
+</section>
+
+<section class="intro">
+  <h2>What is a RespOrg?</h2>
+  <p>
+    A <strong>RespOrg</strong> — short for <em>Responsible Organization</em> — is the entity registered with
+    <a href="https://somos.com" target="_blank" rel="noopener">Somos</a>, the national toll-free number registry,
+    that manages a specific toll-free number. Every active 800/833/844/855/866/877/888 number in North America is
+    controlled by exactly one RespOrg at any given time.
+  </p>
+  <p>
+    RespOrgs sit between Somos and the phone carriers. Some are carriers themselves (AT&T, Verizon, Twilio, Bandwidth).
+    Others are resellers, aggregators, or specialists who make their money by reserving, brokering, and sometimes
+    harvesting valuable numbers out of the disconnect pool. There are about {{ total_resporgs }} active RespOrgs today,
+    and this site makes every one of them visible — their scale, behavior, and how numbers flow between them.
+  </p>
+  <p><a href="/faq">Read the full FAQ →</a></p>
+</section>
+
+<section>
+  <h2>Top 20 RespOrgs by active numbers</h2>
+  <p class="summary">
+    These are the giants. Together the top 20 control most of the industry's {{ "{:,}".format(total_inventory) }} active
+    toll-free numbers. Click any card for their 4-year trajectory, vanity holdings, and inbound/outbound flows.
+  </p>
+  <div class="resporg-grid">
+    {% for d in top20 %}
+    <a class="resporg-card" href="/r/{{ d.rpfx }}">
+      <div class="rc-logo">
+        {% if d.logo %}<img src="{{ d.logo }}" alt="{{ d.title }} logo">
+        {% else %}<span class="rc-code">{{ d.rpfx }}</span>{% endif %}
+      </div>
+      <div class="rc-name">{{ d.title }}</div>
+      <div class="rc-inv">{{ "{:,}".format(d.inventory) }}</div>
+    </a>
+    {% endfor %}
+  </div>
+  <p><a href="/directory">See all {{ total_resporgs }} RespOrgs →</a></p>
+</section>
+
+<section>
+  <h2>Categories of phone companies</h2>
+  <p class="summary">
+    We sort every RespOrg into one of 18 categories based on the type of business they operate. The makeup of the industry
+    is uneven: a few <em>large telecoms</em> and <em>messaging</em> platforms dominate the active inventory, while dozens
+    of smaller RespOrgs fit into more specialized roles — from vanity brokers and voicemail services to a growing group
+    of misdial marketers whose business is essentially to wait for well-known numbers to drop into the disconnect pool.
+  </p>
+  <div class="category-list">
+    {% for c in categories %}
+    <a class="category-row" href="/category/{{ c.slug }}">
+      <span class="cat-title">{{ c.title }}</span>
+      <span class="cat-count">{{ c.members }} RespOrgs · {{ "{:,}".format(c.inventory) }} numbers</span>
+      <span class="cat-desc dim">{{ c.description }}</span>
+    </a>
+    {% endfor %}
+  </div>
+  <p><a href="/categories">Explore all categories →</a></p>
+</section>
+
+<section>
+  <h2>Top 10 groups</h2>
+  <p class="summary">
+    Many RespOrgs aren't really separate companies — they're shell codes operated by the same organization, often to
+    blur their true footprint. A <em>group</em> is our published mapping of those relationships: either confirmed via
+    contact information we've gathered over 20+ years in this industry, or inferred from behavioral fingerprints in the
+    monthly number-flow data. Primetel, for example, operates under 18 different RespOrg codes; combined they hold more
+    toll-free numbers than AT&T.
+  </p>
+  <table class="directory">
+    <thead>
+      <tr>
+        <th>#</th><th>Group</th><th class="num">RespOrgs</th><th class="num">Combined active numbers</th><th class="num">Opp.Idx</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for g in top_groups %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td><a href="/group/{{ g.slug }}"><strong>{{ g.title }}</strong></a><br><span class="dim">{{ g.description[:120] }}{% if g.description|length > 120 %}…{% endif %}</span></td>
+        <td class="num">{{ g.members }}</td>
+        <td class="num">{{ "{:,}".format(g.inventory) }}</td>
+        <td class="num {% if g.opp_idx > 0.15 %}neg{% elif g.opp_idx < 0.03 %}pos{% else %}mid{% endif %}">{{ "{:.2f}%".format(g.opp_idx * 100) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p><a href="/groups">See all 34+ groups →</a></p>
+</section>
+
+<section class="faq-preview">
+  <h2>Common questions</h2>
+  <details>
+    <summary>How do I find out which RespOrg controls my toll-free number?</summary>
+    <p>Use the <a href="/number">number lookup</a> at the top of this page — enter the number in any format and we'll
+    show the current RespOrg plus its full 4-year ownership history.</p>
+  </details>
+  <details>
+    <summary>I used to own a number and now it's getting scammy calls. What happened?</summary>
+    <p>When you disconnected the number, it went into an aging pool for 45–90 days. After aging it was released back
+    to Somos's spare pool — where any RespOrg could claim it. Sharks specifically target recognizable numbers the moment
+    they become available. We track exactly which RespOrgs do this (see our <a href="/faq#opportunism">Opportunism Index</a>).</p>
+  </details>
+  <details>
+    <summary>Can I switch my toll-free number to a different RespOrg?</summary>
+    <p>Yes — as long as you actually own it. Any RespOrg is required to release numbers you own on request. If they
+    won't respond, Somos has a dispute process, and we can point you in the right direction — use
+    <a href="/ask">Ask a question</a> from any RespOrg's profile.</p>
+  </details>
+  <details>
+    <summary>Why do some RespOrgs have so many numbers?</summary>
+    <p>The industry is dominated by a handful of wholesale carriers (Twilio, Bandwidth, Verizon, AT&T) that each hold
+    millions of numbers serving thousands of customers. On the other end are single-purpose RespOrgs with only a
+    handful of numbers, often for a single company's own use.</p>
+  </details>
+  <details>
+    <summary>Are there sharks in this industry?</summary>
+    <p>Yes, and this site names them. Our <a href="/faq#opportunism">Opportunism Index</a> measures how much of a
+    RespOrg's new inventory comes from numbers that were just disconnected by somebody else. Values above 20% indicate
+    harvesting as a primary business model.</p>
+  </details>
+  <p><a href="/faq">Read all frequently-asked questions →</a></p>
+</section>
+{% endblock %}

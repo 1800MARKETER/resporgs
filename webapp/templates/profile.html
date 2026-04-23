@@ -1,0 +1,335 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} ({{ rpfx }}) · Resporgs.com preview{% endblock %}
+
+{% block content %}
+<article class="profile">
+  <header class="profile-head">
+    {% if logo %}
+      <div class="logo-wrap"><img src="{{ logo }}" alt="{{ title }} logo" class="logo"></div>
+    {% endif %}
+    <div class="heading-block">
+      <h1>
+        {{ title }}
+        <span class="code">{{ rpfx }}</span>
+      </h1>
+      {% if alias and alias != title %}<p class="alias">alias: <em>{{ alias }}</em></p>{% endif %}
+      <p class="tags">
+        {% for c in categories %}
+          <a class="tag tag-cat" href="/category/{{ c.slug }}">{{ c.title }}</a>
+        {% endfor %}
+        {% for g in groups %}
+          <a class="tag tag-grp" href="/group/{{ g.slug }}">Group: {{ g.title }}</a>
+        {% endfor %}
+      </p>
+    </div>
+    <div class="header-cta">
+      <a class="btn btn-ask" href="/ask/{{ rpfx }}">Request a specific #</a>
+    </div>
+  </header>
+
+  {% set has_visual = screenshot or streetview_url or satellite_url %}
+  {% if website or city or state or (primary and primary.requestForm) or has_visual %}
+  <section class="contact">
+    {% if has_visual %}
+    <div class="visual-context">
+      {% if screenshot %}
+      <figure class="vc-card">
+        <a href="{{ screenshot }}" target="_blank" rel="noopener" title="View full screenshot"><img src="{{ screenshot }}" alt="{{ title }} website screenshot"></a>
+        <figcaption>Website{% if website %} · <a href="{{ website }}" target="_blank" rel="noopener">visit</a>{% endif %} · <a href="{{ screenshot }}" target="_blank" rel="noopener">full size</a></figcaption>
+      </figure>
+      {% endif %}
+      {% if streetview_url %}
+      <figure class="vc-card">
+        <a href="{{ streetview_url }}" target="_blank" rel="noopener" title="View full street view"><img src="{{ streetview_url }}" alt="Based in {{ city }}{% if city and state %}, {% endif %}{{ state }}"></a>
+        <figcaption>Based in {{ city }}{% if city and state %}, {% endif %}{{ state }} · street view · <a href="{{ streetview_url }}" target="_blank" rel="noopener">full size</a></figcaption>
+      </figure>
+      {% endif %}
+      {% if satellite_url %}
+      <figure class="vc-card">
+        <a href="{{ satellite_url }}" target="_blank" rel="noopener" title="View full satellite view"><img src="{{ satellite_url }}" alt="Based in {{ city }}{% if city and state %}, {% endif %}{{ state }}"></a>
+        <figcaption>Based in {{ city }}{% if city and state %}, {% endif %}{{ state }} · satellite · <a href="{{ satellite_url }}" target="_blank" rel="noopener">full size</a></figcaption>
+      </figure>
+      {% endif %}
+    </div>
+    {% endif %}
+    <ul class="contact-list">
+      {% if website %}<li><strong>Website:</strong> <a href="{{ website }}" target="_blank" rel="noopener">{{ website }}</a></li>{% endif %}
+      {% if (city or state) and not streetview_url and not satellite_url %}<li><strong>Based in:</strong> {{ city }}{% if city and state %}, {% endif %}{{ state }}</li>{% endif %}
+      {% if primary and primary.requestForm %}<li><strong>Request form:</strong> <a href="{{ primary.requestForm }}" target="_blank" rel="noopener">{{ primary.requestForm }}</a></li>{% endif %}
+    </ul>
+  </section>
+  {% endif %}
+
+  <section class="glance">
+    <h2>At a glance</h2>
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Active numbers</div>
+        <div class="stat-value">{{ "{:,}".format(total_inv) }}</div>
+        {% if inv_rank_label %}<div class="stat-sub">{{ inv_rank_label }}</div>{% endif %}
+      </div>
+      <div class="stat">
+        <div class="stat-label">Change over 4 years</div>
+        <div class="stat-value {% if delta > 0 %}pos{% elif delta < 0 %}neg{% endif %}">
+          {{ "{:+,}".format(delta) }}
+        </div>
+        <div class="stat-sub">{{ "{:+.1f}%".format(pct_change) }}{% if growth_rank_label %} · {{ growth_rank_label }}{% endif %}</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Opportunism Index</div>
+        <div class="stat-value {% if opp_idx > 0.3 %}neg{% elif opp_idx < 0.05 %}pos{% else %}mid{% endif %}">
+          {{ "{:.2f}%".format(opp_idx * 100) }}
+        </div>
+        <div class="stat-sub">
+          {% if opp_rank_label %}{{ opp_rank_label }}{% else %}
+          Harvested {{ "{:,}".format(total_harv) }} / acquired {{ "{:,}".format(total_acq) }}
+          {% endif %}
+        </div>
+      </div>
+      {% if working_count %}
+      <div class="stat">
+        <div class="stat-label">Vanity matches</div>
+        <div class="stat-value">{{ "{:.1f}%".format(mm_pct * 100) }}</div>
+        <div class="stat-sub">{% if vanity_rank_label %}{{ vanity_rank_label }}{% endif %}</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Median inventory age</div>
+        <div class="stat-value">{{ median_age_months }} mo</div>
+        <div class="stat-sub">
+          {{ (median_age_months / 12)|round(1) }} years since last change
+          {% if age_rank_label %}<br>{{ age_rank_label }} oldest{% endif %}
+        </div>
+      </div>
+      {% endif %}
+      <div class="stat">
+        <div class="stat-label">Sub-codes in use</div>
+        <div class="stat-value">{{ subcodes|length }}</div>
+        <div class="stat-sub mono">{{ subcodes[:6]|join(", ") }}{% if subcodes|length > 6 %} +{{ subcodes|length - 6 }}{% endif %}</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="breakdown-row">
+    <div class="chart-box">
+      <h3>Inventory by NPA</h3>
+      <div class="npa-bars">
+        {% for b in npa_chart %}
+        <div class="npa-bar">
+          <div class="npa-bar-count">{{ "{:,}".format(b.count) }}</div>
+          <div class="npa-bar-col" style="height: {{ (b.pct_of_max * 140)|round|int }}px;"></div>
+          <div class="npa-bar-label">{{ b.npa }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="chart-box">
+      <h3>By status</h3>
+      {% if status_pie_svg %}
+      <div class="pie-wrap">
+        {{ status_pie_svg|safe }}
+        <ul class="pie-legend">
+          {% for s in status_slices %}
+          <li><span class="pl-swatch" style="background:{{ s.color }}"></span>
+            <span class="pl-label">{{ s.label }}</span>
+            <span class="pl-val">{{ "{:,}".format(s.value) }} · {{ "{:.1f}%".format(s.pct * 100) }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if working_count %}
+    <div class="chart-box">
+      <h3>Inventory age buckets</h3>
+      {% if age_pie_svg %}
+      <div class="pie-wrap">
+        {{ age_pie_svg|safe }}
+        <ul class="pie-legend">
+          {% for s in age_slices %}
+          {% if s.value > 0 %}
+          <li><span class="pl-swatch" style="background:{{ s.color }}"></span>
+            <span class="pl-label">{{ s.label }}</span>
+            <span class="pl-val">{{ "{:,}".format(s.value) }} · {{ "{:.1f}%".format(s.pct * 100) }}</span>
+          </li>
+          {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+      <p class="chart-note">
+        Ages are measured from each number's <em>last change</em> in the Somos registry — that's the most recent
+        activation, transfer, or status move. Not necessarily the date this RespOrg originally acquired it.
+      </p>
+      <p class="chart-cta">
+        <a href="/history-review?rpfx={{ rpfx }}">Request a manual history review of a specific toll-free number →</a>
+      </p>
+    </div>
+    {% endif %}
+  </section>
+
+  {% if trajectory %}
+  <section class="trajectory">
+    <h2>Trajectory</h2>
+    {% if trajectory_svg %}
+    <div class="chart-wrap">
+      <div class="chart-key">
+        <span><span class="ck-line"></span>Total active inventory</span>
+        <span><span class="ck-bar"></span>Numbers harvested from disconnect pool that month</span>
+      </div>
+      {{ trajectory_svg|safe }}
+    </div>
+    {% endif %}
+    <details class="trajectory-table">
+      <summary>Show monthly numbers</summary>
+      <table>
+        <thead>
+          <tr><th>Month</th><th class="num">Inventory</th><th class="num">Acquired</th><th class="num">Harvested</th><th class="num">Lost</th><th class="num">From spare</th><th class="num">To spare</th></tr>
+        </thead>
+        <tbody>
+          {% for row in trajectory %}
+          <tr>
+            <td class="mono">{{ row.month }}</td>
+            <td class="num">{{ "{:,}".format(row.inventory) }}</td>
+            <td class="num">{{ "{:,}".format(row.acquired) }}</td>
+            <td class="num">{{ "{:,}".format(row.harvested) }}</td>
+            <td class="num">{{ "{:,}".format(row.lost) }}</td>
+            <td class="num">{{ "{:,}".format(row.from_spare) }}</td>
+            <td class="num">{{ "{:,}".format(row.to_spare) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </details>
+  </section>
+  {% endif %}
+
+  {% if flow %}
+  <section class="flow">
+    <h2>Flow patterns (42-month cumulative)</h2>
+    <div class="flow-summary">
+      <div>
+        <h4>Inbound (numbers acquired)</h4>
+        <table class="compact">
+          <tr><td>Direct transfer from another RespOrg</td><td class="num">{{ "{:,}".format(flow.inbound.get('TRANSFER', 0)) }}</td></tr>
+          <tr><td>Harvested from disconnect pool</td><td class="num">{{ "{:,}".format(flow.inbound.get('HARVEST', 0)) }}</td></tr>
+          <tr><td>First assigned from spare pool</td><td class="num">{{ "{:,}".format(flow.inbound.get('FIRST_ASSIGN', 0)) }}</td></tr>
+          <tr><td>Reactivated own disconnects</td><td class="num">{{ "{:,}".format(flow.inbound.get('REACTIVATE', 0)) }}</td></tr>
+        </table>
+      </div>
+      <div>
+        <h4>Outbound (numbers lost)</h4>
+        <table class="compact">
+          <tr><td>Direct transfer to another RespOrg</td><td class="num">{{ "{:,}".format(flow.outbound.get('TRANSFER', 0)) }}</td></tr>
+          {% if disc_episodes and disc_episodes.n_total %}
+          <tr><td>Standard disconnect aging process (3+ months in DISC)</td><td class="num">{{ "{:,}".format(disc_episodes.n_standard) }}</td></tr>
+          <tr><td>Abbreviated disconnect period (1–2 months in DISC)</td><td class="num">{{ "{:,}".format(disc_episodes.n_abbreviated) }}</td></tr>
+          {% else %}
+          <tr><td>Entered multi-month disconnect (aging)</td><td class="num">{{ "{:,}".format(flow.outbound.get('DISCONNECT', 0)) }}</td></tr>
+          {% endif %}
+          <tr><td>Released directly to spare pool</td><td class="num">{{ "{:,}".format(flow.outbound.get('TO_SPARE', 0)) }}</td></tr>
+        </table>
+        {% if disc_episodes and disc_episodes.n_total %}
+        <p class="chart-note">
+          Of the {{ "{:,}".format(disc_episodes.n_total) }} disconnect episodes this RespOrg has sent through aging,
+          <strong>{{ "{:.0f}%".format(disc_episodes.abbrev_rate * 100) }}</strong> were abbreviated (1–2 snapshots
+          in DISC status).
+          {% if disc_episodes.abbrev_rate > 0.6 %}
+          That's a strong <strong>early-disconnector</strong> signal — this RespOrg routinely releases numbers
+          before the full 3–4 month aging window. Worth checking daily for vanity drops.
+          {% elif disc_episodes.abbrev_rate < 0.3 %}
+          This RespOrg lets most numbers age the full 3–4 months before release — normal pattern.
+          {% endif %}
+        </p>
+        {% endif %}
+      </div>
+    </div>
+    <div class="partner-row">
+      {% if flow.top_sources %}
+      <div>
+        <h4>Top direct-transfer sources (INto {{ rpfx }})</h4>
+        <table class="compact">
+          {% for src, n, name in flow.top_sources %}
+          <tr><td><a class="mono" href="/r/{{ src }}">{{ src }}</a></td><td class="num">{{ "{:,}".format(n) }}</td><td>{{ name }}</td></tr>
+          {% endfor %}
+        </table>
+      </div>
+      {% endif %}
+      {% if flow.top_dests %}
+      <div>
+        <h4>Top direct-transfer destinations (OUT of {{ rpfx }})</h4>
+        <table class="compact">
+          {% for dst, n, name in flow.top_dests %}
+          <tr><td><a class="mono" href="/r/{{ dst }}">{{ dst }}</a></td><td class="num">{{ "{:,}".format(n) }}</td><td>{{ name }}</td></tr>
+          {% endfor %}
+        </table>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if vanity_hits or vanity_cats %}
+  <section class="vanity">
+    <div class="vanity-head">
+      <h2>Top vanity holdings{% if vanity_cat_selected %} — {{ vanity_cat_selected }}{% endif %}</h2>
+      {% if vanity_cats %}
+      <form method="get" action="/r/{{ rpfx }}" class="vanity-filter">
+        <label for="vanity_cat">Category:</label>
+        <select name="vanity_cat" id="vanity_cat" onchange="this.form.submit()">
+          <option value="">All categories ({{ vanity_cats|map(attribute='n')|sum }} numbers)</option>
+          {% for c in vanity_cats %}
+          <option value="{{ c.code }}" {% if vanity_cat_selected == c.code %}selected{% endif %}>
+            {{ c.label }} ({{ "{:,}".format(c.n) }})
+          </option>
+          {% endfor %}
+        </select>
+      </form>
+      {% endif %}
+    </div>
+    {% if vanity_hits %}
+    <div class="vanity-grid">
+      {% for v in vanity_hits %}
+      <a class="vanity-cell" href="{{ v.external_url }}" target="_blank" rel="noopener" title="Look up {{ v.ac }}-{{ v.word }} on TollFreeNumbers.com">
+        <span class="vanity-ac">{{ v.ac }}</span><span class="vanity-word">{{ v.word }}</span>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="dim">No vanity holdings in this category.</p>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  {% if summary %}
+  <section class="summary-block">
+    <h2>Summary</h2>
+    <p>{{ summary|replace('\n\n','</p><p>')|safe }}</p>
+  </section>
+  {% endif %}
+
+  {% if message %}
+  <section class="message-block">
+    <h2>Contact-form message</h2>
+    <blockquote>{{ message }}</blockquote>
+  </section>
+  {% endif %}
+
+<section class="cta-row" style="background: #f4f5f7; border-radius: 8px; padding: 20px; margin-top: 32px;">
+    <a class="btn" href="/ask/{{ rpfx }}">Request a specific #</a>
+  </section>
+
+  {% if testimonials %}
+  <section class="testimonials">
+    <h2>Testimonials mentioning this resporg ({{ testimonials|length }})</h2>
+    {% for t in testimonials[:5] %}
+      <blockquote>
+        <p>{{ t.body }}</p>
+        <cite>— {{ t.author or "?" }}{% if t.reviewDate %}, {{ t.reviewDate }}{% endif %}</cite>
+      </blockquote>
+    {% endfor %}
+  </section>
+  {% endif %}
+</article>
+{% endblock %}

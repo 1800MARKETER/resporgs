@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Search — Resporgs.com preview{% endblock %}
+{% block content %}
+<h1>Search: <em>{{ q }}</em></h1>
+
+{% if not results and not group_results and not cat_results %}
+<p class="dim">No results. Try a toll-free number for its history, or a company name.</p>
+{% endif %}
+
+{% if results %}
+<h2>RespOrgs</h2>
+<table>
+  <thead><tr><th>Code</th><th>Name</th><th>Alias</th></tr></thead>
+  <tbody>
+    {% for r in results %}
+    <tr>
+      <td><a class="mono" href="/r/{{ r.rpfx }}">{{ r.rpfx }}</a></td>
+      <td><a href="/r/{{ r.rpfx }}">{{ r.title }}</a></td>
+      <td class="dim">{{ r.alias or "" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+{% if group_results %}
+<h2>Groups</h2>
+<ul>
+  {% for g in group_results %}
+  <li><a href="/group/{{ g.slug }}">{{ g.title }}</a></li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% if cat_results %}
+<h2>Categories</h2>
+<ul>
+  {% for c in cat_results %}
+  <li><a href="/category/{{ c.slug }}">{{ c.title }}</a></li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% endblock %}

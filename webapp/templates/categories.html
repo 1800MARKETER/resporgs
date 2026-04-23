@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Categories — Resporgs.com preview{% endblock %}
+{% block content %}
+<h1>RespOrg categories</h1>
+<p class="summary">{{ categories|length }} categories · Click any row to see members and aggregate analytics.</p>
+
+<table class="directory">
+  <thead>
+    <tr>
+      <th>Category</th>
+      <th class="num">Members</th>
+      <th class="num">Combined inventory</th>
+      <th class="num">Vanity %</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for c in categories %}
+    <tr>
+      <td class="cat-thumb-cell">
+        <a href="/category/{{ c.slug }}" class="cat-thumb-link">
+          {% if c.image %}
+            <img src="{{ c.image }}" alt="{{ c.title }}" class="cat-thumb">
+          {% else %}
+            <span class="cat-thumb cat-thumb-placeholder"></span>
+          {% endif %}
+          <strong>{{ c.title }}</strong>
+        </a>
+      </td>
+      <td class="num">{{ c.members }}</td>
+      <td class="num">{{ "{:,}".format(c.inventory) }}</td>
+      <td class="num">
+        {% if c.mm_pct is not none %}{{ "{:.1f}%".format(c.mm_pct * 100) }}{% else %}<span class="dim">—</span>{% endif %}
+      </td>
+      <td class="dim">{{ c.description }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

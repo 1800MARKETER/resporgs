@@ -1,0 +1,42 @@
+# Secrets
+apikey.env
+.env
+.env.local
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+*.egg-info/
+
+# Large derived data — regenerated from scripts/cache_months.py etc.
+cache/
+data/*.parquet
+data/*.xlsx
+data/*.txt
+data/leads.db
+
+# Sanity CMS export — regenerated via `sanity dataset export`
+sanity-export/
+by-type/
+clean/
+backup.tar.gz
+
+# Ops
+profiles/
+somos-docs/
+*.log
+
+# Google Maps static images — regenerated via scripts/fetch_streetview.py
+webapp/static/streetview/*.jpg
+webapp/static/streetview/_index.json
+
+# IDE / editor
+.claude/
+.vscode/
+*.swp
+
+# OS
+Thumbs.db
+.DS_Store

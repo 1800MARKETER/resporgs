@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} — Category — Resporgs.com preview{% endblock %}
+{% block content %}
+
+{% if image %}
+<section class="hero-banner-wrap">
+  <img src="{{ image }}" alt="{{ title }}" class="hero-banner-clean">
+</section>
+{% endif %}
+
+<section class="hero-text">
+  <p class="tags" style="text-align:center;"><a class="tag tag-cat" href="/categories">← All categories</a></p>
+  <h1>{{ title }}</h1>
+  {% if description %}<p class="hero-sub">{{ description }}</p>{% endif %}
+</section>
+
+<article class="profile">
+
+  <section class="glance">
+    <h2>Category at a glance</h2>
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Member RespOrgs</div>
+        <div class="stat-value">{{ members|length }}</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Combined inventory ({{ month }})</div>
+        <div class="stat-value">{{ "{:,}".format(total_inventory) }}</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">4-year change</div>
+        <div class="stat-value {% if delta > 0 %}pos{% elif delta < 0 %}neg{% endif %}">
+          {{ "{:+,}".format(delta) }}
+        </div>
+        <div class="stat-sub">{{ "{:+.1f}%".format(pct_change) }} · {{ first_m }} → {{ last_m }}</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Category Opportunism Index</div>
+        <div class="stat-value {% if cat_opp_idx > 0.15 %}neg{% elif cat_opp_idx < 0.03 %}pos{% else %}mid{% endif %}">
+          {{ "{:.2f}%".format(cat_opp_idx * 100) }}
+        </div>
+        <div class="stat-sub">Harvested {{ "{:,}".format(total_harv) }} / acquired {{ "{:,}".format(total_acq) }}</div>
+      </div>
+    </div>
+  </section>
+
+  {% if body %}
+  <section class="summary-block">
+    <h2>About this category</h2>
+    <p>{{ body|replace('\n\n','</p><p>')|safe }}</p>
+  </section>
+  {% endif %}
+
+  <section>
+    <h2>Members ({{ members|length }})</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th></th>
+          <th>Code</th>
+          <th>Name</th>
+          <th class="num">Active numbers</th>
+          <th class="num">Vanity %</th>
+          <th class="num">Median age (months)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for m in members %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td class="member-thumb-cell">
+            <a href="/r/{{ m.rpfx }}" class="member-thumb-link">
+              {% if m.thumb %}
+                <img src="{{ m.thumb }}" alt="{{ m.title }}" class="member-thumb member-thumb-{{ m.thumb_kind }}">
+              {% else %}
+                <span class="member-thumb member-thumb-placeholder"><span class="mono">{{ m.rpfx }}</span></span>
+              {% endif %}
+            </a>
+          </td>
+          <td><a href="/r/{{ m.rpfx }}" class="mono">{{ m.rpfx }}</a></td>
+          <td><a href="/r/{{ m.rpfx }}">{{ m.title }}</a></td>
+          <td class="num">{{ "{:,}".format(m.inventory) }}</td>
+          <td class="num">
+            {% if m.mm_pct is not none %}{{ "{:.1f}%".format(m.mm_pct * 100) }}{% else %}<span class="dim">—</span>{% endif %}
+          </td>
+          <td class="num">
+            {% if m.median_age is not none %}{{ m.median_age }}{% else %}<span class="dim">—</span>{% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  {% if trajectory %}
+  <section class="trajectory">
+    <h2>Combined trajectory (all members)</h2>
+    <table>
+      <thead>
+        <tr><th>Month</th><th class="num">Inventory</th><th class="num">Acquired</th><th class="num">Harvested</th><th class="num">Lost</th></tr>
+      </thead>
+      <tbody>
+        {% for row in trajectory %}
+        <tr>
+          <td class="mono">{{ row.month }}</td>
+          <td class="num">{{ "{:,}".format(row.inventory) }}</td>
+          <td class="num">{{ "{:,}".format(row.acquired) }}</td>
+          <td class="num">{{ "{:,}".format(row.harvested) }}</td>
+          <td class="num">{{ "{:,}".format(row.lost) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+  {% endif %}
+</article>
+{% endblock %}

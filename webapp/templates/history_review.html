@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Request a manual history review — Resporgs.com preview{% endblock %}
+{% block content %}
+
+{% if submitted %}
+<h1>Request received</h1>
+<p>We'll pull the full Somos registry history for <strong>{{ number }}</strong> and email the results to
+<strong>{{ email }}</strong> — usually within one business day.</p>
+<p><a href="/history-review">Request another</a> · <a href="/">Back to directory</a></p>
+
+{% else %}
+<h1>Manual history review of a toll-free number</h1>
+<p class="summary">
+  The ownership history on this site goes back 4 years from our monthly Somos snapshots, and shows the
+  <em>RespOrg</em> that controlled the number each month. For a deeper look — full change log including
+  sub-code moves, reservation events, and earlier years than our snapshots cover — we can pull it directly
+  from the Somos portal and send it over.
+</p>
+<p class="summary">
+  Most people ask for a history review when they lost a number and want to understand where it went and when.
+  Response usually comes within one business day.
+</p>
+
+<form method="post" action="/history-review" class="lead-form">
+  <label>
+    Your name <span class="dim">(optional)</span>
+    <input type="text" name="name" placeholder="Jane Example">
+  </label>
+  <label>
+    Email address
+    <input type="email" name="email" required placeholder="you@example.com">
+  </label>
+  <label>
+    Toll-free number to review
+    <input type="text" name="number" required value="{{ prefill_number }}" placeholder="1-800-FLOWERS or 8003569377">
+  </label>
+  <label>
+    Which RespOrg is this about? <span class="dim">(if known — 2-char code or name, optional)</span>
+    <input type="text" name="subject_rpfx" value="{{ prefill_rpfx }}" placeholder="MY, Bandwidth, ...">
+  </label>
+  <label>
+    Why you're asking <span class="dim">(optional)</span>
+    <textarea name="context" rows="4" placeholder="e.g., 'I used to own this number for my business and it stopped working last year. I'd like to know who has it now and whether it's recoverable.'"></textarea>
+  </label>
+  <button type="submit">Request review</button>
+</form>
+{% endif %}
+
+{% endblock %}

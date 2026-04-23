@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}{% if result %}{{ result.formatted }} — number history{% else %}Number history lookup{% endif %} — Resporgs.com preview{% endblock %}
+{# Noindex every per-number page by default. Override via is_notable flag
+   once we curate a list of high-value numbers to expose to search engines. #}
+{% block robots %}<meta name="robots" content="{% if is_notable %}index,follow{% else %}noindex,follow{% endif %}">{% endblock %}
+{% block content %}
+
+<h1>Toll-free number history</h1>
+<p class="summary">Enter any toll-free number to see who has controlled it over the last 4 years.</p>
+
+<form method="get" action="/number" class="lookup-form">
+  <input type="text" name="q" value="{{ raw or '' }}" placeholder="1-800-FLOWERS, 8003569377, 833-555-1234…">
+  <button type="submit">Look up</button>
+</form>
+
+{% if raw and not result %}
+<p class="dim error">Couldn't parse <code>{{ raw }}</code> as a toll-free number. Try formats like <code>1-800-FLOWERS</code> or <code>8003569377</code>.</p>
+{% endif %}
+
+{% if result %}
+<section class="number-card">
+  <h2 class="tfn-headline">{{ result.formatted }}</h2>
+  {% if result.vanity_word %}
+    <p class="vanity-badge"><strong>Vanity:</strong> {{ result.vanity_word }}{% if result.vanity_category %} <span class="dim">· {{ result.vanity_category }}</span>{% endif %}</p>
+  {% endif %}
+
+  {% if result.current %}
+    <p>Currently with <strong><a href="/r/{{ result.current.rpfx }}">{{ result.current.rpfx_name }}</a></strong> · code <span class="mono">{{ result.current.resporg }}</span> · status {{ result.current.status }}
+    {% if result.current.last_change %}· last change {{ result.current.last_change }}{% endif %}</p>
+  {% else %}
+    <p class="dim">This number was not found in any of our 42 monthly snapshots. It may be in SPARE (unassigned), RESERVED for a new customer, or outside the toll-free registry.</p>
+  {% endif %}
+</section>
+
+{% if result.timeline %}
+<section>
+  <h2>Ownership history</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Period</th>
+        <th>RespOrg</th>
+        <th>Name</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for seg in result.timeline|reverse %}
+      <tr>
+        <td class="mono">{{ seg.start_month }}{% if seg.end_month != seg.start_month %} → {{ seg.end_month }}{% endif %}</td>
+        <td><a href="/r/{{ seg.rpfx }}" class="mono">{{ seg.rpfx }}</a> <span class="dim mono">({{ seg.resporg }})</span></td>
+        <td><a href="/r/{{ seg.rpfx }}">{{ seg.rpfx_name }}</a></td>
+        <td>{{ seg.status }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<p class="chart-note">
+  Each row reflects the RespOrg that held this number during that month — sourced from Somos's monthly registry report.
+  For a deeper record (earlier than our 4-year window, or sub-code movements not shown here), we can pull Somos's
+  full change log for this number.
+</p>
+<p class="cta-row">
+  <a class="btn" href="/watch?target={{ result.normalized }}">Watch this number for changes →</a>
+  <a class="btn" style="background:#0e7c3a; margin-left: 8px;" href="/history-review?number={{ result.normalized }}">Request a full manual history review →</a>
+</p>
+{% endif %}
+
+{% endif %}
+
+{% endblock %}

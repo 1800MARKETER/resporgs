@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Full RespOrg directory — Resporgs.com preview{% endblock %}
+{% block content %}
+
+<section class="hero-banner-wrap">
+  <img src="/static/img/directory-hero.jpg" alt="Toll-Free Department — RespOrg desk" class="hero-banner-clean">
+</section>
+
+<section class="hero-text">
+  <h1>Full RespOrg directory</h1>
+  <p class="hero-sub">
+    Every Responsible Organization in the toll-free registry, sorted by active inventory.
+    {{ "{:,}".format(total_resporgs) }} RespOrgs · {{ "{:,}".format(total_inventory) }} active numbers · snapshot {{ month }}.
+  </p>
+</section>
+
+<table class="directory">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Code</th>
+      <th>Name</th>
+      <th class="num">Active numbers</th>
+      <th class="num">Vanity %</th>
+      <th class="num">Median age (months)</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for d in directory %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td><a href="/r/{{ d.rpfx }}" class="mono">{{ d.rpfx }}</a></td>
+      <td>
+        {% if d.title == '(not in directory)' %}
+          <span class="dim">(not in directory)</span>
+        {% else %}
+          <a href="/r/{{ d.rpfx }}">{{ d.title }}</a>
+        {% endif %}
+      </td>
+      <td class="num">{{ "{:,}".format(d.inventory) }}</td>
+      <td class="num">
+        {% if d.mm_pct is not none %}
+          {{ "{:.1f}%".format(d.mm_pct * 100) }}
+        {% else %}
+          <span class="dim">—</span>
+        {% endif %}
+      </td>
+      <td class="num">
+        {% if d.median_age is not none %}
+          {{ d.median_age }}
+        {% else %}
+          <span class="dim">—</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
