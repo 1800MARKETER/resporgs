@@ -228,7 +228,30 @@ Plus optional: the sibling `local-prospector/data/master_vanity.db` path the Fla
 |---|---:|
 | Pre-optimization | ~17s |
 | After ranks precompute | ~10s |
-| After vanity precompute | ~2s (local: 0.7s) |
+| After vanity precompute | ~2.1s |
+| After flow precompute | ~2.1s (flow queries were already fast) |
+| **After rpfx snapshot precompute** | **0.9s (19× faster than original)** |
+
+### Final live timing, all routes (warm cache)
+| Route | Time |
+|---|---:|
+| `/r/MY`, `/r/JW`, `/r/EF`, `/r/AT`, `/r/TW` | 0.8–1.0s |
+| `/group/primetel` | 1.4s |
+| `/category/misdial-marketing` | 0.6s |
+| `/directory` | 0.56s |
+| `/faq` | 0.08s |
+| `/number/8003569377` | 3.4s (still reads cache/*.parquet wildcard — next target) |
+
+### Precompute pipeline in final form (`scripts/rebuild.sh`, 9 steps)
+1. `build_events.py` — event pipeline
+2. `build_flow_graph.py` — raw flow edges
+3. `enrich_profiles.py` — MM match + age buckets
+4. `build_disconnect_episodes.py` — abbreviated/standard split
+5. `build_ranks.py` — 5 rank metrics per rpfx
+6. `build_vanity_precompute.py` — per-rpfx vanity (slow step, ~16 min on droplet)
+7. `build_flow_precompute.py` — inbound/outbound totals + top partners
+8. `build_rpfx_snapshot.py` — NPA + status + sub-code breakdowns
+9. `systemctl restart resporgs`
 
 ### Droplet memory reality
 - Only 1.9 GB RAM total, no swap
