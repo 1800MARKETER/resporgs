@@ -959,26 +959,38 @@ HIDDEN_RPFX: set[str] = set()
 
 
 def _refresh_hidden_index():
+    """Compute HIDDEN_RPFX from three sources:
+      1. HIDDEN_OVERRIDE (code-editable escape hatch)
+      2. Sanity category slugs 'hidden' or 'non-resporg'
+      3. Structural rule: any 2-char prefix starting with '1'
+         — Bill injects synthetic non-resporg vendor codes into the Somos
+         data with IDs like 1DWRD, 1IGN, etc. No real Somos RespOrg ID
+         starts with digit '1', so this catches all synthetic entries.
+    """
     HIDDEN_RPFX.clear()
     HIDDEN_RPFX.update(HIDDEN_OVERRIDE)
-    hidden_cat_id = next(
-        (
-            c["_id"].removeprefix("drafts.")
-            for c in CATEGORY_DOCS
-            if (c.get("slug") or {}).get("current") == "hidden"
-        ),
-        None,
-    )
-    if not hidden_cat_id:
-        return
+
+    # Rule 3 — structural: any rpfx starting with '1' is synthetic
     for d in RESPORG_DOCS:
         code = (d.get("codeTwoDigit") or "").strip().upper()
-        if len(code) < 2:
-            continue
-        for cref in d.get("categories", []) or []:
-            if cref.get("_ref") == hidden_cat_id:
-                HIDDEN_RPFX.add(code[:2])
-                break
+        if len(code) >= 2 and code[0] == "1":
+            HIDDEN_RPFX.add(code[:2])
+
+    # Rule 2 — Sanity category memberships
+    hide_cat_ids = {
+        c["_id"].removeprefix("drafts.")
+        for c in CATEGORY_DOCS
+        if (c.get("slug") or {}).get("current") in {"hidden", "non-resporg"}
+    }
+    if hide_cat_ids:
+        for d in RESPORG_DOCS:
+            code = (d.get("codeTwoDigit") or "").strip().upper()
+            if len(code) < 2:
+                continue
+            for cref in d.get("categories", []) or []:
+                if cref.get("_ref") in hide_cat_ids:
+                    HIDDEN_RPFX.add(code[:2])
+                    break
 
 
 _refresh_hidden_index()
@@ -1525,6 +1537,10 @@ def categories_index():
         total_inv = sum(inv_by_rpfx.get(p, 0) for p in members)
         working = sum(enrich.get(p, (0, 0, 0))[0] for p in members)
         mm = sum(enrich.get(p, (0, 0, 0))[1] for p in members)
+        # Skip categories that end up with no visible members (e.g. NON
+        # Resporg after hidden filtering — keep the doc, drop the index row).
+        if len(members) == 0:
+            continue
         cat_summary.append(
             {
                 "slug": slug,

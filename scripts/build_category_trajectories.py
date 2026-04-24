@@ -45,11 +45,25 @@ def main():
 
     resporg_docs = json.loads((CLEAN / "resporg.json").read_text(encoding="utf-8"))
     rpfx_to_cats: dict[str, set[str]] = defaultdict(set)
+    # Skip synthetic non-resporgs (rpfx starts with '1' by Bill's convention)
+    # and anything in the non-resporg / hidden categories.
+    skip_cat_ids = {
+        c["_id"].removeprefix("drafts.")
+        for c in cat_docs
+        if (c.get("slug") or {}).get("current") in {"hidden", "non-resporg"}
+    }
     for d in resporg_docs:
         code = (d.get("codeTwoDigit") or "").strip().upper()
         if len(code) < 2:
             continue
+        if code[0] == "1":
+            continue  # synthetic vendor, not real rpfx
         pfx = code[:2]
+        d_cat_ids = {
+            cref.get("_ref") for cref in d.get("categories", []) or []
+        }
+        if d_cat_ids & skip_cat_ids:
+            continue  # tagged hidden / non-resporg
         for cref in d.get("categories", []) or []:
             cid = cref.get("_ref")
             if cid in id_to_slug:
