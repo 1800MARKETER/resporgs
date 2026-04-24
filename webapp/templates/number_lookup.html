@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{% if result %}{{ result.formatted }} — number history{% else %}Number history lookup{% endif %} — Resporgs.com preview{% endblock %}
+{% block title %}{% if result %}{{ result.formatted }} — number history{% else %}Number history lookup{% endif %} — Resporgs.com{% endblock %}
 {# Noindex every per-number page by default. Override via is_notable flag
    once we curate a list of high-value numbers to expose to search engines. #}
 {% block robots %}<meta name="robots" content="{% if is_notable %}index,follow{% else %}noindex,follow{% endif %}">{% endblock %}
