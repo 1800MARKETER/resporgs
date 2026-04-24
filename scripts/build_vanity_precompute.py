@@ -2,17 +2,15 @@
 Precompute per-rpfx vanity holdings.
 
 Profile pages hit two live queries today — both join working numbers against
-the 2M-row Master Million sqlite DB. On the droplet that costs 5-10 seconds
-per request. This script materializes the join once and slices it two ways:
+the 2M-row Master Million sqlite DB. On the droplet that cost 10-17 seconds
+per request. This script does the join once and slices it two ways:
 
   data/vanity_categories.parquet — (rpfx, category_code, category_label, n)
-      for the category filter dropdown
+  data/vanity_top.parquet        — (rpfx, category_code, number, word, ord)
+      where category_code is NULL for the default "all categories" top 60.
 
-  data/vanity_top.parquet — (rpfx, category_code, number, word, ord)
-      where category_code is NULL for the default "all categories" view, or
-      the actual category_code for a per-category top-60. ord = 1..60.
-
-Profile render becomes a plain WHERE + ORDER BY against the precompute.
+Processes rpfx-by-rpfx to stay inside the droplet's 1.9 GB RAM budget
+(materializing the full 9.5M-match join OOMs).
 """
 
 from __future__ import annotations
@@ -20,6 +18,8 @@ import time
 from pathlib import Path
 
 import duckdb
+import pyarrow as pa
+import pyarrow.parquet as pq
 
 ROOT = Path(__file__).resolve().parent.parent
 CACHE = ROOT / "cache"
@@ -40,116 +40,121 @@ def main():
     con.load_extension("sqlite")
     con.execute(f"ATTACH '{MM_DB.as_posix()}' AS mm (TYPE sqlite, READ_ONLY)")
 
+    # List of distinct rpfxs with any working inventory
+    rpfxs = [
+        r[0]
+        for r in con.execute(
+            f"SELECT DISTINCT rpfx FROM read_parquet('{curr}') WHERE status = 1 ORDER BY rpfx"
+        ).fetchall()
+    ]
+    print(f"Processing {len(rpfxs)} rpfxs...")
     t0 = time.time()
 
-    # Materialize the rpfx × working × vanity join once. This is the single
-    # expensive step — everything downstream reads from this small temp table.
-    con.execute(
-        f"""
-        CREATE TEMP TABLE matches AS
-        SELECT
-          s.rpfx,
-          s.number,
-          UPPER(v.word)     AS word,
-          v.category_code,
-          v.category_label,
-          COALESCE(v.blended_score, 0)
-            * CASE WHEN s.number / 10000000 = 800 THEN 1.05 ELSE 1.0 END AS boosted,
-          COALESCE(v.mike_rank, 999999) AS mike_rank
-        FROM (
-          SELECT rpfx, number,
-                 LPAD((number % 10000000)::VARCHAR, 7, '0') AS last7
-          FROM read_parquet('{curr}')
-          WHERE status = 1
-        ) s
-        JOIN mm.vanity v ON s.last7 = v.digits
-        WHERE v.word IS NOT NULL
-        """
-    )
-    n_matches = con.execute("SELECT COUNT(*) FROM matches").fetchone()[0]
-    print(f"  materialized {n_matches:,} vanity matches in {time.time()-t0:.1f}s")
+    cats_rows: list[dict] = []
+    top_rows: list[dict] = []
 
-    # ---- vanity_categories.parquet ----
-    t1 = time.time()
-    out_cats = DATA / "vanity_categories.parquet"
-    con.execute(
-        f"""
-        COPY (
-          SELECT rpfx, category_code, MAX(category_label) AS category_label, COUNT(*) AS n
-          FROM matches
-          WHERE category_code IS NOT NULL
-          GROUP BY rpfx, category_code
-          ORDER BY rpfx, n DESC
-        ) TO '{out_cats.as_posix()}' (FORMAT PARQUET, COMPRESSION zstd)
-        """
-    )
-    n_cats = con.execute(f"SELECT COUNT(*) FROM read_parquet('{out_cats.as_posix()}')").fetchone()[0]
-    print(f"  {out_cats.name}: {n_cats:,} (rpfx, category) rows — {time.time()-t1:.1f}s")
+    for i, rpfx in enumerate(rpfxs, 1):
+        # Join working × vanity just for THIS rpfx — tiny per-rpfx result set.
+        # matches_rpfx is at most the working count for this rpfx × hit rate,
+        # which is at most a few million and usually much less.
+        con.execute(
+            f"""
+            CREATE OR REPLACE TEMP TABLE matches_rpfx AS
+            SELECT
+              s.number,
+              UPPER(v.word) AS word,
+              v.category_code,
+              v.category_label,
+              COALESCE(v.blended_score, 0)
+                * CASE WHEN s.number / 10000000 = 800 THEN 1.05 ELSE 1.0 END AS boosted,
+              COALESCE(v.mike_rank, 999999) AS mike_rank
+            FROM (
+              SELECT number, LPAD((number % 10000000)::VARCHAR, 7, '0') AS last7
+              FROM read_parquet('{curr}')
+              WHERE rpfx = '{rpfx}' AND status = 1
+            ) s
+            JOIN mm.vanity v ON s.last7 = v.digits
+            WHERE v.word IS NOT NULL
+            """
+        )
 
-    # ---- vanity_top.parquet ----
-    # Droplets are RAM-tight (1.9GB / no swap) — a single UNION over a 9.5M
-    # materialized table OOMs. Write two passes into two files, then merge by
-    # copying both into a single output parquet at the end. Each pass is bounded.
-    t2 = time.time()
-    out_top = DATA / "vanity_top.parquet"
-    default_tmp = DATA / "_vanity_top_default.tmp.parquet"
-    percat_tmp = DATA / "_vanity_top_percat.tmp.parquet"
-
-    # Pass 1: default view (NULL category_code) — top TOP_N per rpfx
-    con.execute(
-        f"""
-        COPY (
-          SELECT rpfx, CAST(NULL AS VARCHAR) AS category_code, number, word, ord
-          FROM (
-            SELECT rpfx, number, word,
-                   ROW_NUMBER() OVER (
-                     PARTITION BY rpfx ORDER BY boosted DESC, mike_rank ASC
-                   ) AS ord
-            FROM matches
-          )
-          WHERE ord <= {TOP_N}
-        ) TO '{default_tmp.as_posix()}' (FORMAT PARQUET, COMPRESSION zstd)
-        """
-    )
-
-    # Pass 2: per-category — top TOP_N per (rpfx, category_code)
-    con.execute(
-        f"""
-        COPY (
-          SELECT rpfx, category_code, number, word, ord
-          FROM (
-            SELECT rpfx, category_code, number, word,
-                   ROW_NUMBER() OVER (
-                     PARTITION BY rpfx, category_code ORDER BY boosted DESC, mike_rank ASC
-                   ) AS ord
-            FROM matches
+        # Category rollup
+        for row in con.execute(
+            """
+            SELECT category_code, MAX(category_label), COUNT(*)
+            FROM matches_rpfx
             WHERE category_code IS NOT NULL
-          )
-          WHERE ord <= {TOP_N}
-        ) TO '{percat_tmp.as_posix()}' (FORMAT PARQUET, COMPRESSION zstd)
-        """
-    )
+            GROUP BY category_code
+            """
+        ).fetchall():
+            cats_rows.append(
+                {
+                    "rpfx": rpfx,
+                    "category_code": row[0],
+                    "category_label": row[1],
+                    "n": row[2],
+                }
+            )
 
-    # Drop the big temp table — no longer needed
-    con.execute("DROP TABLE matches")
+        # Default top-60 (category_code NULL)
+        for n, row in enumerate(
+            con.execute(
+                f"""
+                SELECT number, word
+                FROM matches_rpfx
+                ORDER BY boosted DESC, mike_rank ASC
+                LIMIT {TOP_N}
+                """
+            ).fetchall(),
+            start=1,
+        ):
+            top_rows.append(
+                {
+                    "rpfx": rpfx,
+                    "category_code": None,
+                    "number": row[0],
+                    "word": row[1],
+                    "ord": n,
+                }
+            )
 
-    # Combine both passes into the final file
-    con.execute(
-        f"""
-        COPY (
-          SELECT * FROM read_parquet('{default_tmp.as_posix()}')
-          UNION ALL
-          SELECT * FROM read_parquet('{percat_tmp.as_posix()}')
-        ) TO '{out_top.as_posix()}' (FORMAT PARQUET, COMPRESSION zstd)
-        """
-    )
-    default_tmp.unlink()
-    percat_tmp.unlink()
+        # Top-60 per category
+        for row in con.execute(
+            f"""
+            SELECT category_code, number, word,
+                   ROW_NUMBER() OVER (
+                     PARTITION BY category_code ORDER BY boosted DESC, mike_rank ASC
+                   ) AS ord
+            FROM matches_rpfx
+            WHERE category_code IS NOT NULL
+            QUALIFY ord <= {TOP_N}
+            """
+        ).fetchall():
+            top_rows.append(
+                {
+                    "rpfx": rpfx,
+                    "category_code": row[0],
+                    "number": row[1],
+                    "word": row[2],
+                    "ord": row[3],
+                }
+            )
 
-    n_top = con.execute(f"SELECT COUNT(*) FROM read_parquet('{out_top.as_posix()}')").fetchone()[0]
-    print(f"  {out_top.name}: {n_top:,} top-{TOP_N} rows — {time.time()-t2:.1f}s")
+        if i % 50 == 0:
+            print(f"  {i}/{len(rpfxs)} rpfxs — {time.time()-t0:.1f}s elapsed")
 
-    print(f"Total runtime: {time.time()-t0:.1f}s")
+    # Write out
+    cats_tbl = pa.Table.from_pylist(cats_rows)
+    out_cats = DATA / "vanity_categories.parquet"
+    pq.write_table(cats_tbl, out_cats, compression="zstd")
+    print(f"  {out_cats.name}: {len(cats_rows):,} (rpfx, category) rows")
+
+    top_tbl = pa.Table.from_pylist(top_rows)
+    out_top = DATA / "vanity_top.parquet"
+    pq.write_table(top_tbl, out_top, compression="zstd")
+    print(f"  {out_top.name}: {len(top_rows):,} top-{TOP_N} rows")
+
+    print(f"Total: {time.time()-t0:.1f}s")
 
 
 if __name__ == "__main__":
