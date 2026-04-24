@@ -57,6 +57,23 @@ GROUP_DOCS = _load("resporgGroup")
 CATEGORY_DOCS = _load("resporgCategory")
 TESTIMONIAL_DOCS = _load("testimonial")
 
+# Per-rpfx precomputed rank lookup (built by scripts/build_ranks.py).
+# Loaded once at startup — saves 6 per-request rank queries.
+RANKS: dict[str, dict] = {}
+_ranks_file = DATA / "ranks.parquet"
+if _ranks_file.exists():
+    import duckdb as _dd
+    for r in _dd.connect().execute(
+        f"SELECT * FROM read_parquet('{_ranks_file.as_posix()}')"
+    ).fetchall():
+        RANKS[r[0]] = {
+            "inv_rank": r[1], "inv_total": r[2],
+            "opp_rank": r[3], "opp_total": r[4],
+            "growth_rank": r[5], "growth_total": r[6],
+            "vanity_rank": r[7], "vanity_total": r[8],
+            "age_rank": r[9], "age_total": r[10],
+        }
+
 # Per-rpfx disconnect-episode counts (computed by scripts/build_disconnect_episodes.py)
 DISC_SUMMARY: dict[str, dict] = {}
 _ds_file = DATA / "disconnect_summary.parquet"
@@ -255,53 +272,17 @@ def build_profile(rpfx: str) -> dict | None:
         first_inv = last_inv = total
         delta = pct = 0
 
-    # Rank computations — compute rankings for ALL stats so we can show
-    # "Top X%" badges next to each number.
+    # Rank computations — read from precomputed data/ranks.parquet instead of
+    # running 6 fresh ranking queries per request. Rebuilt by scripts/build_ranks.py
+    # as part of the monthly pipeline.
     industry_count = con.execute(
         f"SELECT COUNT(DISTINCT rpfx) FROM read_parquet('{curr}')"
     ).fetchone()[0]
 
-    def _rank_of(rpfx_col_query: str) -> tuple[int | None, int | None]:
-        """Given a query returning (rpfx, value), rank descending and find this rpfx."""
-        rows = con.execute(
-            f"""
-            WITH x AS ({rpfx_col_query})
-            SELECT rpfx, RANK() OVER (ORDER BY value DESC) AS rk,
-                   COUNT(*) OVER () AS total
-            FROM x
-            """
-        ).fetchall()
-        total = rows[0][2] if rows else 0
-        for r, rk, t in rows:
-            if r == rpfx:
-                return rk, t
-        return None, total
-
-    inv_rank, inv_total = _rank_of(
-        f"SELECT rpfx, COUNT(*) AS value FROM read_parquet('{curr}') GROUP BY rpfx"
-    )
-
-    # Opp.Idx — restrict to rpfxs with meaningful acquired volume (>1000)
-    # so we don't rank tiny outliers ahead of real harvesters.
-    opp_rank, opp_total = _rank_of(
-        f"""SELECT rpfx, SUM(harvested_cross_rpfx)::DOUBLE / NULLIF(SUM(acquired),0) AS value
-            FROM read_parquet('{resporg_month}')
-            GROUP BY rpfx HAVING SUM(acquired) > 1000"""
-    )
-
-    # Growth rank (absolute delta) — restrict to rpfxs with start_inv > 10K
-    growth_rank, growth_total = _rank_of(
-        f"""WITH m AS (
-             SELECT rpfx, month, inventory,
-                    ROW_NUMBER() OVER (PARTITION BY rpfx ORDER BY month) AS rn_a,
-                    ROW_NUMBER() OVER (PARTITION BY rpfx ORDER BY month DESC) AS rn_d
-             FROM read_parquet('{resporg_month}') WHERE inventory > 0
-           )
-           SELECT f.rpfx, l.inventory - f.inventory AS value
-           FROM (SELECT * FROM m WHERE rn_a = 1) f
-           JOIN (SELECT * FROM m WHERE rn_d = 1) l USING(rpfx)
-           WHERE f.inventory > 10000"""
-    )
+    r = RANKS.get(rpfx, {})
+    inv_rank, inv_total = r.get("inv_rank"), r.get("inv_total")
+    opp_rank, opp_total = r.get("opp_rank"), r.get("opp_total")
+    growth_rank, growth_total = r.get("growth_rank"), r.get("growth_total")
 
     # Enrichment (MM + age)
     enr_row = con.execute(
@@ -324,17 +305,8 @@ def build_profile(rpfx: str) -> dict | None:
         mm_pct = 0
         age_buckets = {k: 0 for k in ("under_1m", "_1_3m", "_3_12m", "_1_2y", "_2_5y", "_5y_plus")}
 
-    # Ranks for vanity % and median age (only across rpfxs with enough working)
-    enr_path = (DATA / "enrichment_current.parquet").as_posix()
-    vanity_rank, vanity_total = _rank_of(
-        f"""SELECT rpfx, mm_count::DOUBLE / NULLIF(working_count,0) AS value
-            FROM read_parquet('{enr_path}') WHERE working_count > 5000"""
-    )
-    # Oldest inventory first — "oldest" = top; so desc rank = oldest first
-    age_rank, age_total = _rank_of(
-        f"""SELECT rpfx, median_age_months AS value
-            FROM read_parquet('{enr_path}') WHERE working_count > 5000"""
-    )
+    vanity_rank, vanity_total = r.get("vanity_rank"), r.get("vanity_total")
+    age_rank, age_total = r.get("age_rank"), r.get("age_total")
 
     # Top vanity hits — re-query from raw data with a 5% boost on 800-prefix
     # numbers, so high-value 800 vanity words dominate the top of the list.

@@ -180,6 +180,177 @@ The investigative layer. Depends on Phase 2's flow graph being reliable.
 
 ---
 
+## 7f. Deploy-in-progress state (pick up here)
+
+**Where we stopped:** Initial commit pushed to https://github.com/1800MARKETER/resporgs as `main`. About to SSH into droplet and build out the systemd/nginx config.
+
+**Droplet layout confirmed:**
+- Apps live at `/var/www/<appname>/` owned by `www-data`
+- Existing apps: 1cup, PhonePlatinumWire, VanityCellular, tollfreenumbers-com, faith-review, bizbuilding
+- Services: `<appname>.service` systemd units using **Gunicorn**
+- Nginx sites in `/etc/nginx/sites-available/` (1cup, vanitynumbers, localvanitynumbers, tollfreenumbers, bizbuilding, acup, default)
+- Bill's SSH password auth didn't work from Windows PowerShell; he uses DO **Web Console** to get in
+
+**Next command to run on droplet** (never got the output back):
+```
+echo "=== vanitycellular.service ==="; systemctl cat vanitycellular.service; echo; echo "=== nginx config (probably vanitynumbers) ==="; cat /etc/nginx/sites-available/vanitynumbers; echo; echo "=== venv location ==="; ls /var/www/VanityCellular/ | head -15
+```
+
+Once we see that output, we can replicate the pattern for resporgs:
+1. `git clone https://github.com/1800MARKETER/resporgs /var/www/resporgs` (then chown www-data)
+2. Create Python venv, `pip install -r requirements.txt` + gunicorn
+3. Write `/etc/systemd/system/resporgs.service` mirroring vanitycellular.service
+4. Write `/etc/nginx/sites-available/resporgs.com` with server_name `resporgs.com www.resporgs.com`
+5. Enable the site, reload nginx
+6. Run `certbot --nginx -d resporgs.com -d www.resporgs.com`
+
+**Still to rsync up to the droplet** (not in git, large):
+- `cache/` (~9 GB of monthly Parquet)
+- `sanity-export/` (~150 MB)
+- `webapp/static/streetview/` (~500 MB of street/satellite images)
+- `data/*.parquet` (derived event + flow tables, < 100 MB)
+- `apikey.env` (Google Maps key — secret)
+
+Plus optional: the sibling `local-prospector/data/master_vanity.db` path the Flask app expects for vanity lookups. Either rsync that up too or repoint the MM_DB constant in app.py.
+
+## 7g. Post-launch roadmap (2026-04-24 — Bill's priorities after V1 went live)
+
+### Product priorities (with Bill's notes)
+
+#### Hidden category — "Invisible RespOrgs"
+- Partner requested the ability to hide specific RespOrgs from public view
+- Implementation: reserved category slug like `hidden` (or a boolean `hidden` flag on resporg doc)
+- Filters needed:
+  - Exclude from `/directory`, `/categories`, `/groups` member lists, homepage top-20, search results, flow-section partner tables
+  - `/r/<rpfx>` should 404 for hidden resporgs (full invisibility, not just unlisted)
+  - Names in partner tables should be scrubbed to just the code, or hidden entirely
+- Bill sees value beyond partner request: useful long-term control primitive
+
+#### Resporg Lock (rename or rebrand of Watch)
+- LifeLock-for-toll-free-numbers concept. **Front-page hero image already has a lock on the "Resporgs" letters — this was always the intent.**
+- Open question: **"Watch" vs "Lock"** — Watch is neutral/descriptive, Lock is branded/protective
+  - Recommendation: brand the product "Resporg Lock" (marketing) but keep the verb "Watch this number" (UX clarity). Two names, one flow.
+- Alerts when a specific number changes RespOrg or status
+- Launch strategy: free for a limited time to establish the user base + generate leads, then tier it
+- Technical pieces needed:
+  - Weekly/daily cron comparing new Somos snapshot against prior, emitting events for every watched number
+  - Email delivery pipeline (already using `bill@tollfreenumber.com` per plan)
+  - Billing system if/when it becomes paid
+- Existing `/watch` form is the skeleton — just needs the alerting pipeline behind it
+
+#### Number Rescue Service
+- Lead-capture form for customers who lost a toll-free number
+- Multi-step questionnaire: when, what, how lost, who has it now (if known)
+- Honest filter: most situations can't be rescued. Tell them clearly if theirs can't.
+- For the recoverable cases, offer a paid rescue service
+- Fields to calculate feasibility: current holder's Opportunism Index (sharks don't release), time since disconnect, any active customer attachment
+- Form on profile page when current holder is identified? Or standalone page `/rescue`?
+
+#### Blog
+- 92 post docs already in Sanity, mostly "Request a quote..." templates (from TFN.com) — NOT real blog posts
+- Need a separate post category or flag for "Industry Blog"
+- Pages to build: `/blog` (index) + `/blog/<slug>` (individual)
+- Bill will write posts as industry issues come up
+
+### Performance priorities
+
+Bill's observation: "for a mostly text website it's not as fast as it should be."
+
+#### Current state — everything computed on-the-fly per request
+Every profile page request runs 6+ DuckDB rank queries across `resporg_month.parquet`, plus flow-graph aggregations, plus vanity lookup against the 2M-row MM sqlite DB. Scales poorly with concurrent users.
+
+#### Quick wins (order of impact)
+1. **Precompute ranks** — one-time script builds `data/ranks.parquet` with (rpfx, inv_rank, inv_total, opp_rank, ...). Profile request does one row lookup instead of 6 rank scans. **Probably 60% of the profile speed issue.**
+2. **Precompute per-rpfx flow summaries** — top 10 sources/destinations/harvest-origins rolled up monthly into `data/flow_summary_<rpfx>.parquet` or one combined file. Profile request becomes one query.
+3. **Nginx gzip** — text responses compress 5-10× smaller over the wire. Just a `gzip on` + some MIME types in the nginx config.
+4. **More Gunicorn workers** — currently 2. Bump to 4 for parallelism.
+5. **Trim directory content from homepage** — Bill flagged "we don't really need all the directory listings and stuff below the top 20. There are sections for categories and directory." The homepage already doesn't include the full directory; the big-bytes pages are `/directory` itself. Still room to paginate it.
+
+#### Larger performance projects
+- **HTML page caching** — nginx FastCGI-style cache for profile pages with a 1-day TTL. Invalidate on monthly data refresh. Turns profile pages into ~5ms static HTML delivery.
+- **Separate monthly "precompute pass"** — after each new Somos snapshot: compute ranks, flows, enrichments, disconnects, vanities once. Serve the precomputed tables in the app. This is already mostly in place but could be unified into one `rebuild.sh`.
+- **Lazy-load images** — Street View + website screenshots use `loading="lazy"` attribute so below-fold images don't block page render.
+- **Connection pooling** — DuckDB creates a new connection per request. Keep a global read-only connection for the parquet files.
+
+### Unified monthly pipeline (ingest + disconnect reports + Resporgs data)
+
+Bill already runs a monthly workflow producing disconnect reports (`ALL_disconnect_report_YYYY-MM.xlsx`, `NEW_disconnect_report_YYYY-MM_v2.xlsx`, per-NPA `DISC *.txt` files, vanity filtered lists — all visible in his `D:\resporgs\YYYY-MM\` folders). That workflow reads the same Somos snapshot that feeds Resporgs.com. It makes sense to merge them into one pipeline that runs once per month.
+
+#### Proposed monthly pipeline
+```
+Somos API download (or file drop) → landed raw on droplet
+  ├─> cache/YYYY-MM.parquet          (columnar snapshot for all analytics)
+  ├─> ALL_disconnect_report.xlsx     (Bill's existing product)
+  ├─> NEW_disconnect_report.xlsx     (Bill's existing product)
+  ├─> per-NPA vanity lists           (Bill's existing product)
+  ├─> rebuild events + flow graph    (Resporgs.com data)
+  ├─> rebuild enrichment             (Resporgs.com: MM%, age buckets)
+  ├─> rebuild disconnect episodes    (Resporgs.com: abbreviated vs standard)
+  ├─> rebuild precomputed ranks      (Resporgs.com: speed)
+  └─> rebuild precomputed flows      (Resporgs.com: speed)
+```
+
+All triggered by ONE script invocation (`./rebuild.sh`) or a cron on the 2nd of each month once Somos's report is available.
+
+#### Benefits
+- One data ingest, not two
+- No risk of the Resporgs.com data diverging from the disconnect-report data
+- Automates what's currently a manual laptop-based process
+- Once Somos API access is set up on the droplet, removes Bill's laptop from the loop entirely
+
+#### Bridge products (natural next step after unification)
+- Expose the **disconnect report** as a Resporgs.com feature for paying subscribers: "Numbers that just disconnected at [RespOrg] this month"
+- Show recent DISC activity on profile pages, with a "Watch" CTA per number (feeds Resporg Lock)
+- Daily delta against DISC state for early-disconnector resporgs (sub-monthly frequency for real-time vanity drops) — requires daily Somos pulls, which may have an additional cost
+
+#### Existing code to mine (discovered 2026-04-24)
+
+These scripts already do pieces of the pipeline — ported to the unified rebuild, most work is done:
+
+- **`toll-free-autodialer/disconnect_report.py`** — generates the two monthly xlsx reports ("NEW D&T" and "ALL D&T") from `tollfree_intel.db`'s `tf_monthly_scan` table + autodialer search data. Uses openpyxl. Sheets split by category with expired/active separation.
+- **`1cup/somos_baseline.py`** — populates a `somos_snapshot` table in `1cup_business.db` from `MikeOINPUT.txt`. Monthly baseline.
+- **`1cup/somos_diff.py`** — **literally named "the LifeLock engine"** in its docstring. Diffs two snapshots, writes status/RespOrg changes to a `number_changes` table, prints alert-worthy items. This IS the Resporg Lock backend that's already half-built — just needs email delivery wired to it.
+- **`1cup/check_watches.py`** — watch-alerting logic (not yet inspected — probably the missing piece)
+- **`1cup/refresh_vanity_data.py`** — periodic refresh of vanity data
+
+**Naming confirmation**: Bill already calls the diff engine "LifeLock" internally. That settles the product name — **Resporg Lock** is the right public brand, and the backend engine exists.
+
+#### Ownership split (clarified 2026-04-24)
+
+The monthly-Somos pipeline and the autodialer-customer-identification pipeline are DIFFERENT projects that just happen to converge in the disconnect report:
+
+- **RESPORGS** — authoritative on monthly Somos data (cache, events, flows, disconnect status/dates/categories). Owns the disconnect report builder itself because the report is fundamentally a Somos product.
+- **toll-free-autodialer** — stays separate. Its job is identifying the underlying customer who owned a valuable number via Google searches. Maintains its own DB.
+- The disconnect report **JOINS to autodialer's DB as read-only enrichment** for the "who originally owned this number" column — valuable when acquiring just-disconnected vanity numbers.
+
+Target state:
+- `RESPORGS/scripts/rebuild.sh` — orchestrator that runs every ingest step
+- `RESPORGS/scripts/build_disconnect_reports.py` — reads `cache/*.parquet` + Sanity directory, reaches out to `toll-free-autodialer/data/numbers.db` for optional customer enrichment. Outputs xlsx.
+- `RESPORGS/scripts/lifelock_engine.py` — ported from `1cup/somos_diff.py`, emits change events; hook it to the /watch lead capture for Resporg Lock alerts
+- `RESPORGS/scripts/check_watches.py` — ported from 1cup; consumes lifelock_engine output + `leads.db` subscribers → sends emails
+
+`toll-free-autodialer/disconnect_report.py` retires once the RESPORGS version is running (it's currently generating the xlsx from autodialer's side; we're inverting the direction so RESPORGS calls autodialer, not the other way around). 1cup's Somos scripts also retire.
+
+#### Migration steps
+1. Review the existing scripts (done — mapped above) and decide what to port vs wrap
+2. Port the xlsx generator to read from Resporgs.com's `cache/*.parquet` (single source of truth) instead of `tollfree_intel.db`
+2. Port that logic into a Python script living in `scripts/` alongside the other pipeline pieces
+3. Test: generate a disconnect report from the droplet's cache and diff against Bill's laptop-generated version. They should match.
+4. Unified `rebuild.sh` that runs all steps in order
+5. Cron-schedule it for the 2nd of each month (once Somos API is wired up; until then, Bill uploads raw files and invokes manually)
+
+### Re-prioritize the existing Section 7e ideas menu
+
+Bill's new priorities re-order the top of that list:
+- Previously "future" items that are now **active V2** work:
+  - Blog section
+  - Resporg Lock / Watch-alert pipeline
+  - Number Rescue (new — wasn't previously listed)
+  - Hidden category (new)
+  - Precompute ranks + flow summaries (new — performance)
+
+---
+
 ## 7e. Future work / ideas menu (documented so Bill can prioritize)
 
 Everything below has been proposed but not built. Grouped by theme, roughly
