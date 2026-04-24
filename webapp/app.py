@@ -351,43 +351,57 @@ def build_profile(rpfx: str) -> dict | None:
                 [rpfx],
             ).fetchall()
 
-    # Flow data
+    # Flow data — precomputed by scripts/build_flow_precompute.py.
+    # Two small parquets replace 4 live queries against flow_graph.parquet.
     flow = {}
-    if flow_graph.exists():
-        flow_path = flow_graph.as_posix()
-        inbound = dict(
-            con.execute(
-                f"SELECT edge_type, SUM(n) FROM read_parquet('{flow_path}') "
-                f"WHERE to_node = '{rpfx}' GROUP BY edge_type"
-            ).fetchall()
-        )
-        outbound = dict(
-            con.execute(
-                f"SELECT edge_type, SUM(n) FROM read_parquet('{flow_path}') "
-                f"WHERE from_node = '{rpfx}' GROUP BY edge_type"
-            ).fetchall()
-        )
+    totals_file = DATA / "flow_totals.parquet"
+    partners_file = DATA / "flow_top_partners.parquet"
+    if totals_file.exists() and partners_file.exists():
+        tot_row = con.execute(
+            f"""
+            SELECT inbound_transfer, inbound_harvest, inbound_first_assign, inbound_reactivate,
+                   outbound_transfer, outbound_disconnect, outbound_to_spare
+            FROM read_parquet('{totals_file.as_posix()}')
+            WHERE rpfx = ?
+            """,
+            [rpfx],
+        ).fetchone()
+        if tot_row:
+            inbound = {
+                "TRANSFER": tot_row[0],
+                "HARVEST": tot_row[1],
+                "FIRST_ASSIGN": tot_row[2],
+                "REACTIVATE": tot_row[3],
+            }
+            outbound = {
+                "TRANSFER": tot_row[4],
+                "DISCONNECT": tot_row[5],
+                "TO_SPARE": tot_row[6],
+            }
+        else:
+            inbound = {}
+            outbound = {}
+
         top_sources = con.execute(
-            f"SELECT from_node, SUM(n) AS n FROM read_parquet('{flow_path}') "
-            f"WHERE to_node = '{rpfx}' AND edge_type = 'TRANSFER' "
-            f"GROUP BY from_node ORDER BY n DESC LIMIT 10"
+            f"""
+            SELECT partner_rpfx, n FROM read_parquet('{partners_file.as_posix()}')
+            WHERE rpfx = ? AND direction = 'in' ORDER BY ord
+            """,
+            [rpfx],
         ).fetchall()
         top_dests = con.execute(
-            f"SELECT to_node, SUM(n) AS n FROM read_parquet('{flow_path}') "
-            f"WHERE from_node = '{rpfx}' AND edge_type = 'TRANSFER' "
-            f"GROUP BY to_node ORDER BY n DESC LIMIT 10"
+            f"""
+            SELECT partner_rpfx, n FROM read_parquet('{partners_file.as_posix()}')
+            WHERE rpfx = ? AND direction = 'out' ORDER BY ord
+            """,
+            [rpfx],
         ).fetchall()
-        top_harvest = con.execute(
-            f"SELECT prev_rpfx, SUM(n) AS n FROM read_parquet('{flow_path}') "
-            f"WHERE to_node = '{rpfx}' AND edge_type = 'HARVEST' AND prev_rpfx IS NOT NULL "
-            f"GROUP BY prev_rpfx ORDER BY n DESC LIMIT 10"
-        ).fetchall()
+
         flow = {
             "inbound": inbound,
             "outbound": outbound,
             "top_sources": [(s, n, _name_with_group(s)) for s, n in top_sources],
             "top_dests": [(d, n, _name_with_group(d)) for d, n in top_dests],
-            "top_harvest": [(s, n, _name_with_group(s)) for s, n in top_harvest],
         }
 
     # Disconnect-episode split
