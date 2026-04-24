@@ -87,42 +87,65 @@ def main():
     print(f"  {out_cats.name}: {n_cats:,} (rpfx, category) rows — {time.time()-t1:.1f}s")
 
     # ---- vanity_top.parquet ----
-    # Two concatenated chunks: NULL-category "default" top 60 per rpfx, and
-    # per-category top 60 per (rpfx, category_code).
+    # Droplets are RAM-tight (1.9GB / no swap) — a single UNION over a 9.5M
+    # materialized table OOMs. Write two passes into two files, then merge by
+    # copying both into a single output parquet at the end. Each pass is bounded.
     t2 = time.time()
     out_top = DATA / "vanity_top.parquet"
+    default_tmp = DATA / "_vanity_top_default.tmp.parquet"
+    percat_tmp = DATA / "_vanity_top_percat.tmp.parquet"
+
+    # Pass 1: default view (NULL category_code) — top TOP_N per rpfx
     con.execute(
         f"""
         COPY (
-          WITH default_view AS (
-            SELECT rpfx,
-                   CAST(NULL AS VARCHAR) AS category_code,
-                   number, word, boosted, mike_rank,
+          SELECT rpfx, CAST(NULL AS VARCHAR) AS category_code, number, word, ord
+          FROM (
+            SELECT rpfx, number, word,
                    ROW_NUMBER() OVER (
-                     PARTITION BY rpfx
-                     ORDER BY boosted DESC, mike_rank ASC
+                     PARTITION BY rpfx ORDER BY boosted DESC, mike_rank ASC
                    ) AS ord
             FROM matches
-          ),
-          per_cat AS (
-            SELECT rpfx, category_code,
-                   number, word, boosted, mike_rank,
+          )
+          WHERE ord <= {TOP_N}
+        ) TO '{default_tmp.as_posix()}' (FORMAT PARQUET, COMPRESSION zstd)
+        """
+    )
+
+    # Pass 2: per-category — top TOP_N per (rpfx, category_code)
+    con.execute(
+        f"""
+        COPY (
+          SELECT rpfx, category_code, number, word, ord
+          FROM (
+            SELECT rpfx, category_code, number, word,
                    ROW_NUMBER() OVER (
-                     PARTITION BY rpfx, category_code
-                     ORDER BY boosted DESC, mike_rank ASC
+                     PARTITION BY rpfx, category_code ORDER BY boosted DESC, mike_rank ASC
                    ) AS ord
             FROM matches
             WHERE category_code IS NOT NULL
           )
-          SELECT rpfx, category_code, number, word, ord
-          FROM default_view WHERE ord <= {TOP_N}
+          WHERE ord <= {TOP_N}
+        ) TO '{percat_tmp.as_posix()}' (FORMAT PARQUET, COMPRESSION zstd)
+        """
+    )
+
+    # Drop the big temp table — no longer needed
+    con.execute("DROP TABLE matches")
+
+    # Combine both passes into the final file
+    con.execute(
+        f"""
+        COPY (
+          SELECT * FROM read_parquet('{default_tmp.as_posix()}')
           UNION ALL
-          SELECT rpfx, category_code, number, word, ord
-          FROM per_cat WHERE ord <= {TOP_N}
-          ORDER BY rpfx, category_code NULLS FIRST, ord
+          SELECT * FROM read_parquet('{percat_tmp.as_posix()}')
         ) TO '{out_top.as_posix()}' (FORMAT PARQUET, COMPRESSION zstd)
         """
     )
+    default_tmp.unlink()
+    percat_tmp.unlink()
+
     n_top = con.execute(f"SELECT COUNT(*) FROM read_parquet('{out_top.as_posix()}')").fetchone()[0]
     print(f"  {out_top.name}: {n_top:,} top-{TOP_N} rows — {time.time()-t2:.1f}s")
 
