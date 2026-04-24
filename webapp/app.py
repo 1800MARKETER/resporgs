@@ -226,24 +226,45 @@ def build_profile(rpfx: str) -> dict | None:
     cats = {c["slug"]: c for c in cats}.values()
     grps = {g["slug"]: g for g in grps}.values()
 
-    # Inventory breakdowns
-    by_prefix = dict(
-        con.execute(
-            f"SELECT prefix, COUNT(*) FROM read_parquet('{curr}') WHERE rpfx = '{rpfx}' GROUP BY prefix"
+    # Inventory breakdowns — precomputed by scripts/build_rpfx_snapshot.py.
+    # Falls back to live cache scan if the precompute is missing.
+    snap_path = (DATA / "rpfx_snapshot.parquet").as_posix()
+    sub_path = (DATA / "rpfx_subcodes.parquet").as_posix()
+    if Path(snap_path).exists() and Path(sub_path).exists():
+        snap_rows = con.execute(
+            f"SELECT prefix, status, n FROM read_parquet('{snap_path}') WHERE rpfx = ?",
+            [rpfx],
         ).fetchall()
-    )
-    by_status = dict(
-        con.execute(
-            f"SELECT status, COUNT(*) FROM read_parquet('{curr}') WHERE rpfx = '{rpfx}' GROUP BY status"
-        ).fetchall()
-    )
-    subcodes = [
-        row[0]
-        for row in con.execute(
-            f"SELECT resporg FROM read_parquet('{curr}') WHERE rpfx = '{rpfx}' "
-            f"GROUP BY resporg ORDER BY COUNT(*) DESC"
-        ).fetchall()
-    ]
+        by_prefix = {}
+        by_status = {}
+        for pref, st, n in snap_rows:
+            by_prefix[pref] = by_prefix.get(pref, 0) + n
+            by_status[st] = by_status.get(st, 0) + n
+        subcodes = [
+            row[0]
+            for row in con.execute(
+                f"SELECT resporg FROM read_parquet('{sub_path}') WHERE rpfx = ? ORDER BY n DESC",
+                [rpfx],
+            ).fetchall()
+        ]
+    else:
+        by_prefix = dict(
+            con.execute(
+                f"SELECT prefix, COUNT(*) FROM read_parquet('{curr}') WHERE rpfx = '{rpfx}' GROUP BY prefix"
+            ).fetchall()
+        )
+        by_status = dict(
+            con.execute(
+                f"SELECT status, COUNT(*) FROM read_parquet('{curr}') WHERE rpfx = '{rpfx}' GROUP BY status"
+            ).fetchall()
+        )
+        subcodes = [
+            row[0]
+            for row in con.execute(
+                f"SELECT resporg FROM read_parquet('{curr}') WHERE rpfx = '{rpfx}' "
+                f"GROUP BY resporg ORDER BY COUNT(*) DESC"
+            ).fetchall()
+        ]
 
     # Trajectory
     traj = con.execute(
