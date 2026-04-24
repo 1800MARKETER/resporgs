@@ -44,10 +44,13 @@ $VENV scripts/build_vanity_precompute.py
 echo ">> [7/9] flow summaries"
 $VENV scripts/build_flow_precompute.py
 
-echo ">> [8/9] rpfx snapshot (NPA/status/sub-codes)"
+echo ">> [8/10] rpfx snapshot (NPA/status/sub-codes)"
 $VENV scripts/build_rpfx_snapshot.py
 
-echo ">> [9/9] restart service"
+echo ">> [9/10] category trajectories"
+$VENV scripts/build_category_trajectories.py
+
+echo ">> [10/10] restart service"
 sudo -n systemctl restart resporgs 2>/dev/null || \
   echo "  (need root to restart — run: systemctl restart resporgs)"
 

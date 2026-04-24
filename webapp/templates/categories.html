@@ -4,6 +4,38 @@
 <h1>RespOrg categories</h1>
 <p class="summary">{{ categories|length }} categories · Click any row to see members and aggregate analytics.</p>
 
+{% if growth_svg or size_pie_svg %}
+<section class="category-charts">
+  {% if growth_svg %}
+  <div class="chart-box">
+    <h3>Growth by category (4-year, normalized to first month)</h3>
+    <div class="chart-wrap">{{ growth_svg|safe }}</div>
+    <ul class="pie-legend multi-legend">{{ growth_legend|safe }}</ul>
+    <p class="chart-note">Each category's inventory shown as % of its first month on record. Hover a line for the company name and current inventory. Above 100% = growing; below = shrinking.</p>
+  </div>
+  {% endif %}
+  {% if size_pie_svg %}
+  <div class="chart-box">
+    <h3>Current industry share by category</h3>
+    <div class="pie-wrap">
+      {{ size_pie_svg|safe }}
+      <ul class="pie-legend">
+        {% for s in size_pie_slices %}
+        <li>
+          <a href="/category/{{ s.slug }}" style="display: contents;">
+            <span class="pl-swatch" style="background:{{ s.color }}"></span>
+            <span class="pl-label">{{ s.label }}</span>
+            <span class="pl-val">{{ "{:,}".format(s.value) }} · {{ "{:.1f}%".format(s.pct * 100) }}</span>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  {% endif %}
+</section>
+{% endif %}
+
 <table class="directory">
   <thead>
     <tr>

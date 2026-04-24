@@ -36,6 +36,12 @@ GROUP_OVERRIDES: dict[str, list[str]] = {
     "primetel": ["AB", "FO", "HU", "JD", "OD", "OQ", "RY"],
 }
 
+# Hidden RespOrgs — any rpfx here becomes invisible from public views.
+# Primary source: Sanity category with slug `hidden` (see _refresh_hidden_index).
+# Secondary source: this hardcoded set, useful for urgent hides before a
+# Sanity round-trip. Unified into HIDDEN_RPFX at startup.
+HIDDEN_OVERRIDE: set[str] = set()
+
 # Current TFN.com search URL takes just the 7-digit suffix and shows all NPAs —
 # better UX than sending visitors to a single NPA. Update to new pattern when
 # the Resporgs.com-era TollFreeNumbers.com replacement launches.
@@ -189,6 +195,9 @@ def _latest_month():
 
 def build_profile(rpfx: str) -> dict | None:
     rpfx = rpfx.upper()
+    # Hidden rpfxs 404 — no profile page, no mentions, no hints they exist.
+    if _is_hidden(rpfx):
+        return None
     sanity_docs = RESPORGS_BY_PREFIX.get(rpfx, [])
 
     con = duckdb.connect()
@@ -421,8 +430,16 @@ def build_profile(rpfx: str) -> dict | None:
         flow = {
             "inbound": inbound,
             "outbound": outbound,
-            "top_sources": [(s, n, _name_with_group(s)) for s, n in top_sources],
-            "top_dests": [(d, n, _name_with_group(d)) for d, n in top_dests],
+            "top_sources": [
+                (s, n, _name_with_group(s))
+                for s, n in top_sources
+                if not _is_hidden(s)
+            ],
+            "top_dests": [
+                (d, n, _name_with_group(d))
+                for d, n in top_dests
+                if not _is_hidden(d)
+            ],
         }
 
     # Disconnect-episode split
@@ -652,6 +669,158 @@ def render_pie_svg(slices: list[dict], size: int = 180) -> str:
     )
 
 
+# 18 visually-distinct colors for multi-series charts. Shared by the
+# category growth chart (all 18) and the per-category member pie (first 8).
+CATEGORY_PALETTE = [
+    "#0b5ed7", "#dc2626", "#16a34a", "#d97706", "#7c3aed",
+    "#0891b2", "#be185d", "#65a30d", "#b45309", "#6b21a8",
+    "#1e40af", "#991b1b", "#047857", "#a16207", "#701a75",
+    "#155e75", "#831843", "#3f6212",
+]
+
+
+def render_multi_line_svg(
+    series: list[dict],
+    width: int = 860,
+    height: int = 340,
+) -> str:
+    """Multi-line SVG chart, each series normalized to its first non-zero month = 100%.
+
+    series[i] = {"label": str, "color": str, "points": [(month, value), ...]}
+
+    Returns (svg_string, legend_html).
+    Legend rows are built alongside for the template.
+    """
+    if not series:
+        return "", ""
+
+    # Union of months across all series, sorted
+    all_months = sorted({m for s in series for m, _ in s["points"]})
+    if not all_months:
+        return "", ""
+
+    pad_l, pad_r, pad_t, pad_b = 56, 16, 18, 32
+    inner_w = width - pad_l - pad_r
+    inner_h = height - pad_t - pad_b
+    n_months = len(all_months)
+    month_to_x = {
+        m: pad_l + (i * inner_w / (n_months - 1) if n_months > 1 else 0)
+        for i, m in enumerate(all_months)
+    }
+
+    # Normalize each series to its first non-zero baseline; compute % of baseline
+    normalized_series = []
+    for s in series:
+        pts_by_month = dict(s["points"])
+        baseline = 0
+        for m in all_months:
+            v = pts_by_month.get(m, 0)
+            if v > 0:
+                baseline = v
+                break
+        if baseline == 0:
+            continue
+        pct_points = []
+        for m in all_months:
+            v = pts_by_month.get(m)
+            if v is None:
+                continue
+            pct_points.append((m, 100.0 * v / baseline))
+        if not pct_points:
+            continue
+        final_pct = pct_points[-1][1]
+        final_inv = pts_by_month.get(all_months[-1], 0)
+        normalized_series.append({
+            "label": s["label"],
+            "color": s["color"],
+            "points": pct_points,
+            "final_pct": final_pct,
+            "final_inv": final_inv,
+        })
+
+    # Y axis range: find min/max across all normalized points, pad a little
+    all_pcts = [p for s in normalized_series for _, p in s["points"]]
+    y_min = min(all_pcts + [100])
+    y_max = max(all_pcts + [100])
+    span = y_max - y_min
+    if span < 20:
+        y_max += 10
+        y_min -= 10
+        span = y_max - y_min
+    # Round baselines outward a bit
+    y_min = max(0, int(y_min // 25) * 25)
+    y_max = int(((y_max // 25) + 1) * 25)
+    span = y_max - y_min
+
+    def y_of(pct: float) -> float:
+        return pad_t + inner_h - ((pct - y_min) / span) * inner_h
+
+    parts = []
+
+    # Gridlines every 25% of span, with labels
+    step = 25
+    yval = (y_min // step) * step
+    while yval <= y_max:
+        y = y_of(yval)
+        parts.append(
+            f'<line x1="{pad_l}" y1="{y:.1f}" x2="{width-pad_r}" y2="{y:.1f}" '
+            f'stroke="#e5e7eb" stroke-width="1"/>'
+        )
+        color = "#9ca3af" if yval == 100 else "#6b7280"
+        weight = "600" if yval == 100 else "400"
+        parts.append(
+            f'<text x="{pad_l - 8}" y="{y+3:.1f}" text-anchor="end" font-size="10" '
+            f'fill="{color}" font-weight="{weight}">{yval}%</text>'
+        )
+        yval += step
+
+    # X axis labels: first, middle, last
+    for i in (0, n_months // 2, n_months - 1):
+        if 0 <= i < n_months:
+            m = all_months[i]
+            parts.append(
+                f'<text x="{month_to_x[m]:.1f}" y="{pad_t + inner_h + 16}" '
+                f'text-anchor="middle" font-size="10" fill="#6b7280">{m}</text>'
+            )
+
+    # One <path> per series
+    for s in normalized_series:
+        d = "M " + " L ".join(
+            f"{month_to_x[m]:.1f},{y_of(p):.1f}" for m, p in s["points"]
+        )
+        parts.append(
+            f'<path d="{d}" stroke="{s["color"]}" stroke-width="1.6" '
+            f'fill="none" stroke-linejoin="round" stroke-linecap="round">'
+            f'<title>{s["label"]}: {s["final_pct"]:.0f}% of baseline '
+            f'({s["final_inv"]:,} numbers now)</title></path>'
+        )
+
+    svg = (
+        f'<svg viewBox="0 0 {width} {height}" class="multi-chart" '
+        f'xmlns="http://www.w3.org/2000/svg">'
+        + "".join(parts)
+        + "</svg>"
+    )
+
+    # Legend HTML — sorted by final_pct descending (biggest growers first)
+    normalized_series.sort(key=lambda s: -s["final_pct"])
+    legend_parts = []
+    for s in normalized_series:
+        delta = s["final_pct"] - 100
+        delta_cls = "pos" if delta > 0 else ("neg" if delta < 0 else "")
+        legend_parts.append(
+            f'<li>'
+            f'<span class="pl-swatch" style="background:{s["color"]}"></span>'
+            f'<span class="pl-label">{s["label"]}</span>'
+            f'<span class="pl-val {delta_cls}">{delta:+.0f}% · '
+            f'{s["final_inv"]:,}</span>'
+            f'</li>'
+        )
+    legend_html = "".join(legend_parts)
+
+    return svg, legend_html
+
+
 def render_trajectory_svg(traj: list[dict], width: int = 780, height: int = 220) -> str:
     """Return an inline SVG line chart of inventory over time, with harvest
     magnitude shown as red bars beneath each point."""
@@ -782,6 +951,43 @@ def _refresh_group_index():
 _refresh_group_index()
 
 
+# ============================================================
+# Hidden-rpfx index — Sanity category slug 'hidden' + HIDDEN_OVERRIDE
+# ============================================================
+
+HIDDEN_RPFX: set[str] = set()
+
+
+def _refresh_hidden_index():
+    HIDDEN_RPFX.clear()
+    HIDDEN_RPFX.update(HIDDEN_OVERRIDE)
+    hidden_cat_id = next(
+        (
+            c["_id"].removeprefix("drafts.")
+            for c in CATEGORY_DOCS
+            if (c.get("slug") or {}).get("current") == "hidden"
+        ),
+        None,
+    )
+    if not hidden_cat_id:
+        return
+    for d in RESPORG_DOCS:
+        code = (d.get("codeTwoDigit") or "").strip().upper()
+        if len(code) < 2:
+            continue
+        for cref in d.get("categories", []) or []:
+            if cref.get("_ref") == hidden_cat_id:
+                HIDDEN_RPFX.add(code[:2])
+                break
+
+
+_refresh_hidden_index()
+
+
+def _is_hidden(pfx: str) -> bool:
+    return pfx in HIDDEN_RPFX
+
+
 def _name_with_group(pfx: str) -> str:
     """'Mayfair Communication (Primetel)' or just 'Bandwidth' when no group."""
     if pfx in {"DISC", "SPARE"}:
@@ -820,6 +1026,8 @@ def _directory_rows():
     )
     directory = []
     for rpfx, n in rows:
+        if _is_hidden(rpfx):
+            continue
         docs = RESPORGS_BY_PREFIX.get(rpfx, [])
         title = docs[0].get("title") if docs else None
         logo = None
@@ -853,7 +1061,7 @@ def _category_summaries(limit: int | None = None):
             for cref in d.get("categories", []) or []:
                 if cref.get("_ref") == cat_id:
                     code = (d.get("codeTwoDigit") or "").strip().upper()
-                    if len(code) >= 2:
+                    if len(code) >= 2 and not _is_hidden(code[:2]):
                         members += 1
                         inventory += inv_by_rpfx.get(code[:2], 0)
                     break
@@ -979,6 +1187,8 @@ def _group_members(group_id: str, slug: str | None = None) -> list[str]:
                     pfxs.add(code[:2])
     if slug and slug in GROUP_OVERRIDES:
         pfxs.update(GROUP_OVERRIDES[slug])
+    # Strip hidden rpfxs — they don't exist as far as the public site is concerned
+    pfxs = {p for p in pfxs if not _is_hidden(p)}
     return sorted(pfxs)
 
 
@@ -1310,7 +1520,7 @@ def categories_index():
             for cref in d.get("categories", []) or []:
                 if cref.get("_ref") == cat_id:
                     code = (d.get("codeTwoDigit") or "").strip().upper()
-                    if len(code) >= 2:
+                    if len(code) >= 2 and not _is_hidden(code[:2]):
                         members.add(code[:2])
         total_inv = sum(inv_by_rpfx.get(p, 0) for p in members)
         working = sum(enrich.get(p, (0, 0, 0))[0] for p in members)
@@ -1327,10 +1537,57 @@ def categories_index():
             }
         )
     cat_summary.sort(key=lambda x: -x["inventory"])
+
+    # Growth chart — read category_trajectories.parquet if present
+    growth_svg = ""
+    growth_legend = ""
+    traj_path = DATA / "category_trajectories.parquet"
+    if traj_path.exists():
+        traj_rows = con.execute(
+            f"""
+            SELECT category_slug, category_title, month, inventory
+            FROM read_parquet('{traj_path.as_posix()}')
+            ORDER BY category_slug, month
+            """
+        ).fetchall()
+        by_slug: dict[str, dict] = {}
+        for slug, title, m, inv in traj_rows:
+            by_slug.setdefault(
+                slug, {"label": title, "points": []}
+            )["points"].append((m, inv))
+        # Assign colors deterministically by alphabetical slug order
+        series = []
+        for i, slug in enumerate(sorted(by_slug)):
+            s = by_slug[slug]
+            s["color"] = CATEGORY_PALETTE[i % len(CATEGORY_PALETTE)]
+            series.append(s)
+        growth_svg, growth_legend = render_multi_line_svg(series)
+
+    # Size pie — current inventory share across all categories
+    size_slices = []
+    total_across = sum(c["inventory"] for c in cat_summary) or 1
+    for i, c in enumerate(cat_summary):
+        if c["inventory"] <= 0:
+            continue
+        size_slices.append(
+            {
+                "slug": c["slug"],
+                "label": c["title"],
+                "value": c["inventory"],
+                "color": CATEGORY_PALETTE[i % len(CATEGORY_PALETTE)],
+                "pct": c["inventory"] / total_across,
+            }
+        )
+    size_pie_svg = render_pie_svg(size_slices, size=240)
+
     return render_template(
         "categories.html",
         categories=cat_summary,
         month=month,
+        growth_svg=growth_svg,
+        growth_legend=growth_legend,
+        size_pie_svg=size_pie_svg,
+        size_pie_slices=size_slices,
         total_resporgs=len(RESPORG_DOCS),
     )
 
@@ -1385,7 +1642,7 @@ def category_page(slug):
                 if len(code) < 2:
                     continue
                 pfx = code[:2]
-                if pfx in member_pfxs:
+                if pfx in member_pfxs or _is_hidden(pfx):
                     continue
                 member_pfxs.add(pfx)
                 enr = enrich_by_rpfx.get(pfx, (pfx, 0, 0, None))
@@ -1442,6 +1699,37 @@ def category_page(slug):
         first_m = last_m = month
         first_inv = last_inv = delta = pct = 0
 
+    # Member pie — top 8 + Others bucket when more members exist
+    member_pie_slices = []
+    if member_rows:
+        TOP_N = 8
+        for i, m in enumerate(member_rows[:TOP_N]):
+            if m["inventory"] <= 0:
+                continue
+            member_pie_slices.append(
+                {
+                    "label": m["title"] or m["rpfx"],
+                    "value": m["inventory"],
+                    "color": CATEGORY_PALETTE[i],
+                    "rpfx": m["rpfx"],
+                }
+            )
+        overflow = [m for m in member_rows[TOP_N:] if m["inventory"] > 0]
+        if overflow:
+            member_pie_slices.append(
+                {
+                    "label": f"Others ({len(overflow)} RespOrgs)",
+                    "value": sum(m["inventory"] for m in overflow),
+                    "color": "#9ca3af",
+                    "rpfx": None,
+                }
+            )
+    # Give each slice its pct for the legend
+    pie_total = sum(s["value"] for s in member_pie_slices) or 1
+    for s in member_pie_slices:
+        s["pct"] = s["value"] / pie_total
+    member_pie_svg = render_pie_svg(member_pie_slices, size=220) if member_pie_slices else ""
+
     cat_image = asset_url(cat.get("image"))
     return render_template(
         "category.html",
@@ -1451,6 +1739,8 @@ def category_page(slug):
         body=portable_text_to_plain(cat.get("body")),
         image=cat_image,
         members=member_rows,
+        member_pie_svg=member_pie_svg,
+        member_pie_slices=member_pie_slices,
         total_inventory=sum(m["inventory"] for m in member_rows),
         cat_opp_idx=cat_opp_idx,
         total_acq=total_acq,
@@ -1521,7 +1811,7 @@ def search():
         code = (d.get("codeTwoDigit") or "").lower()
         if ql in title or ql in alias or ql in code:
             key = (d.get("codeTwoDigit") or "")[:2].upper()
-            if key in seen:
+            if key in seen or _is_hidden(key):
                 continue
             seen.add(key)
             results.append({
@@ -1625,13 +1915,15 @@ def number_lookup(tfn: str | None = None):
         if timeline and timeline[-1]["rpfx"] == rpfx and timeline[-1]["status"] == status_name:
             timeline[-1]["end_month"] = month
         else:
+            hidden = _is_hidden(rpfx)
             timeline.append({
                 "start_month": month,
                 "end_month": month,
                 "rpfx": rpfx,
                 "resporg": resporg,
                 "status": status_name,
-                "rpfx_name": _name_for(rpfx),
+                "rpfx_name": "(private)" if hidden else _name_for(rpfx),
+                "hidden": hidden,
                 "last_change": f"20{yy:02d}-{mm:02d}-{dd:02d}" if yy else None,
             })
 

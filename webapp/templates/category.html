@@ -44,6 +44,32 @@
     </div>
   </section>
 
+  {% if member_pie_svg %}
+  <section class="chart-box">
+    <h3>Members by inventory share</h3>
+    <div class="pie-wrap">
+      {{ member_pie_svg|safe }}
+      <ul class="pie-legend">
+        {% for s in member_pie_slices %}
+        <li>
+          {% if s.rpfx %}
+          <a href="/r/{{ s.rpfx }}" style="display: contents;">
+            <span class="pl-swatch" style="background:{{ s.color }}"></span>
+            <span class="pl-label">{{ s.label }}</span>
+            <span class="pl-val">{{ "{:,}".format(s.value) }} · {{ "{:.1f}%".format(s.pct * 100) }}</span>
+          </a>
+          {% else %}
+          <span class="pl-swatch" style="background:{{ s.color }}"></span>
+          <span class="pl-label">{{ s.label }}</span>
+          <span class="pl-val">{{ "{:,}".format(s.value) }} · {{ "{:.1f}%".format(s.pct * 100) }}</span>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+  {% endif %}
+
   {% if body %}
   <section class="summary-block">
     <h2>About this category</h2>
