@@ -213,6 +213,35 @@ Once we see that output, we can replicate the pattern for resporgs:
 
 Plus optional: the sibling `local-prospector/data/master_vanity.db` path the Flask app expects for vanity lookups. Either rsync that up too or repoint the MM_DB constant in app.py.
 
+## 7h. Overnight progress log (2026-04-24, while Bill sleeps)
+
+### Performance optimization #1 + #2 — DONE
+- **`scripts/build_ranks.py`** ✅ — precomputes 5 rank metrics per rpfx into `data/ranks.parquet` (490 rows). Startup load; profile render does one dict lookup instead of 6 window-function queries. Local speedup modest (DuckDB is fast on small parquets), droplet speedup meaningful.
+- **`scripts/build_vanity_precompute.py`** ✅ — materializes the working×MM join once and slices into:
+  - `data/vanity_categories.parquet` (52K rows, rpfx×category counts)
+  - `data/vanity_top.parquet` (1.26M rows, top-60 per rpfx × category_code-or-NULL)
+  - App reads from these instead of running the 2M-row sqlite JOIN per request
+  - Droplet has **1.9 GB RAM with no swap** — discovered the hard way via OOM. Rewrote to iterate per-rpfx to bound peak memory.
+
+### Live timing comparison (https://resporgs.com/r/MY)
+| Stage | Median load time |
+|---|---:|
+| Pre-optimization | ~17s |
+| After ranks precompute | ~10s |
+| After vanity precompute | ~2s (local: 0.7s) |
+
+### Droplet memory reality
+- Only 1.9 GB RAM total, no swap
+- Shared with 5 other Flask apps already running
+- Any heavyweight DuckDB query must be memory-bounded or it gets OOM-killed silently
+- Future precompute scripts should default to per-rpfx / per-month iteration rather than big materialized joins
+
+### Still queued after tonight
+- Nginx gzip compression (easy, big win on bytes-over-wire)
+- Gunicorn workers 2 → 4 (one-line systemd edit)
+- Precompute flow summaries per rpfx (the last live-query hotspot)
+- Connection pooling in Flask (currently `duckdb.connect()` per request — a persistent read-only con would help)
+
 ## 7g. Post-launch roadmap (2026-04-24 — Bill's priorities after V1 went live)
 
 ### Product priorities (with Bill's notes)
