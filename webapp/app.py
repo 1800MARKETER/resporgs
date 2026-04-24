@@ -308,64 +308,48 @@ def build_profile(rpfx: str) -> dict | None:
     vanity_rank, vanity_total = r.get("vanity_rank"), r.get("vanity_total")
     age_rank, age_total = r.get("age_rank"), r.get("age_total")
 
-    # Top vanity hits — re-query from raw data with a 5% boost on 800-prefix
-    # numbers, so high-value 800 vanity words dominate the top of the list.
-    try:
-        con.install_extension("sqlite")
-        con.load_extension("sqlite")
-    except Exception:
-        pass
-    try:
-        con.execute(f"ATTACH '{MM_DB.as_posix()}' AS mm (TYPE sqlite, READ_ONLY)")
-    except Exception:
-        # Already attached from an earlier request in this connection
-        pass
-
-    # Optional category filter from query string ?vanity_cat=FOOD
+    # Vanity holdings — precomputed by scripts/build_vanity_precompute.py.
+    # Two parquet tables let us skip the live MM-sqlite join entirely:
+    #   vanity_categories.parquet : (rpfx, category_code, category_label, n)
+    #   vanity_top.parquet        : (rpfx, category_code, number, word, ord)
+    # Default view uses rows where category_code IS NULL.
+    vanity_cats_path = (DATA / "vanity_categories.parquet").as_posix()
+    vanity_top_path = (DATA / "vanity_top.parquet").as_posix()
     vanity_cat = (request.args.get("vanity_cat") or "").strip().upper()
 
-    # Build the per-category breakdown (for dropdown) — count distinct holdings
-    # by MM category label.
-    vanity_cats = con.execute(
-        f"""
-        WITH working AS (
-          SELECT number, LPAD((number % 10000000)::VARCHAR, 7, '0') AS last7
-          FROM read_parquet('{curr}') WHERE rpfx = '{rpfx}' AND status = 1
-        )
-        SELECT v.category_code, v.category_label, COUNT(*) AS n
-        FROM working w
-        JOIN mm.vanity v ON w.last7 = v.digits
-        WHERE v.word IS NOT NULL AND v.category_code IS NOT NULL
-        GROUP BY v.category_code, v.category_label
-        ORDER BY n DESC
-        """
-    ).fetchall()
+    vanity_cats: list = []
+    vanity: list = []
+    if Path(vanity_cats_path).exists() and Path(vanity_top_path).exists():
+        vanity_cats = con.execute(
+            f"""
+            SELECT category_code, category_label, n
+            FROM read_parquet('{vanity_cats_path}')
+            WHERE rpfx = ?
+            ORDER BY n DESC
+            """,
+            [rpfx],
+        ).fetchall()
 
-    cat_filter_sql = ""
-    if vanity_cat:
-        # Safe: vanity_cat is uppercased + used only here as string literal via param
-        cat_filter_sql = f"AND UPPER(v.category_code) = '{vanity_cat.replace(chr(39), '')}'"
-
-    vanity = con.execute(
-        f"""
-        WITH working AS (
-          SELECT number,
-                 LPAD((number % 10000000)::VARCHAR, 7, '0') AS last7
-          FROM read_parquet('{curr}')
-          WHERE rpfx = '{rpfx}' AND status = 1
-        )
-        SELECT w.number,
-               UPPER(v.word) AS word,
-               COALESCE(v.blended_score, 0)
-                 * CASE WHEN w.number / 10000000 = 800 THEN 1.05 ELSE 1.0 END
-                 AS boosted
-        FROM working w
-        JOIN mm.vanity v ON w.last7 = v.digits
-        WHERE v.word IS NOT NULL {cat_filter_sql}
-        ORDER BY boosted DESC, COALESCE(v.mike_rank, 999999) ASC
-        LIMIT 120
-        """
-    ).fetchall()
+        if vanity_cat:
+            vanity = con.execute(
+                f"""
+                SELECT number, word, 0 AS boosted
+                FROM read_parquet('{vanity_top_path}')
+                WHERE rpfx = ? AND category_code = ?
+                ORDER BY ord LIMIT 60
+                """,
+                [rpfx, vanity_cat],
+            ).fetchall()
+        else:
+            vanity = con.execute(
+                f"""
+                SELECT number, word, 0 AS boosted
+                FROM read_parquet('{vanity_top_path}')
+                WHERE rpfx = ? AND category_code IS NULL
+                ORDER BY ord LIMIT 60
+                """,
+                [rpfx],
+            ).fetchall()
 
     # Flow data
     flow = {}
