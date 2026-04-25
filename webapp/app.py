@@ -128,12 +128,43 @@ GROUP_BY_ID = {
 # ============================================================
 
 def asset_url(image_field):
+    """Return a URL for a Sanity image field. Handles two shapes:
+
+    1. `sanity dataset export` tarball format (local files served via
+       /assets/ alias): {"_sanityAsset": "image@file://./images/<file>"}
+    2. GROQ / API format (referencing the Sanity CDN):
+       {"asset": {"_ref": "image-<hash>-<dims>-<ext>"}}
+
+    Falls back to the CDN URL when no local file reference exists. This
+    keeps logos/screenshots working both for the original export AND for
+    the JSON that scripts/fetch_sanity_docs.py writes.
+    """
     if not image_field:
         return None
+    # Format 1 — local export tarball
     ref = image_field.get("_sanityAsset") or ""
     if "file://" in ref:
         rel = ref.split("file://", 1)[1].lstrip("./")
         return "/assets/" + rel
+    # Format 2 — Sanity CDN reference
+    asset = image_field.get("asset") or {}
+    a_ref = asset.get("_ref") or ""
+    if a_ref.startswith("image-"):
+        body = a_ref[len("image-"):]
+        # Strip trailing extension: image-<hash>-<width>x<height>-<ext>
+        last_dash = body.rfind("-")
+        if last_dash > 0:
+            rest = body[:last_dash]
+            ext = body[last_dash + 1:]
+            return f"https://cdn.sanity.io/images/{SANITY_PROJECT_ID}/{SANITY_DATASET}/{rest}.{ext}"
+    if a_ref.startswith("file-"):
+        # Sanity asset for non-image file (rare; e.g. PDFs). Same URL pattern.
+        body = a_ref[len("file-"):]
+        last_dash = body.rfind("-")
+        if last_dash > 0:
+            rest = body[:last_dash]
+            ext = body[last_dash + 1:]
+            return f"https://cdn.sanity.io/files/{SANITY_PROJECT_ID}/{SANITY_DATASET}/{rest}.{ext}"
     return None
 
 
