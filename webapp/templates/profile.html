@@ -53,8 +53,27 @@
     </div>
     {% endif %}
     <ul class="contact-list">
-      {% if website %}<li><strong>Website:</strong> <a href="{{ website }}" target="_blank" rel="noopener">{{ website }}</a></li>{% endif %}
+      {% if website %}
+      <li>
+        <strong>Website:</strong>
+        <a href="{{ website }}" target="_blank" rel="noopener">{{ website }}</a>
+        {% if domain_age %}
+          <span class="flag flag-domain" title="Registrar: {{ domain_age.registrar or 'unknown' }} · source: {{ domain_age.source }}">
+            Domain since {{ domain_age.created_year }}
+            ({{ "%.0f"|format(domain_age.age_years) }}y)
+          </span>
+        {% endif %}
+      </li>
+      {% endif %}
       {% if (city or state) and not streetview_url and not satellite_url %}<li><strong>Based in:</strong> {{ city }}{% if city and state %}, {% endif %}{{ state }}</li>{% endif %}
+      {% if mailbox_flag %}
+      <li>
+        <span class="flag flag-mailbox flag-{{ mailbox_flag.confidence }}" title="{{ mailbox_flag.raw_hit }}">
+          {% if 'Shared' in mailbox_flag.brand %}👥{% else %}📬{% endif %}
+          {{ mailbox_flag.brand }}
+        </span>
+      </li>
+      {% endif %}
       {% if primary and primary.requestForm %}<li><strong>Request form:</strong> <a href="{{ primary.requestForm }}" target="_blank" rel="noopener">{{ primary.requestForm }}</a></li>{% endif %}
     </ul>
   </section>
@@ -109,6 +128,34 @@
     </div>
   </section>
 
+  {% if is_dormant %}
+  <section class="dormant-banner{% if is_dormant_sanity %} dormant-zombie{% endif %}">
+    {% if dormant_image_url %}
+      <img src="{{ dormant_image_url }}"
+           alt="1-800-ZOMBIE — dormant RespOrg"
+           class="dormant-img">
+    {% else %}
+      <img src="{{ url_for('static', filename='img/no-results-empty.jpg') }}"
+           alt="No results — gas gauge on empty"
+           class="dormant-img">
+    {% endif %}
+    <div class="dormant-text">
+      {% if is_dormant_sanity %}
+        <h3>Dormant RespOrg</h3>
+        <p>This phone company is dead or nearly dead — almost zero numbers and little or no activity. Sometimes called a "zombie" RespOrg because they just won't die.</p>
+      {% else %}
+        <h3>This RespOrg has no active inventory</h3>
+      {% endif %}
+      {% if last_active_month %}
+        <p>Last seen with active numbers: <strong>{{ last_active_month }}</strong>. Nothing in any monthly snapshot since.</p>
+      {% else %}
+        <p>This RespOrg has never appeared in a monthly snapshot with active inventory in our 4-year window.</p>
+      {% endif %}
+      <p class="dim">The trajectory chart below shows the full history. The code may have been transferred, retired, or
+      reassigned to a new operator that hasn't begun activating numbers yet.</p>
+    </div>
+  </section>
+  {% else %}
   <section class="breakdown-row">
     <div class="chart-box">
       <h3>Inventory by NPA</h3>
@@ -168,6 +215,7 @@
     </div>
     {% endif %}
   </section>
+  {% endif %}{# end if not is_dormant #}
 
   {% if trajectory %}
   <section class="trajectory">

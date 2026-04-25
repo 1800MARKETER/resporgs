@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Edit {{ doc.title or doc._id }}{% endblock %}
+{% block content %}
+
+<div class="card">
+  <h1>{{ doc.title or "(no title)" }}
+    <span class="meta mono">· rpfx {{ rpfx }} · code {{ doc.codeTwoDigit or "?" }}</span>
+  </h1>
+  {% if doc.alias %}<p class="meta">Alias: {{ doc.alias }}</p>{% endif %}
+  <p class="meta mono">doc id: {{ doc._id }}</p>
+
+  {% if saved_ok == True %}
+    <div class="flash-ok">Saved to Sanity.</div>
+  {% elif saved_ok == False %}
+    <div class="flash-err">Save failed: {{ saved_detail }}</div>
+  {% endif %}
+</div>
+
+<form method="post" class="card">
+
+  <div class="field">
+    <label>Categories</label>
+    <div class="cat-grid">
+      {% for c in categories %}
+        <label>
+          <input type="checkbox" name="category_ids" value="{{ c.id }}"
+            {% if c.id in current_cat_ids %}checked{% endif %}>
+          {{ c.title }} <span class="meta mono">({{ c.slug }})</span>
+        </label>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="field">
+    <label>
+      <input type="checkbox" name="hidden" {% if hidden_checked %}checked{% endif %}>
+      Hide this resporg from the public site
+    </label>
+    <p class="meta">
+      Adds the <code>hidden</code> category on save.
+      {% if hidden_prefix %}
+        This rpfx also starts with <code>1</code> and is structurally hidden regardless of this flag.
+      {% endif %}
+    </p>
+  </div>
+
+  <div class="field">
+    <label for="notes">Local research notes (not saved to Sanity)</label>
+    <textarea id="notes" name="notes" placeholder="Findings, leads, TODOs — stored locally only.">{{ note }}</textarea>
+    <p class="meta">Stored in <code>data/editor_notes.json</code> keyed by rpfx.</p>
+  </div>
+
+  <button type="submit" class="btn-save">Save to Sanity</button>
+  <a class="btn-back" href="{{ url_for('index') }}">← Back to list</a>
+</form>
+
+{% endblock %}

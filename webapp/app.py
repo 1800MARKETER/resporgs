@@ -29,6 +29,10 @@ CLEAN = ROOT / "clean"
 ASSET_ROOT = ROOT / "sanity-export" / "blog-export-2026-04-21t16-03-52-563z"
 MM_DB = ROOT.parent / "local-prospector" / "data" / "master_vanity.db"
 
+# Sanity CDN — used to construct public image URLs for category icons etc.
+SANITY_PROJECT_ID = "52jbeh8g"
+SANITY_DATASET = "blog"
+
 # Group-membership overrides — reveal Flotrax resporgs as part of Primetel.
 # Slug-keyed; values are 2-char prefixes to ADD to the group's Sanity membership.
 # Bill will eventually sync these into Sanity.
@@ -472,6 +476,40 @@ def build_profile(rpfx: str) -> dict | None:
     if (sv_dir / f"{rpfx}-satellite.jpg").exists():
         satellite_url = f"/static/streetview/{rpfx}-satellite.jpg"
 
+    # Mailbox flag + domain age — one-shot enrichments (scripts/enrich_mailbox.py,
+    # scripts/enrich_whois.py). Both are optional; absent parquet = no badge.
+    mailbox_flag = None
+    mb_path = DATA / "mailbox_flags.parquet"
+    if mb_path.exists():
+        mb_row = con.execute(
+            f"SELECT brand, confidence, raw_hit FROM read_parquet('{mb_path.as_posix()}') WHERE rpfx = ?",
+            [rpfx],
+        ).fetchone()
+        if mb_row:
+            mailbox_flag = {
+                "brand": mb_row[0],
+                "confidence": mb_row[1],
+                "raw_hit": mb_row[2],
+            }
+
+    domain_age = None
+    da_path = DATA / "domain_age.parquet"
+    if da_path.exists():
+        da_row = con.execute(
+            f"SELECT domain, registrar, created_date, age_years, source "
+            f"FROM read_parquet('{da_path.as_posix()}') WHERE rpfx = ?",
+            [rpfx],
+        ).fetchone()
+        if da_row and da_row[2] is not None:
+            domain_age = {
+                "domain": da_row[0],
+                "registrar": da_row[1],
+                "created_date": da_row[2],
+                "created_year": da_row[2].year,
+                "age_years": da_row[3],
+                "source": da_row[4],
+            }
+
     trajectory_list = [
         {
             "month": r[0], "inventory": r[1], "acquired": r[2],
@@ -480,6 +518,27 @@ def build_profile(rpfx: str) -> dict | None:
         }
         for r in traj
     ]
+
+    # Dormant detection — two paths:
+    #   1. Sanity tag — Bill marked the rpfx with the 'dead' (Dormant) category
+    #   2. Runtime — every rpfx gets 14 default test numbers (UNAVAIL),
+    #      so anything under 15 means at most one "real" number; treat it
+    #      as effectively dormant.
+    # Either path replaces the empty NPA / status charts with a "no results"
+    # banner + last-active month.
+    DORMANT_THRESHOLD = 15
+    is_dormant_sanity = rpfx in DORMANT_RPFX
+    is_dormant_runtime = total < DORMANT_THRESHOLD
+    is_dormant = is_dormant_sanity or is_dormant_runtime
+    last_active_month = None
+    if is_dormant:
+        for entry in reversed(trajectory_list):
+            if (entry.get("inventory") or 0) >= DORMANT_THRESHOLD:
+                last_active_month = entry["month"]
+                break
+    # If Bill tagged it dormant in Sanity, we surface the zombie image instead
+    # of the gas gauge. Runtime-only dormants keep the gas gauge.
+    dormant_image_url = DORMANT_IMAGE_URL if is_dormant_sanity else None
 
     # --- Chart data (NPA bars + status pie + age pie) ---
     max_npa_count = max(by_prefix.values()) if by_prefix else 1
@@ -592,6 +651,12 @@ def build_profile(rpfx: str) -> dict | None:
         "message": portable_text_to_plain(primary.get("exactMatchMessage")) if primary else "",
         "notable_numbers": primary.get("topNumbers") if primary else None,
         "testimonials": testimonials,
+        "mailbox_flag": mailbox_flag,
+        "domain_age": domain_age,
+        "is_dormant": is_dormant,
+        "is_dormant_sanity": is_dormant_sanity,
+        "last_active_month": last_active_month,
+        "dormant_image_url": dormant_image_url,
         "month": month,
     }
 
@@ -994,6 +1059,62 @@ def _refresh_hidden_index():
 
 
 _refresh_hidden_index()
+
+
+# ============================================================
+# Dormant-rpfx index — Sanity category slug 'dead' (Title: Dormant)
+# Bill tags resporgs in Sanity Studio that have died / lost all
+# inventory / been transferred. We mirror that to a fast lookup set
+# AND surface the category's image (1-800-ZOMBIE) on profile pages.
+# ============================================================
+
+DORMANT_RPFX: set[str] = set()
+DORMANT_IMAGE_URL: str | None = None  # Sanity CDN URL of the dormant category image
+
+
+def _sanity_image_url(image_field) -> str | None:
+    """Convert a Sanity image reference like
+       {'asset': {'_ref': 'image-<hash>-<dims>-<fmt>', '_type': 'reference'}}
+    into a public CDN URL."""
+    if not image_field or not isinstance(image_field, dict):
+        return None
+    asset = image_field.get("asset") or {}
+    ref = asset.get("_ref") or ""
+    if not ref.startswith("image-"):
+        return None
+    # ref format: image-<hash>-<width>x<height>-<ext>
+    parts = ref[len("image-"):].rsplit("-", 1)
+    if len(parts) != 2:
+        return None
+    rest, ext = parts
+    return f"https://cdn.sanity.io/images/{SANITY_PROJECT_ID}/{SANITY_DATASET}/{rest}.{ext}"
+
+
+def _refresh_dormant_index():
+    DORMANT_RPFX.clear()
+    global DORMANT_IMAGE_URL
+    DORMANT_IMAGE_URL = None
+
+    dormant_cat = next(
+        (c for c in CATEGORY_DOCS
+         if (c.get("slug") or {}).get("current") == "dead"),
+        None,
+    )
+    if not dormant_cat:
+        return
+    DORMANT_IMAGE_URL = _sanity_image_url(dormant_cat.get("image"))
+    cat_id = dormant_cat["_id"].removeprefix("drafts.")
+    for d in RESPORG_DOCS:
+        code = (d.get("codeTwoDigit") or "").strip().upper()
+        if len(code) < 2:
+            continue
+        for cref in d.get("categories", []) or []:
+            if cref.get("_ref") == cat_id:
+                DORMANT_RPFX.add(code[:2])
+                break
+
+
+_refresh_dormant_index()
 
 
 def _is_hidden(pfx: str) -> bool:

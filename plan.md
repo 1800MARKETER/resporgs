@@ -265,6 +265,101 @@ Plus optional: the sibling `local-prospector/data/master_vanity.db` path the Fla
 - Precompute flow summaries per rpfx (the last live-query hotspot)
 - Connection pooling in Flask (currently `duckdb.connect()` per request — a persistent read-only con would help)
 
+## 7i. Progress log (2026-04-24 evening — editor + enrichments + dormant)
+
+Long session covering local editor, two enrichment scripts, a category cleanup, and a new "dormant" lifecycle concept. All local — nothing deployed yet.
+
+### Local Sanity editor — `tools/editor/app.py` (port 5179)
+Standalone Flask app for editing resporg metadata against Sanity directly via the Mutations API (no override files — Sanity is the source of truth).
+- Reads `clean/resporg.json` + related; writes via `https://<project>.api.sanity.io/v2021-10-21/data/mutate/<dataset>`
+- Token: `SANITY_API_KEY` (or `SANITY_API_TOKEN`) in `apikey.env`. Editor role, read+write scope, dataset `blog`
+- Routes: `/` list with category/hidden/text filters · `/edit/<doc_id>` form · `/refresh`
+- Fields editable in v1: categories (multi-select), hidden toggle, local-only research notes (stored in `data/editor_notes.json`)
+- **Auto-strip `unknown`** when any real category is selected — meta slugs (`unknown` / `hidden` / `non-resporg` / `dead`) coexist with real industry tags; everything else replaces them
+- Two templates: `tools/editor/templates/{base,index,edit}.html` — self-contained CSS, no shared style with main webapp
+- Companion fetch script: `scripts/fetch_sanity_docs.py` pulls fresh resporg/category/group docs after edits without a full export+dedupe cycle (uses GROQ query API; ~2s)
+
+### Category cleanup pass — `scripts/cleanup_unknown_dual.py`
+Discovered "Unknown" was inflated by dual-tagging — 48 of 57 Unknown rpfxs were also tagged with another real category (mostly `secondary`, which Bill had forgotten was a legit CLEC-era bucket — Windstream, Paetec, McLeodUSA et al.).
+- Script: dry-run by default, `--apply` to PATCH. Strips `unknown` from any rpfx that also has a real (non-meta) category.
+- Result: **Unknown 57 → 9** without losing legitimate `secondary` classifications. The 9 remaining are truly unclassified.
+
+### Profile enrichments — two one-shot scripts
+Decided NOT to put these on `scripts/rebuild.sh` — addresses and domain ages don't change month-to-month. Manual re-run when Bill edits a batch.
+
+**`scripts/enrich_mailbox.py` → `data/mailbox_flags.parquet`** (73 flagged, 32 high / 41 medium)
+- Brand-name regex against `address.street1` for UPS Store, Mail Boxes Etc, PostNet, iPostal, Earth Class Mail, Regus, WeWork, Davinci, Alliance Virtual, etc.
+- Generic markers (medium): "Virtual Office", "PMB #", "Coworking", "P.O. Box"
+- **Shared-address detector** (high if 3+ rpfxs at same `street1+city+state`, medium if 2): caught the **AU/EZ/LT/NM/PJ/PO/RG cluster — 7 rpfxs at one address.** Bryan Lynott who told Bill "making new resporgs is my game" is presumably involved.
+
+**`scripts/enrich_whois.py` → `data/domain_age.parquet`** (393 rows, 387 with creation date)
+- Primary: `python-whois` (added to `requirements.txt`, only needed locally — droplet just reads the parquet)
+- Fallback: Archive.org CDX API for domains WHOIS doesn't return
+- Deduped at the domain level (one lookup per unique domain, fanned back to per-rpfx rows)
+- Cache: `data/domain_whois_cache.json`. Default TTL 90 days; re-runs only re-check stale/missing
+- 1s rate limit per WHOIS call → ~5 min for 302 unique domains
+- **Notable findings:** voycetel.com registered Feb 2026 (BL — 2 months old, holding a code), dccld.com Sep 2025 (DI — 6 months old). att.com 1986 baseline.
+
+**Profile wiring** (`webapp/app.py` build_profile + `webapp/templates/profile.html`)
+- Two new DuckDB lookups; nullable; missing parquet = no badge (graceful degrade)
+- Badges next to website link — "Domain since YYYY (Ny)" and "📬 Mailbox: <brand>" / "👥 Shared address (N resporgs)"
+- New CSS: `.flag`, `.flag-domain`, `.flag-mailbox` in `webapp/static/style.css`
+- `requirements.txt` now lists `python-whois` with a comment that it's only needed where the script runs
+
+### Dormant lifecycle — runtime + Sanity-tagged
+**Runtime detection** (any current inventory < 15) — every rpfx gets 14 default UNAVAIL test numbers from Somos, so anything under 15 means at most one real number.
+- `build_profile` computes `is_dormant`, `last_active_month`
+- Template replaces empty NPA bars + status pie with a **"NO RESULTS FOUND" gas-gauge banner** (image: `webapp/static/img/no-results-empty.jpg`, hand-drawn ink with "800" on the gauge face)
+- Trajectory chart still renders — historical evidence stays visible
+
+**Sanity category** (slug `dead`, title "Dormant") — Bill created in Studio with a 1-800-ZOMBIE image asset.
+- New module-level set `DORMANT_RPFX` populated at startup from `clean/resporg.json` (parallel to `HIDDEN_RPFX` pattern)
+- Sanity image reference → CDN URL helper: `https://cdn.sanity.io/images/<project>/<dataset>/<hash>.<ext>`
+- When Sanity-tagged, banner uses the **zombie image** instead of the gas gauge, plus richer copy ("dead or nearly dead phone companies… called 'zombie' because they just won't die")
+- Editor's `META_SLUGS` updated to include `dead` so the auto-strip rule preserves it
+
+**Auto-tagger — `scripts/auto_tag_dormant.py`**
+- Tags any rpfx that's been ≤14 numbers for 2 consecutive months (configurable `--months`)
+- Idempotent — skips rpfxs already tagged
+- Dry-run default, `--apply` to write
+- Ran tonight: **106 tagged** at 2-month threshold (~22% of 486 real rpfxs)
+- Mix of obvious zombies (Voyce, Cypress Telecom, Talkie, Cytel) plus surprises: Salesforce HI, Lumen FG, West Corp CV — all sitting at exactly 14, presumably retained shell codes for legal/regulatory reasons
+
+### Number-page copy task added to roadmap
+Bill flagged a customer-education problem: TFN.com search shows "active with this resporg" → customer hears disconnect tone → assumes available. Like a domain that doesn't load. Plan section under 7g now has draft copy: "asking out a married woman" metaphor, watch-this-number free with quarterly heartbeat, signed off by Bill offering alternatives. TFN.com number-result pages should deep-link to `resporgs.com/number/<tfn>` for the canonical explanation.
+
+### Things explicitly tabled tonight (not lost — listed for future)
+- **Somos portal access** — Bill has admin-contact data behind login at `https://portal.somos.com/Controls/REG/FindRespOrgContacts.aspx`. Per-number history available there too. Distraction from TFN.com integration; revisit later.
+- **Admin / network research** — manual SOS lookups, LinkedIn checks, registered-agent matching. Right v1 is a Sanity field `affiliated_rpfxs` populated by Bill's research, surfaced as "Network: also operates X, Y" without exposing personal info. Deferred.
+- **FCC 499-A enrichment** — Bill correctly noted he didn't file one himself, so probably not the right vector. Skip.
+
+### Files created / modified tonight
+**New:**
+- `tools/editor/app.py` + `templates/{base,index,edit}.html`
+- `scripts/fetch_sanity_docs.py`
+- `scripts/cleanup_unknown_dual.py`
+- `scripts/enrich_mailbox.py`
+- `scripts/enrich_whois.py`
+- `scripts/auto_tag_dormant.py`
+- `webapp/static/img/no-results-empty.jpg`
+- `data/mailbox_flags.parquet`, `data/domain_age.parquet`, `data/domain_whois_cache.json`
+
+**Modified:**
+- `webapp/app.py` — Sanity CDN constants, `_refresh_dormant_index()`, `DORMANT_RPFX`, `_sanity_image_url()`, mailbox/whois reads in `build_profile`, `is_dormant_*`/`dormant_image_url` context keys
+- `webapp/templates/profile.html` — domain badge inside website `<li>`, mailbox flag `<li>`, dormant banner with `dormant-zombie` variant
+- `webapp/static/style.css` — `.flag-*`, `.dormant-banner`, `.dormant-img`
+- `requirements.txt` — `python-whois>=0.9` (note: not needed in prod)
+- `apikey.env` — added `Sanity_API_Key` (case-insensitive loader)
+
+### Status as of end of session
+- Local-only. Nothing deployed.
+- Dormant tags applied to Sanity (106 docs).
+- `clean/*.json` re-fetched, `data/category_trajectories.parquet` rebuilt.
+- Webapp at port 5178 needs restart to pick up new `DORMANT_RPFX` index.
+- **Deploy sequence when ready:** `git push` code → `git pull` on droplet → `python scripts/fetch_sanity_docs.py` on droplet → `rsync data/{mailbox_flags,domain_age,category_trajectories}.parquet` to droplet → `systemctl restart resporgs`.
+
+---
+
 ## 7g. Post-launch roadmap (2026-04-24 — Bill's priorities after V1 went live)
 
 ### Product priorities (with Bill's notes)
@@ -289,6 +384,27 @@ Plus optional: the sibling `local-prospector/data/master_vanity.db` path the Fla
   - Email delivery pipeline (already using `bill@tollfreenumber.com` per plan)
   - Billing system if/when it becomes paid
 - Existing `/watch` form is the skeleton — just needs the alerting pipeline behind it
+
+#### Number lookup copy — explain why "active" ≠ "available" (2026-04-24)
+- **Problem:** TollFreeNumbers.com already shows "active with this resporg" when customers search. They hear "disconnect message" and assume the number is available. It's like typing a domain into a browser, getting nothing, and thinking the domain is free.
+- **Customers also often assume we are the resporg** (i.e. they think we're a phone company that can hand them the number). We are not.
+- **Goal:** TFN.com number-result pages should deep-link to the matching `resporgs.com/number/<tfn>` page, which gives the honest explanation.
+- **Copy to add to `/number/<tfn>` page** (draft — tune the voice):
+  > Even when a number doesn't ring through to an active customer, that doesn't mean it's available. A disconnect message is just a message — the number is almost always still assigned to a RespOrg and, usually, still attached to a customer who stopped answering it or hasn't turned it back on yet. Trying to get it is a bit like asking out a married woman. It *can* work, but that's not usually how it ends.
+  >
+  > You can still contact the company currently holding the number if you want to try. For most unavailable numbers, though, we don't help with that — it's not a good use of anyone's time.
+  >
+  > **What we can do:** watch the number for free and tell you if the status ever changes. If it does, you'll have a shot. No spam, just a quarterly heartbeat if nothing's happening.
+  >
+  > **And honestly — if you need help finding a great alternative, that's the real play. Let me know. I've helped companies find great vanity numbers since before AT&T had a website.** — Bill
+- **CTAs on the page:**
+  - Primary: "Watch this number free" (already exists)
+  - Secondary: "Help me find an alternative" → mailto or form to Bill
+  - De-emphasize: "Contact the current holder" (link to profile)
+- **Cross-site integration:**
+  - TFN.com number results page: after the "active with X" line, add "See full 4-year history and why this probably isn't available → resporgs.com/number/<tfn>"
+  - Both sites point at the same canonical explanation on Resporgs.com — single source of truth for the "active ≠ available" education
+- **Template:** `webapp/templates/number_lookup.html` — add a new section above/below the timeline, conditional on `result.current` being non-null (i.e. the number IS currently held). For SPARE/unassigned numbers, different copy is appropriate.
 
 #### Number Rescue Service
 - Lead-capture form for customers who lost a toll-free number

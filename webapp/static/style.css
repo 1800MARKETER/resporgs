@@ -770,3 +770,58 @@ details.trajectory-table summary { cursor: pointer; color: var(--muted); padding
   cursor: pointer;
   align-self: flex-start;
 }
+
+/* Profile enrichment badges (mailbox flag, domain age) */
+.flag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  margin-left: 6px;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.flag-domain {
+  background: #e8f0fe;
+  color: #1a4d8f;
+}
+.flag-mailbox {
+  background: #fff3cd;
+  color: #7a5a00;
+}
+.flag-mailbox.flag-medium {
+  background: #f3f3f3;
+  color: #666;
+}
+
+/* Dormant RespOrg banner — replaces empty NPA + status charts */
+.dormant-banner {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  background: #fafaf3;
+  border: 1px solid #e6dfb6;
+  border-radius: 8px;
+  padding: 24px;
+  margin: 16px 0;
+}
+.dormant-banner .dormant-img {
+  max-width: 280px;
+  width: 40%;
+  height: auto;
+  flex-shrink: 0;
+}
+.dormant-banner .dormant-text {
+  flex: 1;
+}
+.dormant-banner h3 {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+}
+.dormant-banner p {
+  margin: 4px 0;
+}
+@media (max-width: 640px) {
+  .dormant-banner { flex-direction: column; text-align: center; }
+  .dormant-banner .dormant-img { width: 70%; max-width: 240px; }
+}

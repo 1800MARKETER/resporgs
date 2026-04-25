@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Resporgs — Editor{% endblock %}
+{% block content %}
+
+<div class="card">
+  <h1>Resporgs <span class="meta">({{ rows|length }} shown)</span></h1>
+  <form method="get" class="filters">
+    <label>Search
+      <input type="text" name="q" value="{{ q_search }}" placeholder="title, alias, code">
+    </label>
+    <label>Category
+      <select name="category">
+        <option value="">— any —</option>
+        {% for c in categories %}
+        <option value="{{ c.slug }}" {% if c.slug == q_category %}selected{% endif %}>{{ c.title }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Hidden
+      <select name="hidden">
+        <option value="" {% if not q_hidden %}selected{% endif %}>— any —</option>
+        <option value="yes" {% if q_hidden == 'yes' %}selected{% endif %}>Hidden only</option>
+        <option value="no" {% if q_hidden == 'no' %}selected{% endif %}>Not hidden</option>
+      </select>
+    </label>
+    <button type="submit">Apply</button>
+    <a class="reset" href="{{ url_for('index') }}">Reset</a>
+  </form>
+</div>
+
+<div class="card" style="padding: 0;">
+  <table>
+    <thead>
+      <tr>
+        <th>rpfx</th>
+        <th>code</th>
+        <th>Title</th>
+        <th>Alias</th>
+        <th>Categories</th>
+        <th>Hidden</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+      <tr>
+        <td class="mono">
+          <a class="row-link" href="{{ url_for('edit', doc_id=r.doc_id) }}">{{ r.rpfx }}</a>
+        </td>
+        <td class="mono">{{ r.code }}</td>
+        <td>
+          <a class="row-link" href="{{ url_for('edit', doc_id=r.doc_id) }}">{{ r.title }}</a>
+        </td>
+        <td>{{ r.alias }}</td>
+        <td>
+          {% for slug, title in r.cats %}
+            <span class="tag {% if slug in ['hidden', 'non-resporg'] %}hidden{% endif %}">{{ title }}</span>
+          {% endfor %}
+        </td>
+        <td>
+          {% if r.hidden_tag %}
+            <span class="pill-hidden">tagged</span>
+          {% elif r.hidden_prefix %}
+            <span class="pill-hidden">1-prefix</span>
+          {% else %}
+            <span class="pill-ok">visible</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="meta" style="padding: 20px; text-align: center;">No resporgs match these filters.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
