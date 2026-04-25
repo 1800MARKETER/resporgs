@@ -360,6 +360,94 @@ Bill flagged a customer-education problem: TFN.com search shows "active with thi
 
 ---
 
+## 7j. Late-night progress log (2026-04-24/25 — deploy + Somos contacts + 37 new resporgs)
+
+Continuation of 7i. Everything from this section IS deployed live.
+
+### Deploy v1 (commit 7ac040e)
+Pushed: editor + enrichments + dormant lifecycle + helper scripts.
+- Deploy steps used (record for next time):
+  1. `git push origin main`
+  2. `ssh -i ~/.ssh/digitalocean_1cup root@104.131.76.98 "cd /var/www/resporgs && git pull"`
+  3. `scp` clean/{resporg,resporgCategory,resporgGroup}.json to `/var/www/resporgs/clean/`
+  4. `scp` data/{mailbox_flags,domain_age,category_trajectories,somos_contacts,admin_networks}.parquet to `/var/www/resporgs/data/`
+  5. `ssh ... "systemctl restart resporgs"`
+- Production verified: BL shows zombie banner, AU shows 7-rpfx shared address + 1996 domain, PC shows 1986 att.com domain.
+
+### Asset URL regression + fix (commit 2b1fda7)
+**Symptom:** logos disappeared from homepage top-20 after first deploy.
+**Cause:** `fetch_sanity_docs.py` writes JSON in GROQ/API format with `{"asset": {"_ref": "image-<hash>-..."}}`, but the existing `asset_url()` only knew the `sanity dataset export` tarball format with `{"_sanityAsset": "image@file://..."}`. So every image returned `None`.
+**Fix:** `asset_url()` now handles both shapes — tries the local file path first, falls back to constructing a Sanity CDN URL (`https://cdn.sanity.io/images/52jbeh8g/blog/<hash>.<ext>`). Also handles `file-` prefixed refs for non-image assets.
+**Deploy:** `git push` + `git pull` + `systemctl restart resporgs`. No data rebuild needed.
+
+### Somos portal scraping — admin contact extraction
+**Goal:** pull primary contact (name + email + phone) for every active resporg.
+**Mechanism:** Claude-in-Chrome extension drove Bill's already-logged-in Somos browser tab. URL trick: `Controls/REG/FindRespOrgContacts.aspx?Key=XXX` runs the search inline. The result page has an "Export to CSV" button.
+**Optimization:** rather than 488 individual searches by 3-char code, exploited the substring-match nature of Somos search by exporting all sub-codes ending in `01`, `02`, `03`, `04`, `99`. **5 CSV downloads, ~2 minutes total**, 1361 raw rows, 541 unique admin codes covered (vs 488 in Sanity).
+**Output files:**
+- `data/somos_contacts/suffix_*.csv` (5 raw exports)
+- `data/somos_contacts.parquet` — one row per 3-char admin code, parsed addresses + contacts
+- `data/admin_networks.parquet` — derived: 91 multi-rpfx clusters where the same email or phone appears across 2+ admin codes
+
+**Network detection findings (validates the technique):**
+- **Lumen network: 9 rpfxs** (AL, FG, IN, IX, JS, KS, LG, LV, UL) — `christian.aguilar@lumen.com`
+- **Windstream consolidation: 9 rpfxs** (AC, BJ, CD, DH, LO, PF, PK, SI, UU) — `katie.tan@windstream.com`. Reveals the PAETEC/McLeodUSA rollup chain.
+- **Fusion Connect: 8 rpfxs** — `robin.krind@fusionconnect.com`
+- **Primetel/Mayfair: 7 rpfxs** (AB, FO, HU, JD, OD, OQ, RY) — `agreco@foxteltelecom.com` — **EXACTLY matches Bill's existing `GROUP_OVERRIDES`**. Auto-discovered what was manually configured.
+- **Bryan Lynott / ATL Communications:**
+  - `cberquist@atlc.com` runs AU's 7 sub-codes
+  - `scleland@atlc.com` runs LT, NM, PJ, PO, RG (5 rpfxs)
+  - Two named operators inside the 7-rpfx shared-address cluster
+- **Call Haven Partners: 5 rpfxs** (HT, HV, NJ, SS, ZX) — `daryl@callhavenpartners.com`
+- **National Sales Partners: 5 rpfxs** (EK, KG, NA, RJ, YB) — `ee@nationalsalespartners.com`
+- **AT&T: 3 rpfxs** (AM, PC, SH) — `ar2423@att.com`
+- **Smaller suspicious clusters:** `ricky.keele@gmail.com` runs 3 rpfxs from a personal Gmail (EJ, TT, XQ).
+
+`scripts/build_somos_contacts.py` ran the parsing. Address parser handles the concatenated "street + city + state + country + zip + phone" string. Contact parser handles "Name email P: phone F: fax" format.
+
+### 37 new resporgs created (commit ??? — actually no commit, Sanity-side only)
+**Discovery:** 37 active rpfxs in Somos that didn't exist in Sanity. Notable: CVS Pharmacy (HM), Union Pacific Railroad (UG), Telesign (SY), Ziply Fiber (YG), Pestilence Labs (EF — this was the trigger; Bill went looking for EF to classify it as misdial-marketing and found "unknown resporg").
+**Created via `scripts/create_missing_resporgs.py`:** stub Sanity docs with title, codeTwoDigit, slug, address, and category=Unknown. **No category preset** — Bill will classify each one in the editor. (Bill's reason: "Just because a company has numbers in misdial programs doesn't mean that's their main business. Pestilence Labs's website looks legitimate, so they shouldn't be auto-tagged.")
+**Street View + satellite:** ran `fetch_streetview.py` after the create — script auto-skips rpfxs with existing images. Pulled 36 of 37 (RH=Porting.com DBA ATLaaS in Vancouver BC failed because the address parser didn't map BC to a 2-letter state). 72 images deployed via scp.
+
+### Open / pickup-tomorrow items
+
+#### High priority
+1. **Classify the 37 new resporgs** in the editor (http://localhost:5179, filter Category=Unknown). Some obvious quick wins:
+   - HM = CVS Pharmacy → Corporate Client
+   - UG = Union Pacific Railroad → Corporate Client
+   - SY = Telesign → Telecom Service Provider (or new "Identity/Fraud" category)
+   - YG = Ziply Fiber → Regional Phone Company
+   - HM, UG types are obviously Corporate Clients
+   - Pestilence Labs (EF) — looks legitimate per Bill's spot-check, leave Unknown until reviewed
+2. **Rename "Secondary" → "Medium Phone Company"** in Sanity Studio. Leave slug as `secondary` (URLs/code reference it). Bill's reasoning: "Secondary" means CLEC-era resellers in his head; "Medium Phone Company" is more descriptive next to "Small Phone Company".
+3. **Fix RH (Porting.com DBA ATLaaS)** — Vancouver BC, address parser dropped the state. Manually edit address in Sanity, re-run `fetch_streetview.py`.
+
+#### Lower priority / future builds
+4. **Wire admin networks to profiles.** `data/admin_networks.parquet` exists with 91 clusters. Add a "Network" badge on profile pages: "Also operated by this admin: AB, FO, HU, JD, OD, OQ, RY → Primetel" — auto-discovered group reveals. Could also retire the manual `GROUP_OVERRIDES` in `webapp/app.py` since the admin-email pattern produces the same result.
+5. **Fill the remaining ~18 non-dormant gaps** — rpfxs that didn't show up in any of `01/02/03/04/99` batch searches. Could either do targeted single-key searches or grab `05/06/07` next time.
+6. **Auto-tag dormant rerun** when a new monthly snapshot lands — script is idempotent, just re-run.
+7. **Mailbox flag improvements:**
+   - Same-group resporgs at the same address should be filtered out of the shared-address detector (e.g. Pacific Bell + AT&T sibling at the same HQ isn't suspicious, just corporate)
+   - Could flag "Cleveland, OH" cluster — National Sales Partners has 4+ entities all in Cleveland
+8. **Somos number-history page** at `Controls/NAC/Admin-Resources-Number.aspx` — accepts 10-digit TFNs and returns ownership history. Good v2 for the `/number/<tfn>` lookup page (richer history than just our 4-year window).
+
+### Files touched this session
+**New:**
+- `scripts/create_missing_resporgs.py` — bulk stub creator
+- `data/somos_contacts.parquet`, `data/admin_networks.parquet`, `data/somos_contacts/*.csv`
+- 72 new street/satellite images in `webapp/static/streetview/`
+- 37 new Sanity resporg docs (live)
+
+**Modified:**
+- `webapp/app.py` — `asset_url()` now handles GROQ/CDN format
+
+**Out of scope but worth noting:**
+- `apikey.env` lost its `Sanity_API_Key=` prefix at one point (editor save quirk). Bill restored it.
+- `data/somos_codes_to_lookup.json` and `data/somos_pages/` are leftover scratch from earlier exploration; safe to delete.
+
+---
+
 ## 7g. Post-launch roadmap (2026-04-24 — Bill's priorities after V1 went live)
 
 ### Product priorities (with Bill's notes)
