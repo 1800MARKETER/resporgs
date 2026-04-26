@@ -58,7 +58,7 @@ def build_query(address: dict) -> str | None:
     street = (address.get("street1") or "").strip()
     city = (address.get("city") or "").strip()
     state = (address.get("state") or "").strip()
-    postal = (address.get("postalCode") or "").strip()
+    postal = (address.get("zip") or "").strip()
     country = (address.get("country") or "").strip()
     if not (city and state):
         return None

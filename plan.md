@@ -360,6 +360,18 @@ Bill flagged a customer-education problem: TFN.com search shows "active with thi
 
 ---
 
+## 7k. Dialer infrastructure consolidation (2026-04-25 — moved to toll-free-autodialer)
+
+**The dialer is NOT being built in RESPORGS/.** It lives in `C:\Users\Bill\claude code\toll-free-autodialer\` as a shared service. See `toll-free-autodialer/PROJECT_PLAN.md` v2 consolidation section (top of the file) for full architecture.
+
+Why: there was already a substantial autodialer plan + Phase 1 partially built (Serper.dev Google search, ~3,323 numbers searched at 32% hit rate, junk-filter via domain frequency). The dialer is a multi-product platform: ResporgLock notifications, TFN.com order verification, resporg classification, disconnect-watch, local-wireless availability checking, and (eventually) a public 800numbers.com directory all read from the same `data/numbers.db`.
+
+**Resporgs.com integration:** profile pages query `toll-free-autodialer`'s API (`/api/number/<tfn>/intel`) for transcripts. Per-rpfx classification view on resporgs.com is a Flask route that queries the autodialer DB for that rpfx's sample corpus — show 25 deduped transcripts (no individual numbers shown), favoring 800s and high-vanity-score numbers.
+
+**Public-display rule (legal posture):** resporgs.com profile pages and TFN.com number-lookup show **only the company name** extracted from greetings, never the raw transcript. Full transcripts live in email notifications (ResporgLock heartbeat, order verification) where the recipient is a verified subscriber. This sidesteps the "are you eavesdropping?" optics — we publish the business's own self-identification, not their conversations.
+
+**Pilot plan (when ready):** start with the 9 truly-Unknown rpfxs + 5-10 mystery stubs (Pestilence Labs / Wiretap Telecom / Phoenix Business / etc.) at 25 calls each → ~400 calls → ~$8.
+
 ## 7j. Late-night progress log (2026-04-24/25 — deploy + Somos contacts + 37 new resporgs)
 
 Continuation of 7i. Everything from this section IS deployed live.
