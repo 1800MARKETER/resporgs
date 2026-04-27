@@ -1476,14 +1476,38 @@ def index():
     directory, month = _directory_rows()
     top20 = directory[:20]
     total_inventory = sum(d["inventory"] for d in directory)
+
+    # Category-growth diverging-bar chart (matches /categories)
+    growth_svg = ""
+    growth_legend = ""
+    traj_path = DATA / "category_trajectories.parquet"
+    if traj_path.exists():
+        con = duckdb.connect()
+        traj_rows = con.execute(
+            f"""
+            SELECT category_slug, category_title, month, inventory
+            FROM read_parquet('{traj_path.as_posix()}')
+            ORDER BY category_slug, month
+            """
+        ).fetchall()
+        by_slug: dict[str, dict] = {}
+        for slug, title, m, inv in traj_rows:
+            by_slug.setdefault(slug, {"label": title, "points": []})["points"].append((m, inv))
+        series = []
+        for i, slug in enumerate(sorted(by_slug)):
+            s = by_slug[slug]
+            s["color"] = CATEGORY_PALETTE[i % len(CATEGORY_PALETTE)]
+            series.append(s)
+        growth_svg, growth_legend = render_net_change_svg(series)
+
     return render_template(
         "index.html",
         top20=top20,
-        categories=_category_summaries(),
-        top_groups=_group_summaries(limit=10),
         month=month,
         total_resporgs=len(directory),
         total_inventory=total_inventory,
+        growth_svg=growth_svg,
+        growth_legend=growth_legend,
     )
 
 
@@ -1591,11 +1615,36 @@ def groups_index():
     # Also flag groups in Sanity that have zero resolvable members
     # (so Bill can see what's orphaned)
     group_summary.sort(key=lambda x: -x["inventory"])
+
+    # Growth chart — net inventory change per group since baseline month
+    growth_svg = ""
+    growth_legend = ""
+    grp_traj_path = DATA / "group_trajectories.parquet"
+    if grp_traj_path.exists():
+        traj_rows = con.execute(
+            f"""
+            SELECT group_slug, group_title, month, inventory
+            FROM read_parquet('{grp_traj_path.as_posix()}')
+            ORDER BY group_slug, month
+            """
+        ).fetchall()
+        by_slug: dict[str, dict] = {}
+        for slug, title, m, inv in traj_rows:
+            by_slug.setdefault(slug, {"label": title, "points": []})["points"].append((m, inv))
+        series = []
+        for i, slug in enumerate(sorted(by_slug)):
+            s = by_slug[slug]
+            s["color"] = CATEGORY_PALETTE[i % len(CATEGORY_PALETTE)]
+            series.append(s)
+        growth_svg, growth_legend = render_net_change_svg(series)
+
     return render_template(
         "groups.html",
         groups=group_summary,
         month=month,
         total_resporgs=len(RESPORG_DOCS),
+        growth_svg=growth_svg,
+        growth_legend=growth_legend,
     )
 
 

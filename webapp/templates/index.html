@@ -55,55 +55,20 @@
   <p><a href="/directory">See all {{ total_resporgs }} RespOrgs →</a></p>
 </section>
 
+{% if growth_svg %}
 <section>
-  <h2>Categories of phone companies</h2>
+  <h2>Who's absorbing toll-free numbers</h2>
   <p class="summary">
-    We sort every RespOrg into one of 18 categories based on the type of business they operate. The makeup of the industry
-    is uneven: a few <em>large telecoms</em> and <em>messaging</em> platforms dominate the active inventory, while dozens
-    of smaller RespOrgs fit into more specialized roles — from vanity brokers and voicemail services to a growing group
-    of misdial marketers whose business is essentially to wait for well-known numbers to drop into the disconnect pool.
+    The toll-free pool is finite — every number absorbed by one category had to come from somewhere else. This chart shows
+    net inventory change per category since each category's first month on record. Bars going up = absorbing numbers; going
+    down = losing them. <a href="/categories">See all categories →</a> · <a href="/groups">See groups →</a>
   </p>
-  <div class="category-list">
-    {% for c in categories %}
-    <a class="category-row" href="/category/{{ c.slug }}">
-      <span class="cat-title">{{ c.title }}</span>
-      <span class="cat-count">{{ c.members }} RespOrgs · {{ "{:,}".format(c.inventory) }} numbers</span>
-      <span class="cat-desc dim">{{ c.description }}</span>
-    </a>
-    {% endfor %}
+  <div class="chart-box">
+    <div class="chart-wrap">{{ growth_svg|safe }}</div>
+    <ul class="pie-legend multi-legend">{{ growth_legend|safe }}</ul>
   </div>
-  <p><a href="/categories">Explore all categories →</a></p>
 </section>
-
-<section>
-  <h2>Top 10 groups</h2>
-  <p class="summary">
-    Many RespOrgs aren't really separate companies — they're shell codes operated by the same organization, often to
-    blur their true footprint. A <em>group</em> is our published mapping of those relationships: either confirmed via
-    contact information we've gathered over 20+ years in this industry, or inferred from behavioral fingerprints in the
-    monthly number-flow data. Primetel, for example, operates under 18 different RespOrg codes; combined they hold more
-    toll-free numbers than AT&T.
-  </p>
-  <table class="directory">
-    <thead>
-      <tr>
-        <th>#</th><th>Group</th><th class="num">RespOrgs</th><th class="num">Combined active numbers</th><th class="num">Opp.Idx</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for g in top_groups %}
-      <tr>
-        <td>{{ loop.index }}</td>
-        <td><a href="/group/{{ g.slug }}"><strong>{{ g.title }}</strong></a><br><span class="dim">{{ g.description[:120] }}{% if g.description|length > 120 %}…{% endif %}</span></td>
-        <td class="num">{{ g.members }}</td>
-        <td class="num">{{ "{:,}".format(g.inventory) }}</td>
-        <td class="num {% if g.opp_idx > 0.15 %}neg{% elif g.opp_idx < 0.03 %}pos{% else %}mid{% endif %}">{{ "{:.2f}%".format(g.opp_idx * 100) }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  <p><a href="/groups">See all 34+ groups →</a></p>
-</section>
+{% endif %}
 
 <section class="faq-preview">
   <h2>Common questions</h2>

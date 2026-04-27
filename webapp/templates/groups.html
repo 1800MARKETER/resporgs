@@ -4,6 +4,17 @@
 <h1>RespOrg groups</h1>
 <p class="summary">{{ groups|length }} groups with identified member resporgs · Click any row to see the combined picture.</p>
 
+{% if growth_svg %}
+<section class="category-charts">
+  <div class="chart-box">
+    <h3>Who's absorbing toll-free numbers, by group</h3>
+    <div class="chart-wrap">{{ growth_svg|safe }}</div>
+    <ul class="pie-legend multi-legend">{{ growth_legend|safe }}</ul>
+    <p class="chart-note">Net change in inventory since each group's first month on record. Bars going up = the group absorbed numbers; going down = lost them. Hover any bar for exact totals.</p>
+  </div>
+</section>
+{% endif %}
+
 <table class="directory">
   <thead>
     <tr>
