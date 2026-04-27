@@ -8,10 +8,10 @@
 <section class="category-charts">
   {% if growth_svg %}
   <div class="chart-box">
-    <h3>Growth by category (4-year, normalized to first month)</h3>
+    <h3>Who's absorbing toll-free numbers</h3>
     <div class="chart-wrap">{{ growth_svg|safe }}</div>
     <ul class="pie-legend multi-legend">{{ growth_legend|safe }}</ul>
-    <p class="chart-note">Each category's inventory shown as % of its first month on record. Hover a line for the company name and current inventory. Above 100% = growing; below = shrinking.</p>
+    <p class="chart-note">Net change in inventory since each category's first month on record. Lines going up = absorbing numbers; going down = losing them. The toll-free pool is finite, so growth in one category implies loss elsewhere. Hover any line for exact totals.</p>
   </div>
   {% endif %}
   {% if size_pie_svg %}

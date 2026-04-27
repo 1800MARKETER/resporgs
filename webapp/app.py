@@ -917,6 +917,179 @@ def render_multi_line_svg(
     return svg, legend_html
 
 
+def render_net_change_svg(
+    series: list[dict],
+    width: int = 860,
+    height: int = 360,
+) -> tuple[str, str]:
+    """Net inventory change since first month, in absolute numbers.
+
+    Answers "who's absorbing toll-free inventory" — categories sucking up
+    numbers go strongly positive, categories shedding go negative. Zero-line
+    in the middle. Total across categories sums to ~0 (the toll-free pool
+    is finite, so growth in one category implies loss in another).
+
+    series[i] = {"label": str, "color": str, "points": [(month, inv), ...]}
+    Returns (svg_string, legend_html).
+    """
+    if not series:
+        return "", ""
+
+    all_months = sorted({m for s in series for m, _ in s["points"]})
+    if not all_months:
+        return "", ""
+
+    pad_l, pad_r, pad_t, pad_b = 78, 16, 18, 32
+    inner_w = width - pad_l - pad_r
+    inner_h = height - pad_t - pad_b
+    n_months = len(all_months)
+    month_to_x = {
+        m: pad_l + (i * inner_w / (n_months - 1) if n_months > 1 else 0)
+        for i, m in enumerate(all_months)
+    }
+
+    # Compute net change from first month for each series
+    net_series = []
+    for s in series:
+        pts = dict(s["points"])
+        baseline = None
+        for m in all_months:
+            if m in pts:
+                baseline = pts[m]
+                break
+        if baseline is None:
+            continue
+        delta_points = []
+        for m in all_months:
+            v = pts.get(m)
+            if v is None:
+                continue
+            delta_points.append((m, v - baseline))
+        if not delta_points:
+            continue
+        final_inv = pts.get(all_months[-1], 0)
+        final_delta = delta_points[-1][1]
+        net_series.append({
+            "label": s["label"],
+            "color": s["color"],
+            "points": delta_points,
+            "final_delta": final_delta,
+            "final_inv": final_inv,
+            "baseline": baseline,
+        })
+
+    if not net_series:
+        return "", ""
+
+    all_deltas = [d for s in net_series for _, d in s["points"]]
+    y_min = min(all_deltas + [0])
+    y_max = max(all_deltas + [0])
+
+    # Round outward to a nice step
+    span = y_max - y_min
+    if span == 0:
+        span = 1
+    step = _nice_step(span / 6)
+    y_min = (y_min // step - (1 if y_min % step != 0 else 0)) * step if y_min < 0 else 0
+    y_max = ((y_max // step) + 1) * step
+    span = y_max - y_min
+
+    def y_of(d: float) -> float:
+        return pad_t + inner_h - ((d - y_min) / span) * inner_h
+
+    parts = []
+
+    # Gridlines + labels
+    yval = y_min
+    while yval <= y_max:
+        y = y_of(yval)
+        is_zero = yval == 0
+        parts.append(
+            f'<line x1="{pad_l}" y1="{y:.1f}" x2="{width-pad_r}" y2="{y:.1f}" '
+            f'stroke="{"#9ca3af" if is_zero else "#e5e7eb"}" '
+            f'stroke-width="{"1.4" if is_zero else "1"}"/>'
+        )
+        parts.append(
+            f'<text x="{pad_l - 8}" y="{y+3:.1f}" text-anchor="end" font-size="10" '
+            f'fill="{"#374151" if is_zero else "#6b7280"}" '
+            f'font-weight="{"600" if is_zero else "400"}">{_fmt_signed_short(yval)}</text>'
+        )
+        yval += step
+
+    # X axis labels
+    for i in (0, n_months // 2, n_months - 1):
+        if 0 <= i < n_months:
+            m = all_months[i]
+            parts.append(
+                f'<text x="{month_to_x[m]:.1f}" y="{pad_t + inner_h + 16}" '
+                f'text-anchor="middle" font-size="10" fill="#6b7280">{m}</text>'
+            )
+
+    # One <path> per series
+    for s in net_series:
+        d = "M " + " L ".join(
+            f"{month_to_x[m]:.1f},{y_of(v):.1f}" for m, v in s["points"]
+        )
+        sign = "+" if s["final_delta"] >= 0 else ""
+        parts.append(
+            f'<path d="{d}" stroke="{s["color"]}" stroke-width="1.7" '
+            f'fill="none" stroke-linejoin="round" stroke-linecap="round">'
+            f'<title>{s["label"]}: {sign}{s["final_delta"]:,} '
+            f'(now {s["final_inv"]:,}, was {s["baseline"]:,})</title></path>'
+        )
+
+    svg = (
+        f'<svg viewBox="0 0 {width} {height}" class="multi-chart" '
+        f'xmlns="http://www.w3.org/2000/svg">'
+        + "".join(parts)
+        + "</svg>"
+    )
+
+    # Legend — sorted by final_delta descending (biggest absorbers on top)
+    net_series.sort(key=lambda s: -s["final_delta"])
+    legend_parts = []
+    for s in net_series:
+        d = s["final_delta"]
+        cls = "pos" if d > 0 else ("neg" if d < 0 else "")
+        sign = "+" if d >= 0 else ""
+        legend_parts.append(
+            f'<li>'
+            f'<span class="pl-swatch" style="background:{s["color"]}"></span>'
+            f'<span class="pl-label">{s["label"]}</span>'
+            f'<span class="pl-val {cls}">{sign}{d:,} · now {s["final_inv"]:,}</span>'
+            f'</li>'
+        )
+    legend_html = "".join(legend_parts)
+
+    return svg, legend_html
+
+
+def _nice_step(raw: float) -> int:
+    """Pick a 'nice' axis step (1, 2, 5 × 10^n) for a target raw size."""
+    if raw <= 0:
+        return 1
+    import math
+    exp = math.floor(math.log10(raw))
+    base = 10 ** exp
+    for mult in (1, 2, 5, 10):
+        if mult * base >= raw:
+            return int(mult * base)
+    return int(10 * base)
+
+
+def _fmt_signed_short(v: float) -> str:
+    """Format a signed number compactly: +2.5M, -800K, 0."""
+    if v == 0:
+        return "0"
+    sign = "+" if v > 0 else "-"
+    a = abs(v)
+    if a >= 1_000_000:
+        return f"{sign}{a/1_000_000:.1f}M".replace(".0M", "M")
+    if a >= 1_000:
+        return f"{sign}{a/1_000:.0f}K"
+    return f"{sign}{int(a)}"
+
+
 def render_trajectory_svg(traj: list[dict], width: int = 780, height: int = 220) -> str:
     """Return an inline SVG line chart of inventory over time, with harvest
     magnitude shown as red bars beneath each point."""
@@ -1729,7 +1902,7 @@ def categories_index():
             s = by_slug[slug]
             s["color"] = CATEGORY_PALETTE[i % len(CATEGORY_PALETTE)]
             series.append(s)
-        growth_svg, growth_legend = render_multi_line_svg(series)
+        growth_svg, growth_legend = render_net_change_svg(series)
 
     # Size pie — current inventory share across all categories
     size_slices = []
