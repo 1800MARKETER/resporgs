@@ -920,14 +920,17 @@ def render_multi_line_svg(
 def render_net_change_svg(
     series: list[dict],
     width: int = 860,
-    height: int = 360,
+    height: int = 380,
 ) -> tuple[str, str]:
-    """Net inventory change since first month, in absolute numbers.
+    """Diverging bar chart of net inventory change per category.
 
-    Answers "who's absorbing toll-free inventory" — categories sucking up
-    numbers go strongly positive, categories shedding go negative. Zero-line
-    in the middle. Total across categories sums to ~0 (the toll-free pool
-    is finite, so growth in one category implies loss in another).
+    Each category = one vertical bar, length = (final inventory - baseline).
+    Bars going UP from the zero line = categories that absorbed numbers.
+    Bars going DOWN = categories that shed numbers. Sorted by magnitude
+    so the biggest absorbers and biggest shedders sit at the visual edges.
+
+    The toll-free pool is finite, so positives and negatives roughly cancel
+    out — the chart visually shows where the redistribution went.
 
     series[i] = {"label": str, "color": str, "points": [(month, inv), ...]}
     Returns (svg_string, legend_html).
@@ -939,17 +942,8 @@ def render_net_change_svg(
     if not all_months:
         return "", ""
 
-    pad_l, pad_r, pad_t, pad_b = 78, 16, 18, 32
-    inner_w = width - pad_l - pad_r
-    inner_h = height - pad_t - pad_b
-    n_months = len(all_months)
-    month_to_x = {
-        m: pad_l + (i * inner_w / (n_months - 1) if n_months > 1 else 0)
-        for i, m in enumerate(all_months)
-    }
-
-    # Compute net change from first month for each series
-    net_series = []
+    # Compute baseline + final delta per series
+    bars = []
     for s in series:
         pts = dict(s["points"])
         baseline = None
@@ -959,54 +953,59 @@ def render_net_change_svg(
                 break
         if baseline is None:
             continue
-        delta_points = []
-        for m in all_months:
-            v = pts.get(m)
-            if v is None:
-                continue
-            delta_points.append((m, v - baseline))
-        if not delta_points:
-            continue
         final_inv = pts.get(all_months[-1], 0)
-        final_delta = delta_points[-1][1]
-        net_series.append({
+        delta = final_inv - baseline
+        bars.append({
             "label": s["label"],
             "color": s["color"],
-            "points": delta_points,
-            "final_delta": final_delta,
-            "final_inv": final_inv,
+            "delta": delta,
             "baseline": baseline,
+            "final_inv": final_inv,
         })
 
-    if not net_series:
+    if not bars:
         return "", ""
 
-    all_deltas = [d for s in net_series for _, d in s["points"]]
-    y_min = min(all_deltas + [0])
-    y_max = max(all_deltas + [0])
+    # Sort: biggest absorbers first, then everything down to biggest shedders
+    bars.sort(key=lambda b: -b["delta"])
 
-    # Round outward to a nice step
+    # Layout
+    pad_l, pad_r, pad_t, pad_b = 78, 16, 18, 110  # extra bottom for rotated labels
+    inner_w = width - pad_l - pad_r
+    inner_h = height - pad_t - pad_b
+    n = len(bars)
+    bar_slot_w = inner_w / n
+    bar_w = min(34, bar_slot_w * 0.72)
+
+    # Y axis range
+    deltas = [b["delta"] for b in bars]
+    y_min = min(deltas + [0])
+    y_max = max(deltas + [0])
+    if y_max == 0 and y_min == 0:
+        y_max = 1
     span = y_max - y_min
-    if span == 0:
-        span = 1
-    step = _nice_step(span / 6)
-    y_min = (y_min // step - (1 if y_min % step != 0 else 0)) * step if y_min < 0 else 0
-    y_max = ((y_max // step) + 1) * step
+    step = _nice_step(span / 6) if span > 0 else 1
+    y_min_round = (int(y_min // step) - (1 if y_min % step else 0)) * step if y_min < 0 else 0
+    y_max_round = ((int(y_max // step)) + 1) * step if y_max > 0 else 0
+    if y_min_round == y_max_round:
+        y_max_round = step
+    y_min, y_max = y_min_round, y_max_round
     span = y_max - y_min
 
-    def y_of(d: float) -> float:
-        return pad_t + inner_h - ((d - y_min) / span) * inner_h
+    def y_of(v: float) -> float:
+        return pad_t + inner_h - ((v - y_min) / span) * inner_h
 
+    zero_y = y_of(0)
     parts = []
 
-    # Gridlines + labels
+    # Gridlines
     yval = y_min
     while yval <= y_max:
         y = y_of(yval)
         is_zero = yval == 0
         parts.append(
             f'<line x1="{pad_l}" y1="{y:.1f}" x2="{width-pad_r}" y2="{y:.1f}" '
-            f'stroke="{"#9ca3af" if is_zero else "#e5e7eb"}" '
+            f'stroke="{"#374151" if is_zero else "#e5e7eb"}" '
             f'stroke-width="{"1.4" if is_zero else "1"}"/>'
         )
         parts.append(
@@ -1016,26 +1015,45 @@ def render_net_change_svg(
         )
         yval += step
 
-    # X axis labels
-    for i in (0, n_months // 2, n_months - 1):
-        if 0 <= i < n_months:
-            m = all_months[i]
-            parts.append(
-                f'<text x="{month_to_x[m]:.1f}" y="{pad_t + inner_h + 16}" '
-                f'text-anchor="middle" font-size="10" fill="#6b7280">{m}</text>'
-            )
-
-    # One <path> per series
-    for s in net_series:
-        d = "M " + " L ".join(
-            f"{month_to_x[m]:.1f},{y_of(v):.1f}" for m, v in s["points"]
-        )
-        sign = "+" if s["final_delta"] >= 0 else ""
+    # Bars
+    for i, b in enumerate(bars):
+        cx = pad_l + bar_slot_w * (i + 0.5)
+        x = cx - bar_w / 2
+        # Bar from zero line to value
+        if b["delta"] >= 0:
+            top_y = y_of(b["delta"])
+            h = max(1, zero_y - top_y)
+            top = top_y
+        else:
+            top_y = zero_y
+            h = max(1, y_of(b["delta"]) - zero_y)
+            top = top_y
+        sign = "+" if b["delta"] >= 0 else ""
         parts.append(
-            f'<path d="{d}" stroke="{s["color"]}" stroke-width="1.7" '
-            f'fill="none" stroke-linejoin="round" stroke-linecap="round">'
-            f'<title>{s["label"]}: {sign}{s["final_delta"]:,} '
-            f'(now {s["final_inv"]:,}, was {s["baseline"]:,})</title></path>'
+            f'<rect x="{x:.1f}" y="{top:.1f}" width="{bar_w:.1f}" height="{h:.1f}" '
+            f'fill="{b["color"]}" stroke="#fff" stroke-width="0.5">'
+            f'<title>{b["label"]}: {sign}{b["delta"]:,} '
+            f'(was {b["baseline"]:,}, now {b["final_inv"]:,})</title>'
+            f'</rect>'
+        )
+        # Value label above/below the bar, just outside it
+        if b["delta"] >= 0:
+            label_y = top - 4
+            anchor_baseline = "auto"
+        else:
+            label_y = top + h + 11
+            anchor_baseline = "hanging"
+        parts.append(
+            f'<text x="{cx:.1f}" y="{label_y:.1f}" text-anchor="middle" '
+            f'font-size="9.5" fill="#374151" font-weight="600">'
+            f'{_fmt_signed_short(b["delta"])}</text>'
+        )
+        # Category label at the bottom, rotated
+        label_anchor_y = pad_t + inner_h + 8
+        parts.append(
+            f'<text x="{cx:.1f}" y="{label_anchor_y:.1f}" '
+            f'text-anchor="end" font-size="10" fill="#374151" '
+            f'transform="rotate(-45, {cx:.1f}, {label_anchor_y:.1f})">{b["label"]}</text>'
         )
 
     svg = (
@@ -1045,18 +1063,17 @@ def render_net_change_svg(
         + "</svg>"
     )
 
-    # Legend — sorted by final_delta descending (biggest absorbers on top)
-    net_series.sort(key=lambda s: -s["final_delta"])
+    # Legend — same order as bars (biggest absorbers first, then losers)
     legend_parts = []
-    for s in net_series:
-        d = s["final_delta"]
+    for b in bars:
+        d = b["delta"]
         cls = "pos" if d > 0 else ("neg" if d < 0 else "")
         sign = "+" if d >= 0 else ""
         legend_parts.append(
             f'<li>'
-            f'<span class="pl-swatch" style="background:{s["color"]}"></span>'
-            f'<span class="pl-label">{s["label"]}</span>'
-            f'<span class="pl-val {cls}">{sign}{d:,} · now {s["final_inv"]:,}</span>'
+            f'<span class="pl-swatch" style="background:{b["color"]}"></span>'
+            f'<span class="pl-label">{b["label"]}</span>'
+            f'<span class="pl-val {cls}">{sign}{d:,} &middot; now {b["final_inv"]:,}</span>'
             f'</li>'
         )
     legend_html = "".join(legend_parts)
