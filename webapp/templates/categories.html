@@ -4,35 +4,14 @@
 <h1>RespOrg categories</h1>
 <p class="summary">{{ categories|length }} categories · Click any row to see members and aggregate analytics.</p>
 
-{% if growth_svg or size_pie_svg %}
+{% if growth_svg %}
 <section class="category-charts">
-  {% if growth_svg %}
   <div class="chart-box">
     <h3>Who's absorbing toll-free numbers</h3>
     <div class="chart-wrap">{{ growth_svg|safe }}</div>
     <ul class="pie-legend multi-legend">{{ growth_legend|safe }}</ul>
-    <p class="chart-note">Net change in inventory since each category's first month on record. Lines going up = absorbing numbers; going down = losing them. The toll-free pool is finite, so growth in one category implies loss elsewhere. Hover any line for exact totals.</p>
+    <p class="chart-note">Net change in inventory since each category's first month on record. Bars going up = absorbing numbers; going down = losing them. The toll-free pool is finite, so growth in one category implies loss elsewhere. Hover any bar for exact totals.</p>
   </div>
-  {% endif %}
-  {% if size_pie_svg %}
-  <div class="chart-box">
-    <h3>Current industry share by category</h3>
-    <div class="pie-wrap">
-      {{ size_pie_svg|safe }}
-      <ul class="pie-legend">
-        {% for s in size_pie_slices %}
-        <li>
-          <a href="/category/{{ s.slug }}" style="display: contents;">
-            <span class="pl-swatch" style="background:{{ s.color }}"></span>
-            <span class="pl-label">{{ s.label }}</span>
-            <span class="pl-val">{{ "{:,}".format(s.value) }} · {{ "{:.1f}%".format(s.pct * 100) }}</span>
-          </a>
-        </li>
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
-  {% endif %}
 </section>
 {% endif %}
 
