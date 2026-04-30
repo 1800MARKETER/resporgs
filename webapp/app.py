@@ -54,6 +54,22 @@ TFN_EXTERNAL_LINK_PATTERN = "https://tollfreenumbers.com/?status={last7}"
 
 app = Flask(__name__)
 
+
+@app.context_processor
+def inject_static_versions():
+    """Bust browser cache on style.css whenever the file changes.
+
+    nginx caches /static/ for 7 days. Without this, CSS edits don't
+    appear for users until the cache expires. Appending the file's
+    mtime as a query string makes each CSS update a new URL.
+    """
+    css_path = Path(__file__).parent / "static" / "style.css"
+    try:
+        return {"css_version": int(css_path.stat().st_mtime)}
+    except OSError:
+        return {"css_version": 0}
+
+
 # ============================================================
 # Sanity data in memory (cheap at this size)
 # ============================================================
