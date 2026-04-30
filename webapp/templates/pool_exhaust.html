@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}Exhaust forecast retrospective — The Pool · Resporgs.com{% endblock %}
+{% block content %}
+
+<nav class="breadcrumb"><a href="/pool">The Pool</a> · Exhaust forecasts</nav>
+
+<section class="hero-text">
+  <h1>The forecast that disagrees with itself</h1>
+  <p class="hero-sub">
+    Every Monday morning since at least 2017, Somos has published <strong>six different forecasts</strong> for when
+    we'll run out of toll-free numbers — based on six different historical windows: the last year, the last 2 years, 3, 5,
+    7, and 9 years. They almost never agree. This page shows every one of them, week by week, since we have records.
+  </p>
+</section>
+
+{% if latest %}
+<section>
+  <h2>What Somos thinks today</h2>
+  <p class="summary">
+    Six concurrent forecasts published in the latest report (week ending {{ latest[0][4] }}). Same data, six different
+    answers depending on how far back you look.
+  </p>
+  <table class="directory">
+    <thead>
+      <tr>
+        <th>Window</th>
+        <th class="num">Monthly rate of change</th>
+        <th class="num">Months to exhaust</th>
+        <th>Predicted exhaust</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in latest %}
+      <tr>
+        <td><span class="legend-swatch" style="background: {{ horizon_palette.get(r[0], '#888') }};"></span> {{ horizon_label.get(r[0], r[0] ~ '-month window') }}</td>
+        <td class="num">{{ "{:,}".format(r[1]) if r[1] is not none else '—' }}</td>
+        <td class="num">{{ r[2] if r[2] is not none else '—' }}</td>
+        <td>{% if r[3] %}{{ r[3] }}{% else %}<span class="dim">N/A</span>{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
+
+{% if fan_svg %}
+<section>
+  <h2>How predictions have evolved</h2>
+  <p class="summary">
+    X axis: when the forecast was made. Y axis: the year it predicted exhaust would occur. The 12-month line (red) is
+    skittish — it lurches around with every week's noise. The 9-year line (deep blue) barely moves. The dashed
+    horizontal line shows today: any forecast above it predicts exhaust still in the future, any forecast below it has
+    already missed.
+  </p>
+  <div class="chart-box">
+    <div class="chart-wrap">{{ fan_svg|safe }}</div>
+    <ul class="pie-legend multi-legend">{{ fan_legend|safe }}</ul>
+  </div>
+</section>
+{% endif %}
+
+{% if missed %}
+<section>
+  <h2>Forecasts that have already passed</h2>
+  <p class="summary">
+    Every prediction whose date is now in the past — sorted by predicted-exhaust date, oldest first. The fact that
+    you're reading this on a working internet connection where toll-free numbers still exist tells you whether each
+    forecast was right.
+  </p>
+  <table class="directory">
+    <thead>
+      <tr>
+        <th>Predicted exhaust</th>
+        <th>Forecast made (week ending)</th>
+        <th>Window</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for m in missed[:30] %}
+      <tr>
+        <td>{{ m[2] }}</td>
+        <td>{{ m[0] }}</td>
+        <td>{{ horizon_label.get(m[1], m[1] ~ '-month') }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if missed|length > 30 %}<p class="dim">… plus {{ missed|length - 30 }} more.</p>{% endif %}
+</section>
+{% endif %}
+
+<section class="intro">
+  <h2>Why such different answers?</h2>
+  <p>
+    Each forecast is a linear regression. The 12-month line uses only the last year of data. If the last twelve months
+    have been unusually busy (lots of new assignments, few disconnects), it extrapolates that pace forever and gives
+    you a near-term exhaust date. The 108-month line averages across nine years of data, which smooths out the spikes —
+    and so it tends to predict exhaust decades out.
+  </p>
+  <p>
+    Both forecasts are honest. They just answer different questions. The short window says "if recent trends continue."
+    The long window says "averaged across the historical pattern." Reality usually lands somewhere in between.
+  </p>
+  <p><a href="/pool">← Back to The Pool overview</a></p>
+</section>
+
+{% endblock %}

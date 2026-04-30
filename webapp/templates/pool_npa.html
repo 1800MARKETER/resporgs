@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}NPA {{ npa }} inventory — The Pool · Resporgs.com{% endblock %}
+{% block content %}
+
+<nav class="breadcrumb"><a href="/pool">The Pool</a> · NPA {{ npa }}</nav>
+
+<section class="hero-text">
+  <h1>NPA {{ npa }}</h1>
+  {% if pool_copy.tagline %}
+  <p class="hero-sub">{{ pool_copy.tagline }}</p>
+  {% endif %}
+</section>
+
+<section class="pool-hero">
+  <div class="pool-hero-stat pool-hero-stat-big" style="border-top-color: {{ npa_palette.get(npa, '#888') }}">
+    <div class="phs-value">{{ "{:.2f}%".format(latest.pct_in_use or 0) }}</div>
+    <div class="phs-label">in use as of {{ latest.week_ending }}</div>
+  </div>
+  <div class="pool-hero-stat">
+    <div class="phs-value">{{ "{:,}".format(latest.total_in_use or 0) }}</div>
+    <div class="phs-label">numbers in use</div>
+  </div>
+  <div class="pool-hero-stat">
+    <div class="phs-value">{{ "{:,}".format(latest.spare or 0) }}</div>
+    <div class="phs-label">spare</div>
+  </div>
+  <div class="pool-hero-stat">
+    <div class="phs-value">{{ "{:,}".format(latest.total_pool or 0) }}</div>
+    <div class="phs-label">total pool size</div>
+  </div>
+  <div class="pool-hero-stat">
+    <div class="phs-value">{{ "{:,}".format(latest.transit or 0) }}</div>
+    <div class="phs-label">in transit (mid-port)</div>
+  </div>
+  <div class="pool-hero-stat">
+    <div class="phs-value">{{ "{:,}".format(latest.disconnect or 0) }}</div>
+    <div class="phs-label">in disconnect aging</div>
+  </div>
+</section>
+
+{% if pool_copy.history %}
+<section class="intro">
+  <h2>About NPA {{ npa }}</h2>
+  <p>{{ pool_copy.history }}</p>
+</section>
+{% endif %}
+
+<section>
+  <h2>Status decomposition over time</h2>
+  <p class="summary">
+    Every toll-free number sits in exactly one status: <em>working</em> (in active use), <em>assigned</em>
+    (allocated but not yet routing), <em>reserved</em> (held briefly during pickup), <em>disconnect</em>
+    (aging out before returning to spare), <em>transit</em> (mid-port between RespOrgs), <em>unavailable</em>
+    (held by Somos), or <em>suspend</em>. Watch the mix shift as the prefix has matured.
+  </p>
+  <div class="chart-box">
+    <div class="chart-wrap">{{ status_svg|safe }}</div>
+    <ul class="pie-legend multi-legend">{{ status_legend|safe }}</ul>
+  </div>
+</section>
+
+<section>
+  <h2>Fill % over time</h2>
+  <p class="summary">
+    Percentage of NPA {{ npa }}'s 7,980,000 (or 7,870,094 for 800) total possible numbers that are currently in use.
+    100% means every assignable number has been claimed.
+  </p>
+  <div class="chart-box">
+    <div class="chart-wrap">{{ pct_svg|safe }}</div>
+  </div>
+</section>
+
+<section>
+  <h2>Compare other NPAs</h2>
+  <div class="pool-card-grid">
+    {% for n in all_npas %}
+    {% if n != npa %}
+    <a class="pool-card pool-card-mini" href="/pool/{{ n }}" style="border-top-color: {{ npa_palette.get(n, '#888') }}">
+      <div class="pc-npa">{{ n }}</div>
+    </a>
+    {% endif %}
+    {% endfor %}
+  </div>
+  <p><a href="/pool">← Back to The Pool overview</a></p>
+</section>
+
+{% endblock %}

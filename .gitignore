@@ -17,6 +17,11 @@ data/*.xlsx
 data/*.txt
 data/leads.db
 
+# Raw Somos weekly PDF cache — extracted from email zips by extract_somos_pdfs.py.
+# Source-of-truth lives in Bill's email; the parquets in data/ are the published
+# product. Re-extracted on demand.
+somos_pdfs/
+
 # Sanity CMS export — regenerated via `sanity dataset export`
 sanity-export/
 by-type/

@@ -53,6 +53,11 @@ $VENV scripts/build_category_trajectories.py
 echo ">> [10/11] group trajectories"
 $VENV scripts/build_group_trajectories.py
 
+# NOTE: somos_weekly_*.parquet (the Pool section) are NOT rebuilt here.
+# They have a weekly cadence driven by Bill's local /somos-weekly skill, and
+# are rsync'd to the droplet directly. The droplet venv does not need
+# pdfplumber.
+
 echo ">> [11/11] restart service"
 sudo -n systemctl restart resporgs 2>/dev/null || \
   echo "  (need root to restart — run: systemctl restart resporgs)"

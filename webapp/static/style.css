@@ -825,3 +825,120 @@ details.trajectory-table summary { cursor: pointer; color: var(--muted); padding
   .dormant-banner { flex-direction: column; text-align: center; }
   .dormant-banner .dormant-img { width: 70%; max-width: 240px; }
 }
+
+/* ============================================================
+ * Pool section
+ * ============================================================ */
+.pool-hero {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin: 24px 0 32px;
+}
+.pool-hero-stat {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-top: 3px solid #0b5ed7;
+  border-radius: 6px;
+  padding: 16px;
+  text-align: center;
+}
+.pool-hero-stat-big {
+  grid-column: span 2;
+  background: #f0f7ff;
+}
+.pool-hero-stat-big .phs-value {
+  font-size: 42px;
+  color: #0b5ed7;
+}
+.phs-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1f2937;
+  line-height: 1.1;
+}
+.phs-label {
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+.phs-sub {
+  font-size: 11px;
+  color: #9ca3af;
+  margin-top: 6px;
+}
+.pool-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin: 16px 0 32px;
+}
+.pool-card {
+  display: block;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-top: 3px solid #888;
+  border-radius: 6px;
+  padding: 14px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+.pool-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.pool-card .pc-npa {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1f2937;
+}
+.pool-card .pc-pct {
+  font-size: 26px;
+  font-weight: 700;
+  color: #0b5ed7;
+  margin: 4px 0;
+}
+.pool-card .pc-bar {
+  height: 4px;
+  background: #f3f4f6;
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 6px 0 8px;
+}
+.pool-card .pc-bar span {
+  display: block;
+  height: 100%;
+  background: #0b5ed7;
+}
+.pool-card .pc-detail {
+  font-size: 11px;
+  color: #6b7280;
+  line-height: 1.4;
+}
+.pool-card-mini {
+  text-align: center;
+  padding: 10px 6px;
+}
+.pool-card-mini .pc-npa { font-size: 18px; }
+.legend-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+.breadcrumb {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+.breadcrumb a {
+  color: #0b5ed7;
+}
+.stacked-chart, .fan-chart, .pct-trend, .weekly-diverging {
+  width: 100%;
+  height: auto;
+  display: block;
+}

@@ -681,6 +681,15 @@ def build_profile(rpfx: str) -> dict | None:
         "summary": portable_text_to_plain(primary.get("summary")) if primary else "",
         "message": portable_text_to_plain(primary.get("exactMatchMessage")) if primary else "",
         "notable_numbers": primary.get("topNumbers") if primary else None,
+        # AI-generated company overview + recent-news items, populated by
+        # scripts/sonar_enrich_resporgs.py + sonar_push_to_sanity.py.
+        # Both fields are optional — template renders nothing when absent.
+        "ai_overview": (primary.get("aiOverview") if primary else None),
+        "ai_overview_confidence": (primary.get("aiOverviewConfidence") if primary else None),
+        "ai_overview_updated": (primary.get("aiOverviewUpdated") if primary else None),
+        "recent_news": (primary.get("recentNews") if primary else None) or [],
+        "ai_affiliations": (primary.get("aiAffiliations") if primary else None),
+        "ai_toll_free_specific": (primary.get("aiTollFreeSpecific") if primary else None),
         "testimonials": testimonials,
         "mailbox_flag": mailbox_flag,
         "domain_age": domain_age,
@@ -1188,6 +1197,257 @@ def _short_num(v: float) -> str:
     if v >= 1_000:
         return f"{v/1_000:.0f}K"
     return f"{int(v)}"
+
+
+# ============================================================
+# Pool-section renderers (Somos weekly inventory data)
+# ============================================================
+
+NPA_PALETTE = {
+    800: "#0b5ed7", 833: "#16a34a", 844: "#dc2626",
+    855: "#d97706", 866: "#7c3aed", 877: "#0891b2", 888: "#be185d",
+}
+
+
+def _date_to_x(d: str, x_min, x_max, pad_l, inner_w) -> float:
+    """yyyy-mm-dd -> x coord on a date axis."""
+    from datetime import date
+    d_date = date.fromisoformat(d)
+    span_days = (x_max - x_min).days
+    if span_days <= 0:
+        return pad_l
+    return pad_l + ((d_date - x_min).days / span_days) * inner_w
+
+
+def render_stacked_area_svg(
+    series: list[dict],
+    width: int = 880,
+    height: int = 360,
+    title_for_total: str = "Total",
+) -> tuple[str, str]:
+    """Stacked area chart over a date axis.
+
+    series[i] = {"label": str, "color": str, "points": [(yyyy-mm-dd, value), ...]}
+    All series share the same X axis (union of dates). Missing values
+    interpolated as zero.
+    Returns (svg_string, legend_html).
+    """
+    from datetime import date
+    if not series:
+        return "", ""
+    all_dates = sorted({d for s in series for d, _ in s["points"]})
+    if not all_dates:
+        return "", ""
+
+    x_min = date.fromisoformat(all_dates[0])
+    x_max = date.fromisoformat(all_dates[-1])
+
+    # Build a value-by-date dict per series; default 0.
+    series_lookups = []
+    for s in series:
+        lut = {d: v for d, v in s["points"] if v is not None}
+        series_lookups.append({"label": s["label"], "color": s["color"], "lut": lut})
+
+    # Stacked totals per date, in order of `series`.
+    stacks: dict[str, list[float]] = {d: [0.0] * (len(series) + 1) for d in all_dates}
+    for d in all_dates:
+        running = 0.0
+        for i, s in enumerate(series_lookups):
+            running += s["lut"].get(d, 0) or 0
+            stacks[d][i + 1] = running
+
+    pad_l, pad_r, pad_t, pad_b = 64, 16, 22, 36
+    inner_w = width - pad_l - pad_r
+    inner_h = height - pad_t - pad_b
+    y_max = max(stacks[d][-1] for d in all_dates)
+    if y_max <= 0:
+        y_max = 1
+
+    def y_of(v: float) -> float:
+        return pad_t + inner_h - (v / y_max) * inner_h
+
+    def x_of(d: str) -> float:
+        return _date_to_x(d, x_min, x_max, pad_l, inner_w)
+
+    parts: list[str] = []
+
+    # Y gridlines (4 ticks)
+    step = _nice_step(y_max / 4)
+    yval = step
+    while yval <= y_max:
+        y = y_of(yval)
+        parts.append(
+            f'<line x1="{pad_l}" y1="{y:.1f}" x2="{width-pad_r}" y2="{y:.1f}" '
+            f'stroke="#e5e7eb" stroke-width="1"/>'
+        )
+        parts.append(
+            f'<text x="{pad_l - 6}" y="{y+3:.1f}" text-anchor="end" font-size="10" '
+            f'fill="#6b7280">{_short_num(yval)}</text>'
+        )
+        yval += step
+
+    # Stacked area paths — drawn from top of stack down so larger series
+    # don't overpaint smaller ones at the seam.
+    for i, s in enumerate(series_lookups):
+        upper = [(d, stacks[d][i + 1]) for d in all_dates]
+        lower = [(d, stacks[d][i]) for d in all_dates]
+        path = "M " + " L ".join(f"{x_of(d):.1f},{y_of(v):.1f}" for d, v in upper)
+        path += " L " + " L ".join(f"{x_of(d):.1f},{y_of(v):.1f}" for d, v in reversed(lower))
+        path += " Z"
+        parts.append(
+            f'<path d="{path}" fill="{s["color"]}" opacity="0.85">'
+            f'<title>{s["label"]}</title></path>'
+        )
+
+    # X axis labels: first, middle, last
+    labels = [all_dates[0], all_dates[len(all_dates) // 2], all_dates[-1]]
+    for d in labels:
+        parts.append(
+            f'<text x="{x_of(d):.1f}" y="{pad_t + inner_h + 18}" text-anchor="middle" '
+            f'font-size="10" fill="#6b7280">{d}</text>'
+        )
+
+    # Optional total at right-most edge
+    last = all_dates[-1]
+    total = stacks[last][-1]
+    parts.append(
+        f'<text x="{width - pad_r}" y="{pad_t}" text-anchor="end" font-size="11" '
+        f'fill="#374151" font-weight="600">{title_for_total}: {_short_num(total)}</text>'
+    )
+
+    svg = (
+        f'<svg viewBox="0 0 {width} {height}" class="stacked-chart" '
+        f'xmlns="http://www.w3.org/2000/svg">'
+        + "".join(parts)
+        + "</svg>"
+    )
+
+    # Legend
+    leg_parts = []
+    for s in series_lookups:
+        last_val = s["lut"].get(last, 0) or 0
+        leg_parts.append(
+            f'<li><span class="pl-swatch" style="background:{s["color"]}"></span>'
+            f'<span class="pl-label">{s["label"]}</span>'
+            f'<span class="pl-val">{_short_num(last_val)}</span></li>'
+        )
+    return svg, "".join(leg_parts)
+
+
+def render_fan_chart_svg(
+    series: list[dict],
+    width: int = 880,
+    height: int = 380,
+) -> tuple[str, str]:
+    """Multi-line chart with date X-axis and date Y-axis.
+
+    Each series = one regression-window length (12mo, 24mo, 36mo, 60mo, 84mo, 108mo).
+    Points are (report_date, predicted_exhaust_date).
+    Both axes are date-valued.
+
+    Returns (svg_string, legend_html).
+    """
+    from datetime import date
+    if not series:
+        return "", ""
+
+    # Collect all x-values and y-values
+    all_x = sorted({d for s in series for d, _ in s["points"] if d})
+    all_y = sorted({y for s in series for _, y in s["points"] if y})
+    if not all_x or not all_y:
+        return "", ""
+
+    x_min = date.fromisoformat(all_x[0])
+    x_max = date.fromisoformat(all_x[-1])
+    y_min = date.fromisoformat(all_y[0])
+    y_max = date.fromisoformat(all_y[-1])
+
+    pad_l, pad_r, pad_t, pad_b = 76, 16, 22, 38
+    inner_w = width - pad_l - pad_r
+    inner_h = height - pad_t - pad_b
+
+    def x_of(d_str: str) -> float:
+        d = date.fromisoformat(d_str)
+        span = (x_max - x_min).days or 1
+        return pad_l + ((d - x_min).days / span) * inner_w
+
+    def y_of(d_str: str) -> float:
+        d = date.fromisoformat(d_str)
+        span = (y_max - y_min).days or 1
+        return pad_t + inner_h - ((d - y_min).days / span) * inner_h
+
+    parts: list[str] = []
+
+    # Horizontal gridlines: one per year of Y range
+    cur_year = y_min.year
+    while cur_year <= y_max.year:
+        anchor = date(cur_year, 1, 1)
+        if y_min <= anchor <= y_max:
+            y = y_of(anchor.isoformat())
+            parts.append(
+                f'<line x1="{pad_l}" y1="{y:.1f}" x2="{width-pad_r}" y2="{y:.1f}" '
+                f'stroke="#e5e7eb" stroke-width="1"/>'
+            )
+            parts.append(
+                f'<text x="{pad_l - 6}" y="{y+3:.1f}" text-anchor="end" font-size="10" '
+                f'fill="#6b7280">{cur_year}</text>'
+            )
+        cur_year += 1
+
+    # Today marker on Y-axis (if in range): show "predictions touching today"
+    today = date.today()
+    if y_min <= today <= y_max:
+        ty = y_of(today.isoformat())
+        parts.append(
+            f'<line x1="{pad_l}" y1="{ty:.1f}" x2="{width-pad_r}" y2="{ty:.1f}" '
+            f'stroke="#dc2626" stroke-width="1.4" stroke-dasharray="4 3"/>'
+        )
+        parts.append(
+            f'<text x="{width - pad_r - 4}" y="{ty - 4:.1f}" text-anchor="end" '
+            f'font-size="10" fill="#dc2626" font-weight="600">today</text>'
+        )
+
+    # X axis labels: each year that appears
+    cur_year = x_min.year
+    while cur_year <= x_max.year:
+        anchor = date(cur_year, 1, 1)
+        if x_min <= anchor <= x_max:
+            xc = x_of(anchor.isoformat())
+            parts.append(
+                f'<text x="{xc:.1f}" y="{pad_t + inner_h + 18}" text-anchor="middle" '
+                f'font-size="10" fill="#6b7280">{cur_year}</text>'
+            )
+        cur_year += 1
+
+    # One <path> per series
+    for s in series:
+        pts = [(d, y) for d, y in s["points"] if d and y]
+        if not pts:
+            continue
+        d_attr = "M " + " L ".join(
+            f"{x_of(d):.1f},{y_of(y):.1f}" for d, y in pts
+        )
+        parts.append(
+            f'<path d="{d_attr}" stroke="{s["color"]}" stroke-width="1.8" '
+            f'fill="none" stroke-linejoin="round" stroke-linecap="round">'
+            f'<title>{s["label"]}</title></path>'
+        )
+
+    svg = (
+        f'<svg viewBox="0 0 {width} {height}" class="fan-chart" '
+        f'xmlns="http://www.w3.org/2000/svg">'
+        + "".join(parts)
+        + "</svg>"
+    )
+
+    # Legend
+    leg_parts = []
+    for s in series:
+        leg_parts.append(
+            f'<li><span class="pl-swatch" style="background:{s["color"]}"></span>'
+            f'<span class="pl-label">{s["label"]}</span></li>'
+        )
+    return svg, "".join(leg_parts)
 
 
 def _name_for(pfx: str) -> str:
@@ -2508,6 +2768,475 @@ def ask_question(rpfx: str | None = None):
     return render_template(
         "ask.html", submitted=False, rpfx=rpfx_upper, rpfx_title=rpfx_title,
         month=_latest_month(), total_resporgs=len(RESPORG_DOCS),
+    )
+
+
+# ============================================================
+# Pool section — overall toll-free inventory (Somos weekly data)
+# ============================================================
+
+POOL_NPA_PATH = DATA / "somos_weekly_npa.parquet"
+POOL_FLOW_PATH = DATA / "somos_weekly_pool.parquet"
+POOL_EXHAUST_PATH = DATA / "somos_exhaust_forecasts.parquet"
+
+# Per-NPA explainer copy (stored as JSON in clean/, mirrors how categories work).
+def _load_pool_copy() -> dict:
+    p = CLEAN / "poolNpaCopy.json"
+    if not p.exists():
+        return {}
+    try:
+        return json.loads(p.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+def _pool_summary() -> dict | None:
+    """Return latest-week pool snapshot {week_ending, total_in_use, spare,
+    pct_in_use, growth_week, total_spared_week, weeks_since_pool_grew} or None."""
+    if not POOL_FLOW_PATH.exists():
+        return None
+    con = duckdb.connect()
+    flow = con.execute(
+        f"""
+        SELECT week_ending, total_in_use, spare, growth_week,
+               reserved_during_week, total_spared_week
+        FROM read_parquet('{POOL_FLOW_PATH.as_posix()}')
+        ORDER BY week_ending DESC
+        LIMIT 1
+        """
+    ).fetchone()
+    if not flow:
+        return None
+    wend, total_in_use, spare, growth_week, reserved, total_spared = flow
+    pool_total = (total_in_use or 0) + (spare or 0)
+    pct = (total_in_use / pool_total * 100) if pool_total else 0
+
+    # How many weeks since spare last grew (i.e. growth_week was negative)?
+    weeks_since_grew = 0
+    grow_rows = con.execute(
+        f"""
+        SELECT week_ending, growth_week FROM read_parquet('{POOL_FLOW_PATH.as_posix()}')
+        ORDER BY week_ending DESC
+        """
+    ).fetchall()
+    for w, g in grow_rows:
+        if g is None:
+            continue
+        if g < 0:
+            break
+        weeks_since_grew += 1
+
+    return {
+        "week_ending": wend,
+        "total_in_use": total_in_use,
+        "spare": spare,
+        "pool_total": pool_total,
+        "pct_in_use": pct,
+        "growth_week": growth_week,
+        "reserved_during_week": reserved,
+        "total_spared_week": total_spared,
+        "weeks_since_pool_grew": weeks_since_grew,
+    }
+
+
+def _latest_npa_snapshot() -> list[dict]:
+    """Return latest-week per-NPA rows, ordered by NPA_PREFIXES."""
+    if not POOL_NPA_PATH.exists():
+        return []
+    con = duckdb.connect()
+    rows = con.execute(
+        f"""
+        WITH latest AS (
+          SELECT week_ending AS w
+          FROM read_parquet('{POOL_NPA_PATH.as_posix()}')
+          ORDER BY week_ending DESC LIMIT 1
+        )
+        SELECT npa, working, assigned, reserved, disconnect, transit,
+               unavail, suspend, total_in_use, pct_in_use, spare, total_pool,
+               week_ending
+        FROM read_parquet('{POOL_NPA_PATH.as_posix()}')
+        WHERE week_ending = (SELECT w FROM latest)
+        """
+    ).fetchall()
+    by_npa = {r[0]: r for r in rows}
+    out = []
+    cols = ["npa", "working", "assigned", "reserved", "disconnect", "transit",
+            "unavail", "suspend", "total_in_use", "pct_in_use", "spare",
+            "total_pool", "week_ending"]
+    for npa in NPA_PREFIXES:
+        r = by_npa.get(npa)
+        if r:
+            out.append(dict(zip(cols, r)))
+    return out
+
+
+@app.route("/pool")
+def pool_index():
+    summary = _pool_summary()
+    cards = _latest_npa_snapshot()
+
+    # Stacked area: spare by NPA over time. Only NPAs with non-zero spare
+    # contribute meaningfully (800 is always 0).
+    stacked_svg = ""
+    stacked_legend = ""
+    diverging_svg = ""
+    diverging_legend = ""
+    if POOL_NPA_PATH.exists():
+        con = duckdb.connect()
+        rows = con.execute(
+            f"""
+            SELECT npa, week_ending, spare
+            FROM read_parquet('{POOL_NPA_PATH.as_posix()}')
+            ORDER BY npa, week_ending
+            """
+        ).fetchall()
+        by_npa: dict[int, list[tuple]] = {}
+        for npa, wend, spare in rows:
+            by_npa.setdefault(npa, []).append((wend, spare or 0))
+        # Order matters for stacking — biggest filler at bottom, biggest spare at top
+        order = [800, 888, 877, 866, 855, 844, 833]
+        series = []
+        for npa in order:
+            pts = by_npa.get(npa)
+            if not pts:
+                continue
+            series.append({
+                "label": f"{npa} (spare)",
+                "color": NPA_PALETTE.get(npa, "#888"),
+                "points": pts,
+            })
+        stacked_svg, stacked_legend = render_stacked_area_svg(
+            series, title_for_total="Total spare"
+        )
+
+    # Diverging bars: weekly growth_week (last ~104 weeks for legibility)
+    if POOL_FLOW_PATH.exists():
+        con = duckdb.connect()
+        flow_rows = con.execute(
+            f"""
+            SELECT week_ending, growth_week
+            FROM read_parquet('{POOL_FLOW_PATH.as_posix()}')
+            WHERE growth_week IS NOT NULL
+            ORDER BY week_ending DESC
+            LIMIT 104
+            """
+        ).fetchall()
+        flow_rows.reverse()
+        # Reuse render_net_change_svg by feeding it 1 series per week — but that
+        # renderer is tuned for category counts, not weekly bars. Build an inline
+        # version: a single series with one bar per week.
+        diverging_svg, diverging_legend = _render_weekly_diverging_svg(flow_rows)
+
+    return render_template(
+        "pool.html",
+        summary=summary,
+        cards=cards,
+        stacked_svg=stacked_svg,
+        stacked_legend=stacked_legend,
+        diverging_svg=diverging_svg,
+        diverging_legend=diverging_legend,
+        npa_palette=NPA_PALETTE,
+        month=_latest_month(),
+        total_resporgs=len(RESPORG_DOCS),
+    )
+
+
+def _render_weekly_diverging_svg(rows: list[tuple], width: int = 880, height: int = 240) -> tuple[str, str]:
+    """Vertical bars on a date axis. rows = [(yyyy-mm-dd, signed_int), ...]."""
+    from datetime import date as _date
+    if not rows:
+        return "", ""
+    dates = [_date.fromisoformat(d) for d, _ in rows]
+    vals = [v for _, v in rows]
+    x_min, x_max = dates[0], dates[-1]
+    pad_l, pad_r, pad_t, pad_b = 64, 16, 18, 36
+    inner_w = width - pad_l - pad_r
+    inner_h = height - pad_t - pad_b
+
+    y_max = max(vals + [0])
+    y_min = min(vals + [0])
+    if y_max == 0 and y_min == 0:
+        y_max = 1
+    span = max(1, y_max - y_min)
+
+    def y_of(v: float) -> float:
+        return pad_t + inner_h - ((v - y_min) / span) * inner_h
+
+    def x_of(d) -> float:
+        sd = (x_max - x_min).days or 1
+        return pad_l + ((d - x_min).days / sd) * inner_w
+
+    parts: list[str] = []
+
+    # Zero line
+    zy = y_of(0)
+    parts.append(
+        f'<line x1="{pad_l}" y1="{zy:.1f}" x2="{width-pad_r}" y2="{zy:.1f}" '
+        f'stroke="#374151" stroke-width="1.2"/>'
+    )
+
+    # Y axis ticks
+    step = _nice_step(span / 6)
+    yval = (int(y_min // step)) * step
+    while yval <= y_max:
+        y = y_of(yval)
+        parts.append(
+            f'<line x1="{pad_l}" y1="{y:.1f}" x2="{width-pad_r}" y2="{y:.1f}" '
+            f'stroke="#e5e7eb" stroke-width="1"/>'
+        )
+        parts.append(
+            f'<text x="{pad_l - 6}" y="{y+3:.1f}" text-anchor="end" font-size="10" '
+            f'fill="#6b7280">{_fmt_signed_short(yval)}</text>'
+        )
+        yval += step
+
+    # Bars
+    bar_w = max(2.0, inner_w / max(len(rows), 1) * 0.7)
+    for d, v in zip(dates, vals):
+        if v is None:
+            continue
+        x = x_of(d) - bar_w / 2
+        y0 = y_of(0)
+        y1 = y_of(v)
+        top = min(y0, y1)
+        h = abs(y1 - y0)
+        color = "#16a34a" if v >= 0 else "#dc2626"
+        parts.append(
+            f'<rect x="{x:.1f}" y="{top:.1f}" width="{bar_w:.1f}" height="{h:.1f}" '
+            f'fill="{color}" opacity="0.85">'
+            f'<title>{d.isoformat()}: {_fmt_signed_short(v)}</title></rect>'
+        )
+
+    # X labels: first, mid, last
+    for d in (dates[0], dates[len(dates) // 2], dates[-1]):
+        parts.append(
+            f'<text x="{x_of(d):.1f}" y="{pad_t + inner_h + 18}" text-anchor="middle" '
+            f'font-size="10" fill="#6b7280">{d.isoformat()}</text>'
+        )
+
+    svg = (
+        f'<svg viewBox="0 0 {width} {height}" class="weekly-diverging" '
+        f'xmlns="http://www.w3.org/2000/svg">'
+        + "".join(parts)
+        + "</svg>"
+    )
+    legend = (
+        '<li><span class="pl-swatch" style="background:#16a34a"></span>'
+        '<span class="pl-label">Spare pool grew that week</span></li>'
+        '<li><span class="pl-swatch" style="background:#dc2626"></span>'
+        '<span class="pl-label">Spare pool shrank that week</span></li>'
+    )
+    return svg, legend
+
+
+@app.route("/pool/exhaust")
+def pool_exhaust():
+    if not POOL_EXHAUST_PATH.exists():
+        abort(404)
+    con = duckdb.connect()
+    rows = con.execute(
+        f"""
+        SELECT week_ending, horizon_months, predicted_exhaust_date
+        FROM read_parquet('{POOL_EXHAUST_PATH.as_posix()}')
+        WHERE week_ending IS NOT NULL AND predicted_exhaust_date IS NOT NULL
+        ORDER BY horizon_months, week_ending
+        """
+    ).fetchall()
+
+    # Color map: short-window = red (panic), long-window = blue (calm)
+    horizon_palette = {
+        12:  "#dc2626",
+        24:  "#ea580c",
+        36:  "#d97706",
+        60:  "#ca8a04",
+        84:  "#0891b2",
+        108: "#1e40af",
+    }
+    horizon_label = {
+        12: "12-month window (1 yr)",
+        24: "24-month window (2 yr)",
+        36: "36-month window (3 yr)",
+        60: "60-month window (5 yr)",
+        84: "84-month window (7 yr)",
+        108: "108-month window (9 yr)",
+    }
+    by_h: dict[int, list[tuple]] = {}
+    for w, h, p in rows:
+        by_h.setdefault(h, []).append((w, p))
+    series = []
+    for h in sorted(by_h):
+        series.append({
+            "label": horizon_label.get(h, f"{h}-month window"),
+            "color": horizon_palette.get(h, "#6b7280"),
+            "points": by_h[h],
+        })
+    fan_svg, fan_legend = render_fan_chart_svg(series)
+
+    # "Forecasts that have already missed" — predictions whose date has passed
+    from datetime import date as _date
+    today = _date.today().isoformat()
+    missed = con.execute(
+        f"""
+        SELECT week_ending, horizon_months, predicted_exhaust_date
+        FROM read_parquet('{POOL_EXHAUST_PATH.as_posix()}')
+        WHERE predicted_exhaust_date IS NOT NULL
+          AND predicted_exhaust_date < ?
+        ORDER BY predicted_exhaust_date
+        """,
+        [today],
+    ).fetchall()
+
+    # Latest week's six forecasts (the "what does Somos think today" panel)
+    latest = con.execute(
+        f"""
+        WITH latest AS (
+            SELECT week_ending AS w
+            FROM read_parquet('{POOL_EXHAUST_PATH.as_posix()}')
+            WHERE week_ending IS NOT NULL
+            ORDER BY week_ending DESC LIMIT 1
+        )
+        SELECT horizon_months, monthly_rate_of_change, months_to_exhaust,
+               predicted_exhaust_date, week_ending
+        FROM read_parquet('{POOL_EXHAUST_PATH.as_posix()}')
+        WHERE week_ending = (SELECT w FROM latest)
+        ORDER BY horizon_months
+        """
+    ).fetchall()
+
+    return render_template(
+        "pool_exhaust.html",
+        fan_svg=fan_svg,
+        fan_legend=fan_legend,
+        missed=missed,
+        latest=latest,
+        horizon_label=horizon_label,
+        horizon_palette=horizon_palette,
+        month=_latest_month(),
+        total_resporgs=len(RESPORG_DOCS),
+    )
+
+
+@app.route("/pool/<int:npa>")
+def pool_npa(npa: int):
+    if npa not in NPA_PREFIXES:
+        abort(404)
+    if not POOL_NPA_PATH.exists():
+        abort(404)
+    con = duckdb.connect()
+
+    # Status decomposition over time: stacked area of working, assigned,
+    # reserved, disconnect, transit, unavail, suspend.
+    rows = con.execute(
+        f"""
+        SELECT week_ending, working, assigned, reserved, disconnect, transit,
+               unavail, suspend, total_in_use, pct_in_use, spare, total_pool
+        FROM read_parquet('{POOL_NPA_PATH.as_posix()}')
+        WHERE npa = ?
+        ORDER BY week_ending
+        """,
+        [npa],
+    ).fetchall()
+
+    if not rows:
+        abort(404)
+
+    cols = ["week_ending", "working", "assigned", "reserved", "disconnect",
+            "transit", "unavail", "suspend", "total_in_use", "pct_in_use",
+            "spare", "total_pool"]
+    history = [dict(zip(cols, r)) for r in rows]
+    latest = history[-1]
+
+    # Status decomposition stacked area
+    status_palette = {
+        "working":    "#16a34a",
+        "assigned":   "#0b5ed7",
+        "reserved":   "#0891b2",
+        "disconnect": "#dc2626",
+        "transit":    "#d97706",
+        "unavail":    "#7c3aed",
+        "suspend":    "#6b7280",
+    }
+    series = []
+    for status in ("working", "assigned", "reserved", "disconnect", "transit", "unavail", "suspend"):
+        pts = [(h["week_ending"], h.get(status) or 0) for h in history]
+        if any(v for _, v in pts):
+            series.append({
+                "label": status.capitalize(),
+                "color": status_palette[status],
+                "points": pts,
+            })
+    status_svg, status_legend = render_stacked_area_svg(
+        series, title_for_total=f"NPA {npa} total in use"
+    )
+
+    # Fill % trend line (single-series multi-line at scale 0-100)
+    pct_pts = [(h["week_ending"], h.get("pct_in_use") or 0) for h in history]
+    pct_svg = _render_pct_trend_svg(pct_pts, color=NPA_PALETTE.get(npa, "#0b5ed7"))
+
+    # Per-NPA editorial copy
+    pool_copy = _load_pool_copy().get(str(npa), {})
+
+    return render_template(
+        "pool_npa.html",
+        npa=npa,
+        latest=latest,
+        history=history,
+        status_svg=status_svg,
+        status_legend=status_legend,
+        pct_svg=pct_svg,
+        pool_copy=pool_copy,
+        npa_palette=NPA_PALETTE,
+        all_npas=NPA_PREFIXES,
+        month=_latest_month(),
+        total_resporgs=len(RESPORG_DOCS),
+    )
+
+
+def _render_pct_trend_svg(points: list[tuple], color: str = "#0b5ed7",
+                          width: int = 880, height: int = 200) -> str:
+    """Single-series % over time, fixed 0-100 Y axis."""
+    from datetime import date as _date
+    if not points:
+        return ""
+    dates = [_date.fromisoformat(d) for d, _ in points]
+    vals = [v for _, v in points]
+    x_min, x_max = dates[0], dates[-1]
+    pad_l, pad_r, pad_t, pad_b = 56, 16, 18, 32
+    inner_w = width - pad_l - pad_r
+    inner_h = height - pad_t - pad_b
+
+    def x_of(d) -> float:
+        sd = (x_max - x_min).days or 1
+        return pad_l + ((d - x_min).days / sd) * inner_w
+
+    def y_of(v: float) -> float:
+        return pad_t + inner_h - (v / 100) * inner_h
+
+    parts: list[str] = []
+    for v in (0, 25, 50, 75, 100):
+        y = y_of(v)
+        parts.append(
+            f'<line x1="{pad_l}" y1="{y:.1f}" x2="{width-pad_r}" y2="{y:.1f}" '
+            f'stroke="#e5e7eb" stroke-width="1"/>'
+        )
+        parts.append(
+            f'<text x="{pad_l - 6}" y="{y+3:.1f}" text-anchor="end" font-size="10" '
+            f'fill="#6b7280">{v}%</text>'
+        )
+    d_attr = "M " + " L ".join(f"{x_of(d):.1f},{y_of(v):.1f}" for d, v in zip(dates, vals))
+    parts.append(
+        f'<path d="{d_attr}" stroke="{color}" stroke-width="2" fill="none"/>'
+    )
+    for d in (dates[0], dates[len(dates) // 2], dates[-1]):
+        parts.append(
+            f'<text x="{x_of(d):.1f}" y="{pad_t + inner_h + 16}" text-anchor="middle" '
+            f'font-size="10" fill="#6b7280">{d.isoformat()}</text>'
+        )
+    return (
+        f'<svg viewBox="0 0 {width} {height}" class="pct-trend" '
+        f'xmlns="http://www.w3.org/2000/svg">'
+        + "".join(parts)
+        + "</svg>"
     )
 
 

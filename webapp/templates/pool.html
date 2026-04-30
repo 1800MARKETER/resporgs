@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}The Pool — Toll-free inventory · Resporgs.com{% endblock %}
+{% block content %}
+
+<section class="hero-text">
+  <h1>The Pool</h1>
+  <p class="hero-sub">
+    Every toll-free number in North America lives somewhere on a spectrum from <em>working</em> (in active use) to
+    <em>spare</em> (waiting to be assigned). This is the inventory side of the industry — what's left, what's churning,
+    and how fast the pool is filling up.
+  </p>
+</section>
+
+{% if summary %}
+<section class="pool-hero">
+  <div class="pool-hero-stat pool-hero-stat-big">
+    <div class="phs-value">{{ "{:.2f}%".format(summary.pct_in_use) }}</div>
+    <div class="phs-label">of all toll-free numbers in use</div>
+    <div class="phs-sub">week ending {{ summary.week_ending }}</div>
+  </div>
+  <div class="pool-hero-stat">
+    <div class="phs-value">{{ "{:,}".format(summary.total_in_use) }}</div>
+    <div class="phs-label">numbers in use</div>
+  </div>
+  <div class="pool-hero-stat">
+    <div class="phs-value">{{ "{:,}".format(summary.spare) }}</div>
+    <div class="phs-label">spare pool</div>
+  </div>
+  <div class="pool-hero-stat">
+    <div class="phs-value">{{ "{:,}".format(summary.total_spared_week) if summary.total_spared_week is not none else '—' }}</div>
+    <div class="phs-label">numbers retired last week</div>
+  </div>
+  <div class="pool-hero-stat">
+    <div class="phs-value">{{ "{:,}".format(summary.reserved_during_week) if summary.reserved_during_week is not none else '—' }}</div>
+    <div class="phs-label">numbers reserved last week</div>
+  </div>
+  <div class="pool-hero-stat">
+    <div class="phs-value">{{ summary.weeks_since_pool_grew }}</div>
+    <div class="phs-label">weeks since spare pool last grew</div>
+  </div>
+</section>
+{% endif %}
+
+{% if cards %}
+<section>
+  <h2>Per-NPA fill levels — today</h2>
+  <p class="summary">
+    The 800 prefix has been fully assigned since 1996. 833, the newest, is the only NPA with meaningful headroom left.
+    Click any card for the full status decomposition over time.
+  </p>
+  <div class="pool-card-grid">
+    {% for c in cards %}
+    <a class="pool-card" href="/pool/{{ c.npa }}" style="border-top-color: {{ npa_palette.get(c.npa, '#888') }}">
+      <div class="pc-npa">{{ c.npa }}</div>
+      <div class="pc-pct">{{ "{:.1f}%".format(c.pct_in_use or 0) }}</div>
+      <div class="pc-bar"><span style="width: {{ (c.pct_in_use or 0) }}%; background: {{ npa_palette.get(c.npa, '#888') }};"></span></div>
+      <div class="pc-detail">
+        {{ "{:,}".format(c.total_in_use or 0) }} in use<br>
+        {{ "{:,}".format(c.spare or 0) }} spare
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if stacked_svg %}
+<section>
+  <h2>Spare pool by NPA, over time</h2>
+  <p class="summary">
+    A 9-year view of the world's toll-free spare pool, split by NPA. Watch 833 (the newest prefix) shrink from a giant
+    green wedge of unused inventory in 2017 down to almost nothing today. The spare pool is what you're drawing from when
+    you ask for a new toll-free number.
+  </p>
+  <div class="chart-box">
+    <div class="chart-wrap">{{ stacked_svg|safe }}</div>
+    <ul class="pie-legend multi-legend">{{ stacked_legend|safe }}</ul>
+  </div>
+</section>
+{% endif %}
+
+{% if diverging_svg %}
+<section>
+  <h2>Weekly net pool growth — last 2 years</h2>
+  <p class="summary">
+    Each bar = one week. Green up = the spare pool grew that week (more numbers got freed than assigned).
+    Red down = the spare pool shrank (more numbers were assigned than freed). The pool's been losing ground steadily —
+    the disconnect tide hasn't been keeping up with new assignments.
+  </p>
+  <div class="chart-box">
+    <div class="chart-wrap">{{ diverging_svg|safe }}</div>
+    <ul class="pie-legend multi-legend">{{ diverging_legend|safe }}</ul>
+  </div>
+</section>
+{% endif %}
+
+<section>
+  <h2>How long until we run out?</h2>
+  <p class="summary">
+    Somos publishes six different exhaust-date forecasts every week, each based on a different historical window
+    (1, 2, 3, 5, 7, and 9 years). They wildly disagree. The 12-month forecast says we have 2 years left.
+    The 9-year forecast says decades. <strong><a href="/pool/exhaust">See how predictions have evolved →</a></strong>
+  </p>
+</section>
+
+<section class="intro">
+  <h2>Where this data comes from</h2>
+  <p>
+    Somos publishes a weekly Number Administration Summary every Monday morning, covering the previous Saturday's
+    inventory. We've been archiving these reports since 2017. This section is rebuilt from the parsed PDFs every time
+    a new report arrives. <a href="/faq">More on how the data is sourced →</a>
+  </p>
+</section>
+
+{% endblock %}
