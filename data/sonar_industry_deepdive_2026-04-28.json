@@ -1,0 +1,1320 @@
+{
+  "generated_at": "2026-04-30T20:01:30.859091Z",
+  "model": "perplexity/sonar-pro",
+  "queries": [
+    {
+      "id": "somos-administrator-renewal",
+      "title": "Somos's role as Toll-Free Numbering Administrator — contract / renewal status",
+      "prompt": "Research the current status of **Somos, Inc.'s role as the federally-designated Toll-Free Numbering Administrator (TFNA)**, also referred to as the 'SMS/800 Number Administrator.' I'm specifically interested in:\n\n1. The current FCC contract / designation status — when was Somos's designation last renewed, when does it next come up for renewal, is there an active proceeding or RFP?\n2. Any FCC dockets, NPRMs, or orders concerning the TFNA role over the past 24 months\n3. Has any other entity proposed to take over the TFNA role? Has Somos's performance been challenged?\n4. The history of how Somos came to hold this role (DSMI / SMS/800 transition era).\n\nCite FCC dockets, federal register notices, and trade press. If specific docket numbers exist, include them. If you cannot find concrete information, say so plainly.",
+      "content": "**Somos, Inc. continues to serve as the federally-designated Toll-Free Numbering Administrator (TFNA), also known as the SMS/800 Number Administrator, managing the Toll-Free Numbering database since its selection by the FCC in 2013.** No information in the available search results confirms the exact date of the last TFNA-specific renewal, the next renewal date, or any active FCC proceeding/RFP for this role as of the 2020 data provided[1][2][3].\n\n### 1. Current FCC Contract/Designation Status\n- Search results lack details on a specific TFNA contract renewal post-2013 or any timeline for the next one; they focus on related roles (NANPA, PA, RNDA) awarded to SomosGov (a Somos subsidiary) via competitive bidding.\n- The most recent contract mentioned is a **five-year award to SomosGov on December 1, 2020**, for NANPA, Pooling Administrator (PA), and Reassigned Numbers Database Administrator (RNDA), with FCC options to extend up to eight years total. This would potentially run through 2025-2028, but no explicit link to TFNA renewal[1][2][4][5][6].\n- No active proceedings, RFPs, or renewal notices for TFNA appear in results; concrete information on TFNA contract specifics is absent beyond Somos holding the role since 2013[1][2][3].\n\n### 2. FCC Dockets, NPRMs, or Orders on TFNA (Past 24 Months)\n- No FCC dockets, NPRMs, orders, or Federal Register notices concerning the TFNA role are identified in the search results for the past 24 months (or any recent period).\n- Indirect context: FCC progress on Reassigned Numbers Database (proposed June 2017, approved December 2018) led to the 2020 SomosGov RNDA award, but no docket numbers provided and not TFNA-specific[6].\n\n### 3. Proposals by Other Entities or Challenges to Somos Performance\n- No evidence of other entities proposing to take over the TFNA role or challenges to Somos's performance.\n- All contracts (TFNA since 2013, NANPA/PA bridge in 2018, full NANPA/PA/RNDA in 2020) resulted from **FCC competitive bidding processes**, implying competition existed but Somos/SomosGov prevailed each time[1][2][3].\n\n### 4. History of Somos's Role (DSMI / SMS/800 Transition)\n- Somos, Inc. was **selected by the FCC in 2013** as the neutral TFNA to manage the Toll-Free Numbering database (SMS/800 TFN Registry) for North America, covering over 42 million toll-free numbers[1][2][3].\n- Search results do not detail the prior DSMI-to-SMS/800 transition era or how Somos specifically assumed the role; they confirm only the 2013 start via FCC selection, following industry shifts to neutral administration[1][2][3].\n- Somos later expanded: 2018 bridge contract for NANPA/PA, extended to full contracts in 2018 and 2020 via SomosGov[1][2][3][4].\n\n**Limitations**: Results are from 2018-2020 and lack FCC dockets, Federal Register notices, or updates beyond the 2020 NANPA/PA/RNDA contract. No concrete data on TFNA renewal timelines, recent proceedings, or transition history; primary sources like fcc.gov, ecfsapi.fcc.gov, or somos.com post-2020 are not reflected here. Trade press (Telecompetitor, TransNexus) confirms Somos's ongoing role without challenges[4][5].",
+      "usage": {
+        "prompt_tokens": 289,
+        "completion_tokens": 805,
+        "total_tokens": 1094,
+        "cost": 0.0187506,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.01894,
+          "upstream_inference_prompt_cost": 0.000867,
+          "upstream_inference_completions_cost": 0.018073
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "annotations": [
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.somos.com/FCC_Awards_SomosGov_Contract_for_NANPA_PA_and_RNDA",
+            "title": "FCC Awards SomosGov Contract for North American Numbering ...",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.prnewswire.com/news-releases/fcc-awards-somosgov-contract-for-north-american-numbering-plan-pooling-and-reassigned-numbers-database-administration-301183128.html",
+            "title": "FCC Awards SomosGov Contract for North American Numbering ...",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.somos.com/insights/somos-inc-awarded-north-american-numbering-plan-administration-and-pooling-administration-contracts",
+            "title": "Somos, Inc. is Awarded the North American Numbering Plan ...",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://transnexus.com/blog/2020/somos-tn-rnd-admin/",
+            "title": "FCC Selects SomosGov for database administrator roles - TransNexus",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.telecompetitor.com/fcc-selects-somosgov-for-telephone-number-administration/",
+            "title": "FCC Selects SomosGov for Telephone Number Administration",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.jdsupra.com/legalnews/fcc-selects-somosgov-as-next-telephone-20057/",
+            "title": "FCC Selects SomosGov as Next Telephone Number Administrator ...",
+            "start_index": 0,
+            "end_index": 0
+          }
+        }
+      ],
+      "raw": {
+        "id": "gen-1777579293-puVQpd89ho3t4bCD4MdF",
+        "object": "chat.completion",
+        "created": 1777579293,
+        "model": "perplexity/sonar-pro",
+        "provider": "Perplexity",
+        "system_fingerprint": null,
+        "choices": [
+          {
+            "index": 0,
+            "logprobs": null,
+            "finish_reason": "stop",
+            "native_finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "**Somos, Inc. continues to serve as the federally-designated Toll-Free Numbering Administrator (TFNA), also known as the SMS/800 Number Administrator, managing the Toll-Free Numbering database since its selection by the FCC in 2013.** No information in the available search results confirms the exact date of the last TFNA-specific renewal, the next renewal date, or any active FCC proceeding/RFP for this role as of the 2020 data provided[1][2][3].\n\n### 1. Current FCC Contract/Designation Status\n- Search results lack details on a specific TFNA contract renewal post-2013 or any timeline for the next one; they focus on related roles (NANPA, PA, RNDA) awarded to SomosGov (a Somos subsidiary) via competitive bidding.\n- The most recent contract mentioned is a **five-year award to SomosGov on December 1, 2020**, for NANPA, Pooling Administrator (PA), and Reassigned Numbers Database Administrator (RNDA), with FCC options to extend up to eight years total. This would potentially run through 2025-2028, but no explicit link to TFNA renewal[1][2][4][5][6].\n- No active proceedings, RFPs, or renewal notices for TFNA appear in results; concrete information on TFNA contract specifics is absent beyond Somos holding the role since 2013[1][2][3].\n\n### 2. FCC Dockets, NPRMs, or Orders on TFNA (Past 24 Months)\n- No FCC dockets, NPRMs, orders, or Federal Register notices concerning the TFNA role are identified in the search results for the past 24 months (or any recent period).\n- Indirect context: FCC progress on Reassigned Numbers Database (proposed June 2017, approved December 2018) led to the 2020 SomosGov RNDA award, but no docket numbers provided and not TFNA-specific[6].\n\n### 3. Proposals by Other Entities or Challenges to Somos Performance\n- No evidence of other entities proposing to take over the TFNA role or challenges to Somos's performance.\n- All contracts (TFNA since 2013, NANPA/PA bridge in 2018, full NANPA/PA/RNDA in 2020) resulted from **FCC competitive bidding processes**, implying competition existed but Somos/SomosGov prevailed each time[1][2][3].\n\n### 4. History of Somos's Role (DSMI / SMS/800 Transition)\n- Somos, Inc. was **selected by the FCC in 2013** as the neutral TFNA to manage the Toll-Free Numbering database (SMS/800 TFN Registry) for North America, covering over 42 million toll-free numbers[1][2][3].\n- Search results do not detail the prior DSMI-to-SMS/800 transition era or how Somos specifically assumed the role; they confirm only the 2013 start via FCC selection, following industry shifts to neutral administration[1][2][3].\n- Somos later expanded: 2018 bridge contract for NANPA/PA, extended to full contracts in 2018 and 2020 via SomosGov[1][2][3][4].\n\n**Limitations**: Results are from 2018-2020 and lack FCC dockets, Federal Register notices, or updates beyond the 2020 NANPA/PA/RNDA contract. No concrete data on TFNA renewal timelines, recent proceedings, or transition history; primary sources like fcc.gov, ecfsapi.fcc.gov, or somos.com post-2020 are not reflected here. Trade press (Telecompetitor, TransNexus) confirms Somos's ongoing role without challenges[4][5].",
+              "refusal": null,
+              "reasoning": null,
+              "annotations": [
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.somos.com/FCC_Awards_SomosGov_Contract_for_NANPA_PA_and_RNDA",
+                    "title": "FCC Awards SomosGov Contract for North American Numbering ...",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.prnewswire.com/news-releases/fcc-awards-somosgov-contract-for-north-american-numbering-plan-pooling-and-reassigned-numbers-database-administration-301183128.html",
+                    "title": "FCC Awards SomosGov Contract for North American Numbering ...",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.somos.com/insights/somos-inc-awarded-north-american-numbering-plan-administration-and-pooling-administration-contracts",
+                    "title": "Somos, Inc. is Awarded the North American Numbering Plan ...",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://transnexus.com/blog/2020/somos-tn-rnd-admin/",
+                    "title": "FCC Selects SomosGov for database administrator roles - TransNexus",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.telecompetitor.com/fcc-selects-somosgov-for-telephone-number-administration/",
+                    "title": "FCC Selects SomosGov for Telephone Number Administration",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.jdsupra.com/legalnews/fcc-selects-somosgov-as-next-telephone-20057/",
+                    "title": "FCC Selects SomosGov as Next Telephone Number Administrator ...",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 289,
+          "completion_tokens": 805,
+          "total_tokens": 1094,
+          "cost": 0.0187506,
+          "is_byok": false,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "cost_details": {
+            "upstream_inference_cost": 0.01894,
+            "upstream_inference_prompt_cost": 0.000867,
+            "upstream_inference_completions_cost": 0.018073
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "image_tokens": 0,
+            "audio_tokens": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "brn-toll-free-jan-2026",
+      "title": "January 1, 2026 Business Registration Number requirement for toll-free verifications — full details",
+      "prompt": "Provide the complete, actionable detail on the **toll-free messaging verification rule that takes effect January 1, 2026**, requiring submissions to include a Business Registration Number (BRN), issuing country of registration, and legal entity type. Specifically:\n\n1. Who issued the rule — is it Somos, the FCC, both, an industry body?\n2. Which submissions are affected — only NEW verifications, or also renewals, or existing verified numbers?\n3. What counts as a valid BRN — EIN? state-business-license number? DUNS? what about non-US entities?\n4. Penalty for non-compliance — rejection, delay, suspension?\n5. Timeline / grace period if any\n6. How it relates to broader 10DLC vetting standards\n7. Critical reaction from industry — concerns about small businesses, international operators, etc.\n\nThis is going to be turned into a published article. Provide specific source URLs for everything.",
+      "content": "### Toll-Free Messaging Verification Rule Effective January 2026\n\nThe toll-free messaging verification rule, mandating Business Registration Number (BRN), issuing country, and legal entity type in submissions, stems from **industry-wide carrier requirements** implemented by toll-free service providers and carriers (e.g., via Somos-managed processes), not a direct FCC mandate, though aligned with FCC anti-robocall efforts.[2][3][4][5][6] It takes effect for new verifications starting **January 1, 2026** (with some carriers enforcing by February 17, 2026), as part of aligning toll-free A2P messaging with 10DLC standards to combat spam.[1][2][3][4]\n\n#### 1. Issuer of the Rule\nIndustry carriers and toll-free administrators (e.g., Somos ecosystem) are driving the change through updated verification forms, described as \"industry-wide\" and \"carrier requirements\" to enhance trust and reduce fraud, without explicit FCC rulemaking cited.[1][3][4][5][6] No primary FCC docket or Federal Register entry directly mandates it in results; it's positioned as voluntary alignment with FCC goals like robocall mitigation.[2][9]\n\n#### 2. Affected Submissions\nOnly **new toll-free verifications** (net-new Toll-Free Verified Sender Forms or A2P registrations) require BRN details; existing verified numbers and renewals are exempt—no resubmission needed.[3][4]\n\n#### 3. Valid BRN Examples\n- **US entities**: Primarily **EIN** (Employer Identification Number) from IRS; sole proprietors without EIN select \"Sole Proprietor\" entity type (US-only, triggers manual review, not guaranteed).[4][2]\n- **Non-US entities**: Official registration number from local/national authority (e.g., Companies House UK, Corporations Canada/CRA, or equivalent); must include legal name, issuing authority, and ISO 3166-1 Alpha-2 country code (e.g., CA, GB).[4][6]\n- Other mentions: DUNS possible but not primary; state licenses not specified as valid standalone.[4][7] Fields: BRN, Registration Type (e.g., EIN/CRA), Country code, Entity Type (e.g., for-profit, non-profit).[1][4][6]\n\n#### 4. Non-Compliance Penalties\nSubmissions **may be rejected** without BRN; potential **messaging traffic block/suspension** if verification fails, though some providers note solutions for lacking BRN to avoid full service removal.[2][3][5] Processing may delay for manual sole proprietor reviews.[4]\n\n#### 5. Timeline and Grace Period\n- **Prep phase**: Fields available/optional from September 30/October 1, 2025.[4][5][6]\n- **Mandatory**: January 1, 2026 (industry standard); some carriers February 17, 2026.[1][2][3][4][6]\nNo explicit grace period post-enforcement; providers urge early collection to avoid disruptions.[3][5]\n\n#### 6. Relation to 10DLC Vetting\nMirrors **10DLC standards** by adding business vetting (BRN scrutiny) to toll-free, previously focused on message content; aims for equivalent spam/phishing reduction, deliverability, and compliance with opt-in/out policies.[3][7]\n\n#### 7. Industry Reaction and Concerns\nSources frame positively as anti-spam/trust-building, with no direct critiques in results; indirect concerns via sole proprietor manual processes (delays, US-only) and onboarding burdens for international/small businesses implied by prep advice.[4][5] No explicit small business/international backlash cited; focus on \"future-proofing\" via providers.[3]\n\n**Sources**: All details from listed results; no FCC/Somos primary docs (e.g., somos.com, fcc.gov dockets) in results—industry blogs/carrier pages dominate, potentially lacking official confirmation. Verify via Somos or FCC for article publication.\n- [1] https://educate.dentalintel.com/en/articles/13709498-updated-toll-free-verification-requirements-effective-february-17-2026\n- [2] https://intercom.help/whippy/en/articles/13178812-u-s-sms-regulations-2023-2026-and-what-you-need-to-know\n- [3] https://www.telgorithm.com/news/toll-free-verification-is-changing-in-2026-heres-what-you-need-to-know\n- [4] https://www.bandwidth.com/support/en/articles/12823241-business-registration-number-requirements-for-toll-free-verification\n- [5] https://www.twilio.com/en-us/blog/toll-free-verification-policy\n- [6] https://galaxy.maropost.com/kb/articles/2283-business-registration-number-brn-requirements-for-toll-free-verification\n- [7] https://signalhouse.io/guides/toll-free-a2p-messaging-is-changing-in-2026/\n- [9] https://www.federalregister.gov/documents/2025/12/05/2025-22063/advanced-methods-to-target-and-eliminate-robocalls",
+      "usage": {
+        "prompt_tokens": 294,
+        "completion_tokens": 1169,
+        "total_tokens": 1463,
+        "cost": 0.0241758,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.02442,
+          "upstream_inference_prompt_cost": 0.000882,
+          "upstream_inference_completions_cost": 0.023538
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "annotations": [
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://educate.dentalintel.com/en/articles/13709498-updated-toll-free-verification-requirements-effective-february-17-2026",
+            "title": "Updated Toll-Free Verification Requirements (Effective February 17 ...",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://intercom.help/whippy/en/articles/13178812-u-s-sms-regulations-2023-2026-and-what-you-need-to-know",
+            "title": "U.S. SMS Regulations (2023–2026) and What You Need to Know",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.telgorithm.com/news/toll-free-verification-is-changing-in-2026-heres-what-you-need-to-know",
+            "title": "Toll-Free Verification Changes Coming in 2026: What to Know",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.bandwidth.com/support/en/articles/12823241-business-registration-number-requirements-for-toll-free-verification",
+            "title": "Business Registration Number Requirements for Toll-Free Verification",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.twilio.com/en-us/blog/toll-free-verification-policy",
+            "title": "New Toll Free Verification Policy | Twilio",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://galaxy.maropost.com/kb/articles/2283-business-registration-number-brn-requirements-for-toll-free-verification",
+            "title": "Business Registration Number (BRN) Requirements for Toll-Free ...",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://signalhouse.io/guides/toll-free-a2p-messaging-is-changing-in-2026/",
+            "title": "Toll Free A2P Messaging is Changing in 2026 - Signal House",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.magicbell.com/blog/sms-notification-best-practices",
+            "title": "SMS Notification Best Practices 2026 | MagicBell",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.federalregister.gov/documents/2025/12/05/2025-22063/advanced-methods-to-target-and-eliminate-robocalls",
+            "title": "Advanced Methods To Target and Eliminate Robocalls",
+            "start_index": 0,
+            "end_index": 0
+          }
+        }
+      ],
+      "raw": {
+        "id": "gen-1777579302-TxRZzWhvOWImgiAfsmoZ",
+        "object": "chat.completion",
+        "created": 1777579302,
+        "model": "perplexity/sonar-pro",
+        "provider": "Perplexity",
+        "system_fingerprint": null,
+        "choices": [
+          {
+            "index": 0,
+            "logprobs": null,
+            "finish_reason": "stop",
+            "native_finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "### Toll-Free Messaging Verification Rule Effective January 2026\n\nThe toll-free messaging verification rule, mandating Business Registration Number (BRN), issuing country, and legal entity type in submissions, stems from **industry-wide carrier requirements** implemented by toll-free service providers and carriers (e.g., via Somos-managed processes), not a direct FCC mandate, though aligned with FCC anti-robocall efforts.[2][3][4][5][6] It takes effect for new verifications starting **January 1, 2026** (with some carriers enforcing by February 17, 2026), as part of aligning toll-free A2P messaging with 10DLC standards to combat spam.[1][2][3][4]\n\n#### 1. Issuer of the Rule\nIndustry carriers and toll-free administrators (e.g., Somos ecosystem) are driving the change through updated verification forms, described as \"industry-wide\" and \"carrier requirements\" to enhance trust and reduce fraud, without explicit FCC rulemaking cited.[1][3][4][5][6] No primary FCC docket or Federal Register entry directly mandates it in results; it's positioned as voluntary alignment with FCC goals like robocall mitigation.[2][9]\n\n#### 2. Affected Submissions\nOnly **new toll-free verifications** (net-new Toll-Free Verified Sender Forms or A2P registrations) require BRN details; existing verified numbers and renewals are exempt—no resubmission needed.[3][4]\n\n#### 3. Valid BRN Examples\n- **US entities**: Primarily **EIN** (Employer Identification Number) from IRS; sole proprietors without EIN select \"Sole Proprietor\" entity type (US-only, triggers manual review, not guaranteed).[4][2]\n- **Non-US entities**: Official registration number from local/national authority (e.g., Companies House UK, Corporations Canada/CRA, or equivalent); must include legal name, issuing authority, and ISO 3166-1 Alpha-2 country code (e.g., CA, GB).[4][6]\n- Other mentions: DUNS possible but not primary; state licenses not specified as valid standalone.[4][7] Fields: BRN, Registration Type (e.g., EIN/CRA), Country code, Entity Type (e.g., for-profit, non-profit).[1][4][6]\n\n#### 4. Non-Compliance Penalties\nSubmissions **may be rejected** without BRN; potential **messaging traffic block/suspension** if verification fails, though some providers note solutions for lacking BRN to avoid full service removal.[2][3][5] Processing may delay for manual sole proprietor reviews.[4]\n\n#### 5. Timeline and Grace Period\n- **Prep phase**: Fields available/optional from September 30/October 1, 2025.[4][5][6]\n- **Mandatory**: January 1, 2026 (industry standard); some carriers February 17, 2026.[1][2][3][4][6]\nNo explicit grace period post-enforcement; providers urge early collection to avoid disruptions.[3][5]\n\n#### 6. Relation to 10DLC Vetting\nMirrors **10DLC standards** by adding business vetting (BRN scrutiny) to toll-free, previously focused on message content; aims for equivalent spam/phishing reduction, deliverability, and compliance with opt-in/out policies.[3][7]\n\n#### 7. Industry Reaction and Concerns\nSources frame positively as anti-spam/trust-building, with no direct critiques in results; indirect concerns via sole proprietor manual processes (delays, US-only) and onboarding burdens for international/small businesses implied by prep advice.[4][5] No explicit small business/international backlash cited; focus on \"future-proofing\" via providers.[3]\n\n**Sources**: All details from listed results; no FCC/Somos primary docs (e.g., somos.com, fcc.gov dockets) in results—industry blogs/carrier pages dominate, potentially lacking official confirmation. Verify via Somos or FCC for article publication.\n- [1] https://educate.dentalintel.com/en/articles/13709498-updated-toll-free-verification-requirements-effective-february-17-2026\n- [2] https://intercom.help/whippy/en/articles/13178812-u-s-sms-regulations-2023-2026-and-what-you-need-to-know\n- [3] https://www.telgorithm.com/news/toll-free-verification-is-changing-in-2026-heres-what-you-need-to-know\n- [4] https://www.bandwidth.com/support/en/articles/12823241-business-registration-number-requirements-for-toll-free-verification\n- [5] https://www.twilio.com/en-us/blog/toll-free-verification-policy\n- [6] https://galaxy.maropost.com/kb/articles/2283-business-registration-number-brn-requirements-for-toll-free-verification\n- [7] https://signalhouse.io/guides/toll-free-a2p-messaging-is-changing-in-2026/\n- [9] https://www.federalregister.gov/documents/2025/12/05/2025-22063/advanced-methods-to-target-and-eliminate-robocalls",
+              "refusal": null,
+              "reasoning": null,
+              "annotations": [
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://educate.dentalintel.com/en/articles/13709498-updated-toll-free-verification-requirements-effective-february-17-2026",
+                    "title": "Updated Toll-Free Verification Requirements (Effective February 17 ...",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://intercom.help/whippy/en/articles/13178812-u-s-sms-regulations-2023-2026-and-what-you-need-to-know",
+                    "title": "U.S. SMS Regulations (2023–2026) and What You Need to Know",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.telgorithm.com/news/toll-free-verification-is-changing-in-2026-heres-what-you-need-to-know",
+                    "title": "Toll-Free Verification Changes Coming in 2026: What to Know",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.bandwidth.com/support/en/articles/12823241-business-registration-number-requirements-for-toll-free-verification",
+                    "title": "Business Registration Number Requirements for Toll-Free Verification",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.twilio.com/en-us/blog/toll-free-verification-policy",
+                    "title": "New Toll Free Verification Policy | Twilio",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://galaxy.maropost.com/kb/articles/2283-business-registration-number-brn-requirements-for-toll-free-verification",
+                    "title": "Business Registration Number (BRN) Requirements for Toll-Free ...",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://signalhouse.io/guides/toll-free-a2p-messaging-is-changing-in-2026/",
+                    "title": "Toll Free A2P Messaging is Changing in 2026 - Signal House",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.magicbell.com/blog/sms-notification-best-practices",
+                    "title": "SMS Notification Best Practices 2026 | MagicBell",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.federalregister.gov/documents/2025/12/05/2025-22063/advanced-methods-to-target-and-eliminate-robocalls",
+                    "title": "Advanced Methods To Target and Eliminate Robocalls",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 294,
+          "completion_tokens": 1169,
+          "total_tokens": 1463,
+          "cost": 0.0241758,
+          "is_byok": false,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "cost_details": {
+            "upstream_inference_cost": 0.02442,
+            "upstream_inference_prompt_cost": 0.000882,
+            "upstream_inference_completions_cost": 0.023538
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "image_tokens": 0,
+            "audio_tokens": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "fcc-dno-mandate-dec-2025",
+      "title": "December 2025 FCC do-not-originate (DNO) call-blocking mandate",
+      "prompt": "Explain the **FCC's December 15, 2025 do-not-originate (DNO) call-blocking mandate** in detail. What does the order require voice providers to do? Which categories of numbers must be blocked (invalid, unallocated, do-not-originate, etc.)? How is this related to STIR/SHAKEN? What is the impact on toll-free numbers specifically? Cite FCC docket numbers and the order itself.",
+      "content": "# FCC's December 15, 2025 Do-Not-Originate Call-Blocking Mandate\n\nThe **December 15, 2025 DNO mandate requires all voice service providers—originating, intermediate, gateway, and terminating carriers—to block calls purporting to originate from numbers on a reasonable do-not-originate list**, expanding previous requirements that applied only to gateway providers.[1][2] This rule is codified in 47 CFR § 64.1200(p) and was adopted by the FCC in its Eighth Report and Order regarding CG Docket No. 17-59 on February 27, 2025, with an earlier foundational order in WC Docket No. 17-97 adopted March 16, 2023.[1][4]\n\n## Core Provider Obligations\n\nUnder 47 CFR § 64.1200(p), effective December 15, 2025, each voice service provider must:[1]\n\n1. **Use at least one reasonable DNO source** to identify numbers that should not originate calls\n2. **Block calls from DNO-flagged numbers** throughout the call path\n3. **Establish an error reporting mechanism** with a publicly available point of contact for consumers to report erroneously blocked calls\n4. **Document compliance** with the rule\n\n## Required Number Categories for Blocking\n\nThe FCC mandates that DNO lists include at minimum four categories of numbers:[1]\n\n1. **Invalid numbers** — those that do not conform to valid North American Numbering Plan formats\n2. **Unallocated numbers** — numbers not yet assigned by the North American Numbering Plan Administrator\n3. **Unused numbers** — numbers allocated but not currently in service\n4. **Inbound-only numbers** — numbers explicitly allocated for receiving calls only, such as certain government or service numbers\n\nThe FCC cautioned that it may \"deem unreasonable a list so limited in scope that it leaves out obvious numbers that could be included with little effort.\"[3] Providers must also **constantly update DNO lists**, particularly for unused numbers that may transition into active service.[3]\n\n## Relationship to STIR/SHAKEN\n\nThe DNO blocking mandate works in conjunction with **STIR/SHAKEN authentication and industry traceback initiatives** as part of the FCC's broader strategy to combat spoofed and fraudulent traffic.[1] While STIR/SHAKEN focuses on authenticating the legitimacy of caller identity claims, DNO blocking provides an additional layer of defense by preventing calls from originating on numbers that are inherently invalid or unallocated—numbers that cannot legitimately be used for outbound calling regardless of authentication status.\n\n## Impact on Toll-Free Numbers\n\nThe search results do not provide specific details about toll-free number treatment under the DNO mandate. However, one source mentions that Netnumber's Dynamic DNO service \"integrates with the netnumber Services Registry (nnSR), North America's authoritative registry for text-enabling 10-digit and toll-free numbers,\" suggesting that toll-free numbers are included within the scope of DNO compliance systems.[1] The rule extends DNO blocking requirements to SMS and text messaging under 47 CFR § 64.1200(p), which would encompass toll-free messaging services.[1]\n\n## Enforcement and Compliance Scope\n\n**Non-compliance carries severe penalties.** The FCC can impose forfeitures of up to $23,000 per violation under 47 U.S.C. § 503(b), with each day of continuing violation constituting a separate offense.[1] More significantly, the FCC has warned that failure to comply \"may result in the blocking of all traffic from a non-compliant provider,\" meaning compliant downstream providers can refuse to carry traffic from non-compliant carriers, effectively cutting off service.[1]\n\nThe mandate applies to **all providers in the call path**, not just large carriers.[4][5] The FCC acknowledged that smaller voice service providers may utilize less extensive DNO lists than larger carriers, particularly when other providers in the call chain provide blocking functionality.[3]\n\n## Key Distinction from Previous Rules\n\nThe December 15, 2025 rule represents a major expansion from the June 14, 2022 gateway-only requirements.[1] The new mandate extends blocking obligations to **all intermediate and terminating providers** (not just gateways), applies to **domestic calls** (not just international-to-domestic), and creates **multiple checkpoints throughout the network** rather than filtering only at international gateways.[1]",
+      "usage": {
+        "prompt_tokens": 195,
+        "completion_tokens": 1007,
+        "total_tokens": 1202,
+        "cost": 0.0214731,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.02169,
+          "upstream_inference_prompt_cost": 0.000585,
+          "upstream_inference_completions_cost": 0.021105
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "annotations": [
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://netnumber.com/fcc-dno-blocking-deadline-december-15-2025/",
+            "title": "FCC DNO Blocking Deadline: December 15, 2025 Compliance Guide",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.somos.com/insights/strengthening-fight-against-illegal-robocalls-fcc-sets-december-15-2025-effective-date",
+            "title": "FCC Sets December 15, 2025 Effective Date | Somos",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://commlawgroup.com/2025/reminder-fcc-dno-rule-compliance-deadline-december-15-2025/",
+            "title": "FCC DNO Rule Compliance Deadline – December 15, 2025",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://transnexus.com/blog/2025/dno-blocking-rule-effective-date/",
+            "title": "Effective date set for Do-Not-Originate blocking - TransNexus",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.thinksimplicity.com/new-blogs/fcc-dno-rule-for-hotels",
+            "title": "FCC's New DNO Rule for Hotels: What to Know by Dec 15, 2025",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.federalregister.gov/documents/2025/03/24/2025-04811/advanced-methods-to-target-and-eliminate-unlawful-robocalls",
+            "title": "Advanced Methods To Target and Eliminate Unlawful Robocalls",
+            "start_index": 0,
+            "end_index": 0
+          }
+        }
+      ],
+      "raw": {
+        "id": "gen-1777579314-47r2vdHAl0kMsmLYq9yd",
+        "object": "chat.completion",
+        "created": 1777579314,
+        "model": "perplexity/sonar-pro",
+        "provider": "Perplexity",
+        "system_fingerprint": null,
+        "choices": [
+          {
+            "index": 0,
+            "logprobs": null,
+            "finish_reason": "stop",
+            "native_finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "# FCC's December 15, 2025 Do-Not-Originate Call-Blocking Mandate\n\nThe **December 15, 2025 DNO mandate requires all voice service providers—originating, intermediate, gateway, and terminating carriers—to block calls purporting to originate from numbers on a reasonable do-not-originate list**, expanding previous requirements that applied only to gateway providers.[1][2] This rule is codified in 47 CFR § 64.1200(p) and was adopted by the FCC in its Eighth Report and Order regarding CG Docket No. 17-59 on February 27, 2025, with an earlier foundational order in WC Docket No. 17-97 adopted March 16, 2023.[1][4]\n\n## Core Provider Obligations\n\nUnder 47 CFR § 64.1200(p), effective December 15, 2025, each voice service provider must:[1]\n\n1. **Use at least one reasonable DNO source** to identify numbers that should not originate calls\n2. **Block calls from DNO-flagged numbers** throughout the call path\n3. **Establish an error reporting mechanism** with a publicly available point of contact for consumers to report erroneously blocked calls\n4. **Document compliance** with the rule\n\n## Required Number Categories for Blocking\n\nThe FCC mandates that DNO lists include at minimum four categories of numbers:[1]\n\n1. **Invalid numbers** — those that do not conform to valid North American Numbering Plan formats\n2. **Unallocated numbers** — numbers not yet assigned by the North American Numbering Plan Administrator\n3. **Unused numbers** — numbers allocated but not currently in service\n4. **Inbound-only numbers** — numbers explicitly allocated for receiving calls only, such as certain government or service numbers\n\nThe FCC cautioned that it may \"deem unreasonable a list so limited in scope that it leaves out obvious numbers that could be included with little effort.\"[3] Providers must also **constantly update DNO lists**, particularly for unused numbers that may transition into active service.[3]\n\n## Relationship to STIR/SHAKEN\n\nThe DNO blocking mandate works in conjunction with **STIR/SHAKEN authentication and industry traceback initiatives** as part of the FCC's broader strategy to combat spoofed and fraudulent traffic.[1] While STIR/SHAKEN focuses on authenticating the legitimacy of caller identity claims, DNO blocking provides an additional layer of defense by preventing calls from originating on numbers that are inherently invalid or unallocated—numbers that cannot legitimately be used for outbound calling regardless of authentication status.\n\n## Impact on Toll-Free Numbers\n\nThe search results do not provide specific details about toll-free number treatment under the DNO mandate. However, one source mentions that Netnumber's Dynamic DNO service \"integrates with the netnumber Services Registry (nnSR), North America's authoritative registry for text-enabling 10-digit and toll-free numbers,\" suggesting that toll-free numbers are included within the scope of DNO compliance systems.[1] The rule extends DNO blocking requirements to SMS and text messaging under 47 CFR § 64.1200(p), which would encompass toll-free messaging services.[1]\n\n## Enforcement and Compliance Scope\n\n**Non-compliance carries severe penalties.** The FCC can impose forfeitures of up to $23,000 per violation under 47 U.S.C. § 503(b), with each day of continuing violation constituting a separate offense.[1] More significantly, the FCC has warned that failure to comply \"may result in the blocking of all traffic from a non-compliant provider,\" meaning compliant downstream providers can refuse to carry traffic from non-compliant carriers, effectively cutting off service.[1]\n\nThe mandate applies to **all providers in the call path**, not just large carriers.[4][5] The FCC acknowledged that smaller voice service providers may utilize less extensive DNO lists than larger carriers, particularly when other providers in the call chain provide blocking functionality.[3]\n\n## Key Distinction from Previous Rules\n\nThe December 15, 2025 rule represents a major expansion from the June 14, 2022 gateway-only requirements.[1] The new mandate extends blocking obligations to **all intermediate and terminating providers** (not just gateways), applies to **domestic calls** (not just international-to-domestic), and creates **multiple checkpoints throughout the network** rather than filtering only at international gateways.[1]",
+              "refusal": null,
+              "reasoning": null,
+              "annotations": [
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://netnumber.com/fcc-dno-blocking-deadline-december-15-2025/",
+                    "title": "FCC DNO Blocking Deadline: December 15, 2025 Compliance Guide",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.somos.com/insights/strengthening-fight-against-illegal-robocalls-fcc-sets-december-15-2025-effective-date",
+                    "title": "FCC Sets December 15, 2025 Effective Date | Somos",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://commlawgroup.com/2025/reminder-fcc-dno-rule-compliance-deadline-december-15-2025/",
+                    "title": "FCC DNO Rule Compliance Deadline – December 15, 2025",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://transnexus.com/blog/2025/dno-blocking-rule-effective-date/",
+                    "title": "Effective date set for Do-Not-Originate blocking - TransNexus",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.thinksimplicity.com/new-blogs/fcc-dno-rule-for-hotels",
+                    "title": "FCC's New DNO Rule for Hotels: What to Know by Dec 15, 2025",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.federalregister.gov/documents/2025/03/24/2025-04811/advanced-methods-to-target-and-eliminate-unlawful-robocalls",
+                    "title": "Advanced Methods To Target and Eliminate Unlawful Robocalls",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 195,
+          "completion_tokens": 1007,
+          "total_tokens": 1202,
+          "cost": 0.0214731,
+          "is_byok": false,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "cost_details": {
+            "upstream_inference_cost": 0.02169,
+            "upstream_inference_prompt_cost": 0.000585,
+            "upstream_inference_completions_cost": 0.021105
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "image_tokens": 0,
+            "audio_tokens": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "tf-area-code-exhaustion-2026",
+      "title": "Toll-free area code (8XX) exhaustion outlook in 2026",
+      "prompt": "What is the current state of toll-free numbering inventory in 2026? How many of the 8XX SACs (800, 888, 877, 866, 855, 844, 833, 822) are open vs nearly exhausted? Has the FCC scheduled the opening of the next code (e.g., 811, 880, 887)? What is the latest projection from Somos on when current inventory will be exhausted? Is there any policy debate about hoarding, warehousing, or RespOrg numbering behavior contributing to faster exhaustion?",
+      "content": "**Search results lack specific data on the 2026 toll-free numbering inventory for 8XX codes (800, 888, 877, 866, 855, 844, 833, 822), including which are open vs. nearly exhausted, FCC schedules for new codes like 811 or 880, Somos projections on exhaustion, or policy debates on hoarding/warehousing by RespOrgs.**\n\nSomos notes over 42 million toll-free numbers currently in use, but provides no breakdown by code, exhaustion status, or projections.[7] No FCC-related results detail inventory levels, code openings, or RespOrg behavior debates; a Federal Register notice on numbering policies exists but lacks specifics here.[8] All other results focus on unrelated 2026 toll-free verification changes for messaging (e.g., mandatory Business Registration Number starting January 1, 2026).[1][2][3][4][6]\n\nPreferred primary sources (somos.com, fcc.gov, Federal Register) yield insufficient details in these results. For accurate 2026 inventory, check Somos reports or FCC dockets directly.",
+      "usage": {
+        "prompt_tokens": 216,
+        "completion_tokens": 235,
+        "total_tokens": 451,
+        "cost": 0.0100683,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.01017,
+          "upstream_inference_prompt_cost": 0.000648,
+          "upstream_inference_completions_cost": 0.009522
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "annotations": [
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://api.support.vonage.com/hc/en-us/articles/360055483251-Toll-Free-Number-Messaging-Registration-US-Canada",
+            "title": "Toll-Free Number Messaging Registration - US & Canada",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://signalwire.com/blogs/industry/toll-free-messaging-changes-2026",
+            "title": "Important Toll-Free Messaging Changes Coming in 2026 - SignalWire",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://educate.dentalintel.com/en/articles/13709498-updated-toll-free-verification-requirements-effective-february-17-2026",
+            "title": "Updated Toll-Free Verification Requirements (Effective February 17 ...",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.telgorithm.com/news/toll-free-verification-is-changing-in-2026-heres-what-you-need-to-know",
+            "title": "Toll-Free Verification Changes Coming in 2026: What to Know",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://telxi.com/blog/telephone-number-inventory/",
+            "title": "Manage your Telephone Number Inventory: 2026 Guide",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://signalhouse.io/guides/toll-free-a2p-messaging-is-changing-in-2026/",
+            "title": "Toll Free A2P Messaging is Changing in 2026 - Signal House",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.somos.com/4-easy-steps-get-and-running-toll-free-numbers",
+            "title": "4 Easy Steps to Get Up and Running with Toll-Free Numbers - Somos",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.federalregister.gov/documents/2026/02/17/2026-03066/numbering-policies-for-modern-communications",
+            "title": "Numbering Policies for Modern Communications - Federal Register",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://pubs.naruc.org/pub/0CFAB9E5-CC00-D558-D278-2CBA85370EB1",
+            "title": "[PDF] Perspectives and Recommendations on How Telephone - NARUC",
+            "start_index": 0,
+            "end_index": 0
+          }
+        }
+      ],
+      "raw": {
+        "id": "gen-1777579327-pyvlMhVsnT3OwAz7B76N",
+        "object": "chat.completion",
+        "created": 1777579327,
+        "model": "perplexity/sonar-pro",
+        "provider": "Perplexity",
+        "system_fingerprint": null,
+        "choices": [
+          {
+            "index": 0,
+            "logprobs": null,
+            "finish_reason": "stop",
+            "native_finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "**Search results lack specific data on the 2026 toll-free numbering inventory for 8XX codes (800, 888, 877, 866, 855, 844, 833, 822), including which are open vs. nearly exhausted, FCC schedules for new codes like 811 or 880, Somos projections on exhaustion, or policy debates on hoarding/warehousing by RespOrgs.**\n\nSomos notes over 42 million toll-free numbers currently in use, but provides no breakdown by code, exhaustion status, or projections.[7] No FCC-related results detail inventory levels, code openings, or RespOrg behavior debates; a Federal Register notice on numbering policies exists but lacks specifics here.[8] All other results focus on unrelated 2026 toll-free verification changes for messaging (e.g., mandatory Business Registration Number starting January 1, 2026).[1][2][3][4][6]\n\nPreferred primary sources (somos.com, fcc.gov, Federal Register) yield insufficient details in these results. For accurate 2026 inventory, check Somos reports or FCC dockets directly.",
+              "refusal": null,
+              "reasoning": null,
+              "annotations": [
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://api.support.vonage.com/hc/en-us/articles/360055483251-Toll-Free-Number-Messaging-Registration-US-Canada",
+                    "title": "Toll-Free Number Messaging Registration - US & Canada",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://signalwire.com/blogs/industry/toll-free-messaging-changes-2026",
+                    "title": "Important Toll-Free Messaging Changes Coming in 2026 - SignalWire",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://educate.dentalintel.com/en/articles/13709498-updated-toll-free-verification-requirements-effective-february-17-2026",
+                    "title": "Updated Toll-Free Verification Requirements (Effective February 17 ...",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.telgorithm.com/news/toll-free-verification-is-changing-in-2026-heres-what-you-need-to-know",
+                    "title": "Toll-Free Verification Changes Coming in 2026: What to Know",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://telxi.com/blog/telephone-number-inventory/",
+                    "title": "Manage your Telephone Number Inventory: 2026 Guide",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://signalhouse.io/guides/toll-free-a2p-messaging-is-changing-in-2026/",
+                    "title": "Toll Free A2P Messaging is Changing in 2026 - Signal House",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.somos.com/4-easy-steps-get-and-running-toll-free-numbers",
+                    "title": "4 Easy Steps to Get Up and Running with Toll-Free Numbers - Somos",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.federalregister.gov/documents/2026/02/17/2026-03066/numbering-policies-for-modern-communications",
+                    "title": "Numbering Policies for Modern Communications - Federal Register",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://pubs.naruc.org/pub/0CFAB9E5-CC00-D558-D278-2CBA85370EB1",
+                    "title": "[PDF] Perspectives and Recommendations on How Telephone - NARUC",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 216,
+          "completion_tokens": 235,
+          "total_tokens": 451,
+          "cost": 0.0100683,
+          "is_byok": false,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "cost_details": {
+            "upstream_inference_cost": 0.01017,
+            "upstream_inference_prompt_cost": 0.000648,
+            "upstream_inference_completions_cost": 0.009522
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "image_tokens": 0,
+            "audio_tokens": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "misdial-fcc-enforcement",
+      "title": "FCC / FTC enforcement against misdial-marketing operators",
+      "prompt": "Find any **FCC or FTC enforcement actions, complaints, lawsuits, or policy proposals targeting toll-free 'misdial marketing' operators** — companies that acquire toll-free vanity numbers solely to monetize callers who misdial popular numbers. The practice is sometimes called 'traffic pumping' or 'misdial monetization.' I want news from the past 36 months specifically. If there are no public enforcement cases, that itself is interesting — say so.",
+      "content": "Based on the search results provided, **there are no public FCC or FTC enforcement actions, complaints, lawsuits, or policy proposals specifically targeting toll-free misdial marketing operators or traffic pumping schemes in the past 36 months.**\n\nThe search results focus on FTC and FCC enforcement against traditional telemarketing violations, robocalls, Do Not Call Registry breaches, and lead generation fraud—but contain no references to misdial monetization, vanity number traffic pumping, or related practices targeting misdialed calls to toll-free numbers.\n\nThe FTC's enforcement summary shows 151 total actions brought against telemarketers for Do Not Call, robocall, and spoofed caller ID violations[1], with recent initiatives like \"Operation Stop Scam Calls\" targeting illegal robocalls, lead generators, and VoIP service providers[2]. However, none of these cases appear to address the specific practice of acquiring toll-free numbers to monetize misdirected traffic.\n\n**This absence itself is noteworthy:** either misdial marketing operators are not currently a regulatory priority for these agencies, the practice operates in a legal gray area that hasn't triggered formal enforcement, or complaints may be filed through channels not reflected in these particular search results. To determine whether this represents a genuine enforcement gap or simply limited visibility in available public records, you would need to search FCC dockets (ecfsapi.fcc.gov) and FTC complaint databases directly, or contact the agencies' enforcement divisions for clarification on whether this practice has been investigated or is under review.",
+      "usage": {
+        "prompt_tokens": 192,
+        "completion_tokens": 336,
+        "total_tokens": 528,
+        "cost": 0.0115038,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.01162,
+          "upstream_inference_prompt_cost": 0.000576,
+          "upstream_inference_completions_cost": 0.011044
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "annotations": [
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.ftc.gov/news-events/topics/do-not-call-registry/enforcement",
+            "title": "Enforcement - Federal Trade Commission",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.ftc.gov/news-events/news/press-releases/2023/07/ftc-law-enforcers-nationwide-announce-enforcement-sweep-stem-tide-illegal-telemarketing-calls-us",
+            "title": "FTC, Law Enforcers Nationwide Announce Enforcement Sweep to ...",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.ftc.gov/business-guidance/advertising-marketing/telemarketing",
+            "title": "Telemarketing | Federal Trade Commission",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.ftc.gov/business-guidance/resources/complying-telemarketing-sales-rule",
+            "title": "Complying with the Telemarketing Sales Rule",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://consumercomplaints.fcc.gov/hc/en-us",
+            "title": "FCC Complaints - Federal Communications Commission",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.ftc.gov/sites/default/files/attachments/training-materials/enforcement.pdf",
+            "title": "[PDF] federal trade commission advertising enforcement",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.justice.gov/archives/opa/pr/us-department-justice-federal-trade-commission-federal-communications-commission-and-other",
+            "title": "Office of Public Affairs | U.S. Department of Justice, Federal Trade ...",
+            "start_index": 0,
+            "end_index": 0
+          }
+        }
+      ],
+      "raw": {
+        "id": "gen-1777579332-m6493ObMczVW17RISuVq",
+        "object": "chat.completion",
+        "created": 1777579332,
+        "model": "perplexity/sonar-pro",
+        "provider": "Perplexity",
+        "system_fingerprint": null,
+        "choices": [
+          {
+            "index": 0,
+            "logprobs": null,
+            "finish_reason": "stop",
+            "native_finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "Based on the search results provided, **there are no public FCC or FTC enforcement actions, complaints, lawsuits, or policy proposals specifically targeting toll-free misdial marketing operators or traffic pumping schemes in the past 36 months.**\n\nThe search results focus on FTC and FCC enforcement against traditional telemarketing violations, robocalls, Do Not Call Registry breaches, and lead generation fraud—but contain no references to misdial monetization, vanity number traffic pumping, or related practices targeting misdialed calls to toll-free numbers.\n\nThe FTC's enforcement summary shows 151 total actions brought against telemarketers for Do Not Call, robocall, and spoofed caller ID violations[1], with recent initiatives like \"Operation Stop Scam Calls\" targeting illegal robocalls, lead generators, and VoIP service providers[2]. However, none of these cases appear to address the specific practice of acquiring toll-free numbers to monetize misdirected traffic.\n\n**This absence itself is noteworthy:** either misdial marketing operators are not currently a regulatory priority for these agencies, the practice operates in a legal gray area that hasn't triggered formal enforcement, or complaints may be filed through channels not reflected in these particular search results. To determine whether this represents a genuine enforcement gap or simply limited visibility in available public records, you would need to search FCC dockets (ecfsapi.fcc.gov) and FTC complaint databases directly, or contact the agencies' enforcement divisions for clarification on whether this practice has been investigated or is under review.",
+              "refusal": null,
+              "reasoning": null,
+              "annotations": [
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.ftc.gov/news-events/topics/do-not-call-registry/enforcement",
+                    "title": "Enforcement - Federal Trade Commission",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.ftc.gov/news-events/news/press-releases/2023/07/ftc-law-enforcers-nationwide-announce-enforcement-sweep-stem-tide-illegal-telemarketing-calls-us",
+                    "title": "FTC, Law Enforcers Nationwide Announce Enforcement Sweep to ...",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.ftc.gov/business-guidance/advertising-marketing/telemarketing",
+                    "title": "Telemarketing | Federal Trade Commission",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.ftc.gov/business-guidance/resources/complying-telemarketing-sales-rule",
+                    "title": "Complying with the Telemarketing Sales Rule",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://consumercomplaints.fcc.gov/hc/en-us",
+                    "title": "FCC Complaints - Federal Communications Commission",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.ftc.gov/sites/default/files/attachments/training-materials/enforcement.pdf",
+                    "title": "[PDF] federal trade commission advertising enforcement",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.justice.gov/archives/opa/pr/us-department-justice-federal-trade-commission-federal-communications-commission-and-other",
+                    "title": "Office of Public Affairs | U.S. Department of Justice, Federal Trade ...",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 192,
+          "completion_tokens": 336,
+          "total_tokens": 528,
+          "cost": 0.0115038,
+          "is_byok": false,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "cost_details": {
+            "upstream_inference_cost": 0.01162,
+            "upstream_inference_prompt_cost": 0.000576,
+            "upstream_inference_completions_cost": 0.011044
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "image_tokens": 0,
+            "audio_tokens": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "tf-industry-mna",
+      "title": "Toll-free / RespOrg industry M&A activity",
+      "prompt": "What significant **mergers, acquisitions, or investments** have happened in the US toll-free / RespOrg / vanity-number-broker space in the past 24 months? Include both major carrier M&A (Bandwidth, Inteliquent, RingCentral, etc.) and smaller specialist deals. Include any reported sales or transfers of significant toll-free vanity number portfolios.",
+      "content": "The search results provided do not contain information about mergers, acquisitions, or investments in the US toll-free, RespOrg, or vanity-number-broker space over the past 24 months (May 2024–April 2026).\n\nThe results include general directories of vanity number providers and toll-free number services[1][2][3][4][6], but lack M&A activity, investment announcements, or portfolio transfer data. Results [7]–[10] are unrelated government documents.\n\nTo answer your query comprehensively, I would need access to:\n\n- **Primary sources:** FCC dockets (ecfsapi.fcc.gov), SEC EDGAR filings, and FCC public notices documenting RespOrg transfers or carrier consolidations\n- **Trade publications:** Light Reading, FierceTelecom, Communications Daily, and TR Daily archives covering carrier and telecom service provider deals\n- **Industry databases:** Telecompetitor.com and similar sources tracking telecom M&A activity\n\nIf you have access to specific deal announcements, regulatory filings, or trade press coverage from this period, I can help synthesize and analyze that information with proper citations.",
+      "usage": {
+        "prompt_tokens": 173,
+        "completion_tokens": 260,
+        "total_tokens": 433,
+        "cost": 0.0103158,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.01042,
+          "upstream_inference_prompt_cost": 0.000519,
+          "upstream_inference_completions_cost": 0.009901
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "annotations": [
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://8ms.iconectiv.com/vanity-number-search-and-reserve-8ms",
+            "title": "Vanity Number Search - 8MS",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.globalcallforwarding.com/blog/best-us-toll-free-number-providers/",
+            "title": "9 Best US Toll-Free Number Providers in 2026",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.ignitiontollfree.com/buy-vanity-number",
+            "title": "Vanity Business Phone Numbers for Sale - Ignition Toll Free",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.callsource.com/vanity/",
+            "title": "CallSource's Custom Toll-Free Vanity Call Tracking Phone Numbers",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://tollfreenumber.org/forum/major-list-of-800-numbers-to-big-companies/",
+            "title": "MAJOR List of 800 numbers to BIG Companies - TollfreeNumber.ORG",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://technologyadvice.com/blog/information-technology/vanity-phone-numbers/",
+            "title": "The 6 Best Vanity Phone Number Providers for 2026",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://fns-prod.azureedge.us/sites/default/files/call_center.pdf",
+            "title": "[PDF] Call Center/Contact Center Support for States",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.ecfr.gov/current/title-47/chapter-I/subchapter-A/part-1",
+            "title": "47 CFR Part 1 -- Practice and Procedure - eCFR",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://www.whitehouse.gov/wp-content/uploads/2025/08/a11.pdf",
+            "title": "[PDF] CIRCULAR NO. A—11 PREPARATION, SUBMISSION, AND ...",
+            "start_index": 0,
+            "end_index": 0
+          }
+        },
+        {
+          "type": "url_citation",
+          "url_citation": {
+            "url": "https://origin-www.acquisition.gov/sites/default/files/archives/pdf/DFARS_PGI_Change_6-3-2021.pdf",
+            "title": "[PDF] defense federal acquisition regulation - pgi",
+            "start_index": 0,
+            "end_index": 0
+          }
+        }
+      ],
+      "raw": {
+        "id": "gen-1777579339-US4stmKiPOrYC2goGXcM",
+        "object": "chat.completion",
+        "created": 1777579339,
+        "model": "perplexity/sonar-pro",
+        "provider": "Perplexity",
+        "system_fingerprint": null,
+        "choices": [
+          {
+            "index": 0,
+            "logprobs": null,
+            "finish_reason": "stop",
+            "native_finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "The search results provided do not contain information about mergers, acquisitions, or investments in the US toll-free, RespOrg, or vanity-number-broker space over the past 24 months (May 2024–April 2026).\n\nThe results include general directories of vanity number providers and toll-free number services[1][2][3][4][6], but lack M&A activity, investment announcements, or portfolio transfer data. Results [7]–[10] are unrelated government documents.\n\nTo answer your query comprehensively, I would need access to:\n\n- **Primary sources:** FCC dockets (ecfsapi.fcc.gov), SEC EDGAR filings, and FCC public notices documenting RespOrg transfers or carrier consolidations\n- **Trade publications:** Light Reading, FierceTelecom, Communications Daily, and TR Daily archives covering carrier and telecom service provider deals\n- **Industry databases:** Telecompetitor.com and similar sources tracking telecom M&A activity\n\nIf you have access to specific deal announcements, regulatory filings, or trade press coverage from this period, I can help synthesize and analyze that information with proper citations.",
+              "refusal": null,
+              "reasoning": null,
+              "annotations": [
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://8ms.iconectiv.com/vanity-number-search-and-reserve-8ms",
+                    "title": "Vanity Number Search - 8MS",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.globalcallforwarding.com/blog/best-us-toll-free-number-providers/",
+                    "title": "9 Best US Toll-Free Number Providers in 2026",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.ignitiontollfree.com/buy-vanity-number",
+                    "title": "Vanity Business Phone Numbers for Sale - Ignition Toll Free",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.callsource.com/vanity/",
+                    "title": "CallSource's Custom Toll-Free Vanity Call Tracking Phone Numbers",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://tollfreenumber.org/forum/major-list-of-800-numbers-to-big-companies/",
+                    "title": "MAJOR List of 800 numbers to BIG Companies - TollfreeNumber.ORG",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://technologyadvice.com/blog/information-technology/vanity-phone-numbers/",
+                    "title": "The 6 Best Vanity Phone Number Providers for 2026",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://fns-prod.azureedge.us/sites/default/files/call_center.pdf",
+                    "title": "[PDF] Call Center/Contact Center Support for States",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.ecfr.gov/current/title-47/chapter-I/subchapter-A/part-1",
+                    "title": "47 CFR Part 1 -- Practice and Procedure - eCFR",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://www.whitehouse.gov/wp-content/uploads/2025/08/a11.pdf",
+                    "title": "[PDF] CIRCULAR NO. A—11 PREPARATION, SUBMISSION, AND ...",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "url": "https://origin-www.acquisition.gov/sites/default/files/archives/pdf/DFARS_PGI_Change_6-3-2021.pdf",
+                    "title": "[PDF] defense federal acquisition regulation - pgi",
+                    "start_index": 0,
+                    "end_index": 0
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 173,
+          "completion_tokens": 260,
+          "total_tokens": 433,
+          "cost": 0.0103158,
+          "is_byok": false,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "cost_details": {
+            "upstream_inference_cost": 0.01042,
+            "upstream_inference_prompt_cost": 0.000519,
+            "upstream_inference_completions_cost": 0.009901
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "image_tokens": 0,
+            "audio_tokens": 0
+          }
+        }
+      }
+    }
+  ]
+}

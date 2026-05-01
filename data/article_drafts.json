@@ -1,0 +1,2525 @@
+{
+  "generated_at": "2026-05-01T00:50:17.330746Z",
+  "drafts": [
+    {
+      "_id": "drafts.draft-article-misdial-marketing-regulatory-vacuum",
+      "_type": "post",
+      "title": "The Toll-Free Misdial-Marketing Industry Operates in a Regulatory Vacuum",
+      "slug": {
+        "_type": "slug",
+        "current": "misdial-marketing-regulatory-vacuum"
+      },
+      "noindex": true,
+      "body": [
+        {
+          "_type": "block",
+          "_key": "a194a9e66b25",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "8628fdd861f1",
+              "text": "The Toll-Free Misdial-Marketing Industry Operates in a Regulatory Vacuum",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "cd10af78793d",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "3f1a0168fcc4",
+              "text": "_A 38% slice of America's most coveted toll-free vanity numbers is held by operators who don't run businesses on those lines — they monetize misdialed callers. There has been zero federal enforcement against this practice in the past three years. We have the data; the regulators apparently don't have the appetite._",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "d0545ae60d33",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "f2833cc31ebb",
+              "text": "---",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "53059672e326",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "64e5d48ce089",
+              "text": "**⚠ AI-assisted draft. Human review required before publication. Verify all data citations against the underlying batch results in `toll-free-autodialer/data/numbers.db` and primary FCC/FTC sources before publishing.**",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "28fc2c3c424c",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "3a97e3dfacb0",
+              "text": "---",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "82a4a33432c4",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "66e01fc766c7",
+              "text": "What we measured",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "0053d2131e02",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "24a5b5eb2bf0",
+              "text": "In April 2026, TollFreeNumbers.com placed automated test calls to the top 250 vanity 800 numbers in our Master Million ranking — the most desirable toll-free vanity inventory in America. We listened to what each line actually plays when you call it, transcribed the greeting via Deepgram, and classified the result.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "6af5469b4f47",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "25da7ce0168f",
+              "text": "The breakdown of those 247 working numbers:",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "cdbed912ea8f",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "addda1f073cf",
+              "text": "| Outcome | Count | % | |---|---:|---:| | Real customer (clean company name extracted from greeting) | 50 | 20.2% | | Misdial-Marketing resporg (skipped — known operator) | 82 | 33.2% | | Misdial-template transcript (caught in the act) | 11 | 4.5% | | Vanity-Biz resporg (number broker, not a real customer) | 26 | 10.5% | | AT&T-warehoused silent inventory (no answer) | 56 | 22.7% | | Telco \"directory assistance\" routing | 3 | 1.2% | | Other / disconnect / no clean extraction | 19 | 7.7% |",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "904e1c88a873",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "2bba3193291e",
+              "text": "**Roughly one in five of the most valuable 8XX numbers in America actually answers as a real business.** The other 80% are squatting, monetized misdial traffic, or warehoused.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "a73917ca38d9",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "ce8290d7a117",
+              "text": "What a misdial farm sounds like",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "fdd94839ce56",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "2c4d30299164",
+              "text": "In the same batch, six different numbers held by three different RespOrgs returned the *byte-identical* opening transcript:",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "ee95fe02f45c",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "8fe13d76bd97",
+              "text": "> *\"This call may be recorded for quality assurance. We have a special promotion today for sel...\"*",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "78356e022abf",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "e3c62c3125b1",
+              "text": "Those numbers — 800-SERVICE, 800-COMPUTER, 800-INFORMATION, 800-BUSINESS, 800-ELECTRONIC, 800-PURPOSES — are held by RespOrgs MYR01 (Mayfair Communication, four numbers), MYR99, and CBW01 (Crossbow Telecom). The pitch is identical because the operation is identical: it's the same offer ring routed under different SAC codes.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "0f9a8e2ed993",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "b310753cd962",
+              "text": "A second template surfaced on three more MYR01 numbers — a \"you have dialed a number\" intercept — same operator, different funnel stage. A third pattern, on rank-18's 800-PRODUCTS, opened with *\"Thank you for calling about ADT Security Systems\"* — MYR01 impersonating a recognizable consumer brand to keep misdialing callers on the line and convert. ADT does not own that number.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "2891f7763d2d",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "be58d0b36802",
+              "text": "This is the misdial-marketing business model in plain audio. The caller dialed 800-CONTACTS or 800-FLOWERS or 800-DENTIST, fat-fingered a digit, and landed on a number whose owner has built a revenue funnel out of capturing that exact mistake.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "7deca18b5ec4",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "cd9ed89f569e",
+              "text": "The regulatory record",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "b5a2b2d7de25",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "d1b51d03a9f9",
+              "text": "We asked Perplexity Sonar Pro to search FCC.gov, FTC enforcement records, federal-register notices, and toll-free industry trade press for **any** enforcement action, lawsuit, complaint, or policy proposal targeting toll-free misdial-marketing operators in the past 36 months. The answer came back unambiguous:",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "27671ab9942b",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "dd24ea688ac1",
+              "text": "> *\"There are no public FCC or FTC enforcement actions, complaints, lawsuits, or policy proposals specifically targeting toll-free misdial marketing operators or traffic pumping schemes in the past 36 months.\"*",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "62220934dc64",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "8e4d7399ca7f",
+              "text": "The FTC's Operation Stop Scam Calls and the FCC's robocall enforcement programs have prosecuted **151 cases** against telemarketers, lead generators, and VoIP-spoofing operations in roughly the same window. None of those touch the practice of acquiring toll-free vanity numbers to monetize misdirected traffic.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "1666c530aeca",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "93fa83fdaa9c",
+              "text": "The result is a regulatory frame in which:",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "022034745efd",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "552ee8fc6afb",
+              "text": "Operating a misdial farm is **not illegal**. There is no federal rule that says you can't acquire a toll-free number, route it to a generic monetization pitch, and earn money from people who were trying to call someone else.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "32685edc4529",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "11c90e541c2a",
+              "text": "**Brand impersonation in the greeting** (\"calling about ADT Security Systems\") could in principle attract Lanham Act or FTC Section 5 attention, but no public case has been brought.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "7f991548b87f",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "aeaaf5a142ec",
+              "text": "**Traffic-pumping enforcement** has historically focused on rural-LEC long-distance arbitrage, not toll-free misdial monetization. Different mechanic, similar logic, no transfer of regulatory attention.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "d54779248c6b",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "2b164db8cbcb",
+              "text": "Why the inventory matters",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "b248393c01b1",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "d0cb4c89b69e",
+              "text": "Every toll-free vanity number is a finite, named asset. There is exactly one 800-FLOWERS, one 800-CONTACTS, one 800-DENTIST. When 33% of the prime inventory is held by operators who aren't running businesses on those lines — who are, in fact, monetizing other businesses' misdialed customers — the available supply for new businesses is materially smaller than it appears.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "8e061e8198b3",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "6a07dcf77ee3",
+              "text": "This compounds the inventory exhaustion problem the FCC and Somos have been managing through the last several SAC openings (855 in 2010, 844 in 2013, 833 in 2017, 822 announced 2024). Each new prefix is positioned as relief; what the data shows is that a substantial fraction of the relief gets absorbed by the same warehousing-and-monetization patterns visible in 800.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "9344322ef41f",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "2f796043db25",
+              "text": "The case for action — or at least transparency",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "cef15e56b37e",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "451e08ae7b99",
+              "text": "We are not arguing for prohibition. We are arguing for visibility. A few proposals:",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "71ca0e92db42",
+          "style": "normal",
+          "listItem": "number",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "d030b857315e",
+              "text": "**Public RespOrg-classification disclosure.** Somos already tracks RespOrg codes; the operating model behind each code (real carrier, vanity broker, misdial farm, dormant) is industry-knowable but not publicly indexed. Surface it.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "272c65792494",
+          "style": "normal",
+          "listItem": "number",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "00fc388671ae",
+              "text": "**Per-number greeting-record disclosure.** A six-greeting fingerprint is enough to detect template recycling. The methodology is straightforward; the data exists.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "5cdd3fcd16d5",
+          "style": "normal",
+          "listItem": "number",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "e2d27b28e612",
+              "text": "**Brand-impersonation enforcement.** When a RespOrg's holdings consistently answer with the names of unaffiliated brands (\"calling about ADT,\" \"calling about Allstate\"), that's a Lanham Act / Section 5 signal regardless of whether the underlying misdial business is itself unlawful.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "46b09287fe65",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "7936e7171ab6",
+              "text": "The data is already in the field. The numbers run themselves all day, every day. We pulled audio for 247 of them in an afternoon for $0.45. There is no infrastructure barrier to running this analysis at full inventory scale, and there is no transparency reason not to.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "74d85b08a458",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "d070435201bd",
+              "text": "The question isn't whether the misdial-marketing industry exists — we have it on tape. The question is whether the agencies whose mandate covers consumer phone calls intend to do anything about it.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "ace0983e90cf",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "040bce2f44d3",
+              "text": "---",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "2d6ae252fe55",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "0017080e9ef4",
+              "text": "Methodology",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "a69016d51359",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "cebc40eb83f0",
+              "text": "**Sample**: top 250 vanity-800 numbers ranked by Master Million keyword value, filtered to currently-WORKING status per April 2026 Somos scan",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "9177277b3396",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "738a2f9eea92",
+              "text": "**Calls**: placed via Telnyx Voice API, recorded from moment-of-answer using `record-from-answer` parameter, transcribed via Deepgram `nova-2-phonecall` model",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "aa7cd1a8694a",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "c63f7bb0ff26",
+              "text": "**Classification**: greeting-text pattern matching (misdial-template detection) + RespOrg cross-reference against TollFreeNumbers.com Sanity-tagged categories (Misdial Marketing, Vanity Biz)",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "27dd4705aa03",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "a89055a3eda8",
+              "text": "**Cost**: $0.45 in dial fees for the 25-call validation batch + $2.23 for the 124-call dialable subset; $0.247 in search-augmentation queries",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "6b21c3aa7d08",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "380d6db1157c",
+              "text": "**Regulatory search**: Perplexity Sonar Pro, model `sonar-pro`, query targeted at FCC dockets (ecfsapi.fcc.gov), FTC enforcement records, federal-register notices, and toll-free trade publications, 36-month window",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "8560e15c90cb",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "699a9e84807a",
+              "text": "**Underlying data**: stored in `toll-free-autodialer/data/numbers.db` (call attempts + transcripts) and `RESPORGS/clean/resporg.json` (classification source of truth)",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "d20b7310a41b",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "0fd3d8d155f5",
+              "text": "For the per-number outcome data backing this article, see [TollFreeNumbers.com 8XX inventory report](#) (forthcoming) and the per-RespOrg profile pages on Resporgs.com.",
+              "marks": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "_id": "drafts.draft-article-8xx-inventory-state-of-the-union",
+      "_type": "post",
+      "title": "State of the 8XX Inventory: A 2026 Look at Toll-Free Numbering Supply",
+      "slug": {
+        "_type": "slug",
+        "current": "8xx-inventory-state-of-the-union"
+      },
+      "noindex": true,
+      "body": [
+        {
+          "_type": "block",
+          "_key": "1818e34edff1",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "225fe9657dea",
+              "text": "State of the 8XX Inventory: A 2026 Look at Toll-Free Numbering Supply",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "0e4fadd02341",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "50ce991e0aa0",
+              "text": "_Of the eight Service Access Codes the FCC has opened for toll-free use, **the original 800 prefix has zero numbers available for new assignment**. 888 has only 61,935 available out of 7.7 million. The newest announced code, 822, hasn't been activated yet. We track every number in the Somos registry monthly — and the trend line is the same in every prefix._",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "415fe9b3ad89",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "b80d34280cae",
+              "text": "---",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "d181eb2a8d7c",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "2a03dd71e8d7",
+              "text": "**⚠ AI-assisted draft using April 2026 Somos scan data. Verify FCC SAC opening dates against primary FCC sources before publishing. Per-prefix counts current as of 2026-04 monthly scan.**",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "e25787048a1e",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "b19d965e68e1",
+              "text": "---",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "a000d619774d",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "6da74e3b9adc",
+              "text": "How the 8XX prefixes have rolled out",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "69c277d3f291",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "34126f0ffc05",
+              "text": "Toll-free service launched in the United States in 1967 with a single Service Access Code: **800**. As demand grew, the FCC opened additional codes:",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "3b2076c39d31",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "4e7446f547f0",
+              "text": "| Prefix | Year opened | Reason for opening | |---|---|---| | **800** | 1967 | Original toll-free SAC | | **888** | 1996 | 800 effectively exhausted of new vanity availability | | **877** | 1998 | 888 exhausting at the same vanity-pressure pace | | **866** | 2000 | Continued growth in 8XX-as-marketing-asset | | **855** | 2010 | After several years of slowed openings; 866 inventory tightening | | **844** | 2013 | First opening under the 4XX-codes-coming-faster era | | **833** | 2017 | First SAC released via lottery / auction (FCC Number Reuse Plan) | | **822** | 2024 (announced) | Most recent — TBD activation date |",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "7b97a5e9c0ab",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "f829226fca70",
+              "text": "Each new SAC adds ~7.4 million addressable subscriber numbers (8 × 10⁶ minus reserved blocks). On paper that's a lot of inventory. In practice, it isn't.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "0b34d90e8c89",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "67bd12254ca5",
+              "text": "Why the inventory exhausts faster than it grows",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "c197becec3da",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "9af5f288dfbb",
+              "text": "A toll-free number is a finite, named asset. There is exactly one **800-FLOWERS**, one **800-CONTACTS**, one **800-DENTIST**. Once a vanity word is taken in 800, the next-best substitute (888-FLOWERS, 877-DENTIST) is materially less valuable — the consumer has muscle-memory dialed 800 for thirty years.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "d2e09c6cf793",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "9973a8d6b6b6",
+              "text": "This produces a structural imbalance in how the 8XX inventory exhausts:",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "8132b9c4bdbb",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "6a5f84ec900a",
+              "text": "**Vanity inventory (the high-value slots) is exhausted in 800 and is approaching exhaustion in 888 and 877.** Our top-250 Master Million ranking for 800 finds ~98% of those positions held — the rare 2% that aren't are typically TRANSIT or DISCONN with imminent reassignment.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "67638a8d36a0",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "9cb6d6f747a2",
+              "text": "**Numeric inventory (less-vanity-valuable numbers) is healthier in newer prefixes.** 833 and the upcoming 822 will absorb most net-new business assignments for the next 3-5 years.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "35817829aedb",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "ce99b8db4aaa",
+              "text": "**Yet the total available pool keeps shrinking** — because numbers don't get returned at the same rate they get taken, and because ~33% of the most coveted slots are held by misdial-marketing operators whose business model creates no incentive to release them ([see \"The Toll-Free Misdial-Marketing Industry Operates in a Regulatory Vacuum\"](#)).",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "af5e7cb8d762",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "63fbd5a255e4",
+              "text": "The April 2026 snapshot",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "970a428901bf",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "4b342dadc91d",
+              "text": "The latest Somos monthly scan covers **46.86 million working numbers** across the seven currently-active 8XX SACs. The 822 prefix announced in 2024 has not been activated; the registry shows zero records for it as of the April 2026 scan.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "3f37104f4d2f",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "4a0e609faa48",
+              "text": "| Prefix | WORKING | DISCONN | TRANSIT | RESERVED | AVAIL | % of prefix available | |---|---:|---:|---:|---:|---:|---:| | **800** | 7,761,136 | 13,255 | 41,071 | 2,283 | **0** | **0.0%** | | **888** | 7,715,692 | 55,319 | 120,524 | 3,963 | **61,935** | **0.8%** | | 877 | 6,691,762 | 51,573 | 103,164 | 5,821 | 1,112,225 | 14.0% | | 866 | 7,194,031 | 50,371 | 162,298 | 5,790 | 554,307 | 7.1% | | 855 | 6,245,959 | 56,122 | 91,069 | 5,574 | 1,564,254 | 19.7% | | 844 | 5,188,607 | 53,517 | 112,171 | 5,059 | 2,611,189 | 32.6% | | 833 | 6,260,812 | 82,294 | 188,249 | 11,476 | 1,386,450 | 17.5% | | 822 | 0 | 0 | 0 | 0 | 0 | (not active) | | **Total** | **46,858,000** | **362,451** | **818,546** | **39,966** | **7,290,360** | **15.6%** |",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "12850af3c090",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "7afd33499d52",
+              "text": "The headline:",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "66b2f3438841",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "ae8195252b78",
+              "text": "**800 has no available inventory.** Not low — zero. Every new 800 number must come from a disconnection.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "3d71a06cff4f",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "46f0e19baa94",
+              "text": "**888 is functionally exhausted.** 61,935 numbers available out of 7.7 million is 0.8%, the slowest-moving inventory of any active SAC.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "75c327955880",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "b2b6ed2bd33f",
+              "text": "**The pool of \"actually purchasable\" toll-free numbers is 7.29 million** — roughly 16% of the total active inventory. This is the supply available to every business that wants to claim a new toll-free in America today.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "2c8dc24c6fdb",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "e1c295f9a8cd",
+              "text": "**844 is the most available prefix** at 32.6% pool — it's the workhorse for new business assignments right now.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "300a81edcf39",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "35fdbc109b5b",
+              "text": "**833 grew the fastest** in the 4 months we have history for: +11.2% working count from January to April 2026, the highest of any prefix. It's where active business demand is going.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "5ff7ae7f0e20",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "6627547fdfda",
+              "text": "Key signals to highlight in the published version",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "a932e5b24fc8",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "c58f57fa43cc",
+              "text": "When the per-prefix data lands, the editorial frame should emphasize:",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "52a271e0ea5a",
+          "style": "normal",
+          "listItem": "number",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "972a5f62c910",
+              "text": "**The \"real working\" rate is misleading.** Of the 800 numbers tagged WORKING, our top-250 dial study (April 2026) shows only ~20% answer as identifiable real businesses. The rest are misdial-monetization, telco-warehoused silent inventory, or dead routing.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "e66c05d9c3c8",
+          "style": "normal",
+          "listItem": "number",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "aa3d198e505f",
+              "text": "**AVAIL is not what's actually purchasable.** A number marked AVAIL in Somos data may still be in a 4-month \"aging\" period after disconnection (FCC rule), making the immediate-purchase pool smaller than the headline available count.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "dd6f343e2f91",
+          "style": "normal",
+          "listItem": "number",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "203ca72e7bd9",
+              "text": "**Movement velocity matters more than static count.** A prefix with 200,000 SPARE that turns over 50,000/month is healthier than a prefix with 500,000 SPARE that turns over 5,000/month.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "9d853a26bfea",
+          "style": "normal",
+          "listItem": "number",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "2096ecb0d35f",
+              "text": "**Newer prefixes ≠ better quality.** 855, 844, 833 each launched with fanfare about relieving exhaustion. In each case, a substantial fraction of inventory was acquired by speculative resporgs and vanity brokers within the first 24 months. Same pattern, different decade.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "b9bf8124cbc1",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "5ecfc33c6708",
+              "text": "What this argues for",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "b63ecd3fe2d2",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "c884fcaaf36f",
+              "text": "**Public per-RespOrg holding metrics.** TollFreeNumbers.com / Resporgs.com already tracks each RespOrg's inventory size, growth, and disconnect-vs-acquire ratio (the \"Opportunism Index\"). Surfacing this prominently in industry policy debates would change the conversation about whether 822 should be released conventionally or via reform.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "6f2343069133",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "0d78ee78e6e8",
+              "text": "**Time-bounded vanity holds.** A regulatory mechanism that requires demonstrated commercial use within N months of acquisition would force misdial operators to either run real businesses or relinquish inventory.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "5812cb91b363",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "4c3f4d2052c8",
+              "text": "**Visibility into the silent-AT&T inventory.** Of the 25 ATX01-held numbers in our top-250 sample, 11 (44%) gave silence-no-answer when called. That's a substantial pool of \"warehoused\" inventory not visible in any public report.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "1bb5a0d7038d",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "d6790da34ba5",
+              "text": "Methodology",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "74f901b75a4f",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "7f0e8d5548d8",
+              "text": "**Source data**: monthly Somos toll-free scans, ingested into `tollfree_intel.db` (~56M rows per scan, ~224M rows across the 4-month window currently loaded)",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "7bfd4ad819b7",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "7be77aae74b7",
+              "text": "**Scan timing**: monthly, typically arriving 4-8 days after month-end",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "08c9856afcfa",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "cc94fd04cf5d",
+              "text": "**Status taxonomy**: WORKING / SPARE / DISCONN / TRANSIT / RESERVED / AVAIL / FEATURE / UNAVAIL — Somos's official categorization",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "0fce1e4a411e",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "490cc5c6f167",
+              "text": "**Top-250 sample**: dialed via Telnyx + Deepgram pipeline in April 2026 (see misdial-vacuum article for methodology details)",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "ab06574b3f32",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "ff88f0b1095d",
+              "text": "For per-RespOrg drilldowns and historical month-over-month trajectories, see individual profile pages on Resporgs.com.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "75b28c68e96e",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "ee4e3eb21e39",
+              "text": "---",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "49e326e48233",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "3c209797fd06",
+              "text": "Editor checklist before publication",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "6a894fefeae7",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "47131ea9b41d",
+              "text": "[x] Per-prefix snapshot table filled from April 2026 scan",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "b161b265bf23",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "b022057d5a7b",
+              "text": "[x] 4-month trajectory data captured (Jan→Apr 2026: +11.2% on 833, +1.0% on 800, +5.0% on 855, etc.)",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "1d5f77d49791",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "fc1dc79e4e2e",
+              "text": "[ ] Verify FCC SAC opening dates against FCC primary sources (especially 833 lottery year and 822 announcement date)",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "570a74972c23",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "038827e386ae",
+              "text": "[ ] Render 4-month trajectory as a line chart visual",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "cb56d6f044c5",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "920e066a7c3d",
+              "text": "[ ] Cross-link to misdial-vacuum article and to Bandwidth/Verizon/major-carrier profile pages",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "6ff1f4ed411e",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "19bd3f71c2c0",
+              "text": "[ ] Set publish date and add to /news article rotation",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "c0b83a874381",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "909a50134b5b",
+              "text": "4-month trajectory (Jan → Apr 2026)",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "f4fb5977637b",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "616fb99fc175",
+              "text": "| Prefix | Jan 2026 | Apr 2026 | Δ | Δ% | |---|---:|---:|---:|---:| | 800 | 7,682,565 | 7,761,136 | +78,571 | +1.0% | | 888 | 7,501,412 | 7,715,692 | +214,280 | +2.9% | | 877 | 6,451,639 | 6,691,762 | +240,123 | +3.7% | | 866 | 7,055,360 | 7,194,031 | +138,671 | +2.0% | | 855 | 5,949,348 | 6,245,959 | +296,611 | +5.0% | | 844 | 5,071,039 | 5,188,607 | +117,568 | +2.3% | | **833** | **5,630,699** | **6,260,812** | **+630,113** | **+11.2%** | | 822 | 0 | 0 | 0 | (not active) |",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "2c09e8ec0e5f",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "829ac27fb784",
+              "text": "833 absorbing 6× the new-assignment volume of any other prefix is the clearest signal of where active business demand is going — and the clearest sign that the older prefixes (800, 888, 866) are operating in a steady state of disconnect-and-reassign rather than net growth.",
+              "marks": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "_id": "drafts.draft-article-fcc-dno-mandate-2025",
+      "_type": "post",
+      "title": "FCC Now Requires All Voice Providers to Block Calls From Invalid Numbers",
+      "slug": {
+        "_type": "slug",
+        "current": "fcc-dno-mandate-2025"
+      },
+      "noindex": true,
+      "body": [
+        {
+          "_type": "block",
+          "_key": "f15c4629b4c7",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "462acea4c26d",
+              "text": "As of December 15, 2025, every voice service provider in the call path — not just gateway carriers — must block calls from numbers on a 'do-not-originate' list. Penalties run up to $23,000 per day, and downstream carriers can refuse traffic from non-compliant providers. Here's what the rule says.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "53f11f98b088",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "6eb762572f24",
+              "text": "FCC's December 15, 2025 Do-Not-Originate Call-Blocking Mandate",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "287711c364b1",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "acf1fec160f1",
+              "text": "The **December 15, 2025 DNO mandate requires all voice service providers—originating, intermediate, gateway, and terminating carriers—to block calls purporting to originate from numbers on a reasonable do-not-originate list**, expanding previous requirements that applied only to gateway providers.[1][2] This rule is codified in 47 CFR § 64.1200(p) and was adopted by the FCC in its Eighth Report and Order regarding CG Docket No. 17-59 on February 27, 2025, with an earlier foundational order in WC Docket No. 17-97 adopted March 16, 2023.[1][4]",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "14848dd998dd",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "6e0e0813b2c9",
+              "text": "Core Provider Obligations",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "a4f714f8fdf4",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "d539c3bf2fb8",
+              "text": "Under 47 CFR § 64.1200(p), effective December 15, 2025, each voice service provider must:[1]",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "317b20ab500b",
+          "style": "normal",
+          "listItem": "number",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "e613c65dd043",
+              "text": "**Use at least one reasonable DNO source** to identify numbers that should not originate calls",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "d118f90da5ee",
+          "style": "normal",
+          "listItem": "number",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "3298c6f8aa5c",
+              "text": "**Block calls from DNO-flagged numbers** throughout the call path",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "46b5808358f1",
+          "style": "normal",
+          "listItem": "number",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "52b1f9a1baf3",
+              "text": "**Establish an error reporting mechanism** with a publicly available point of contact for consumers to report erroneously blocked calls",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "6e766e2ec1f6",
+          "style": "normal",
+          "listItem": "number",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "1877d3cd2220",
+              "text": "**Document compliance** with the rule",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "b853361865ec",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "b10c16b3a720",
+              "text": "Required Number Categories for Blocking",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "a554747ee3ab",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "c6136abd99ab",
+              "text": "The FCC mandates that DNO lists include at minimum four categories of numbers:[1]",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "f90a32b84782",
+          "style": "normal",
+          "listItem": "number",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "bf03b65ee1d2",
+              "text": "**Invalid numbers** — those that do not conform to valid North American Numbering Plan formats",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "f3827591237b",
+          "style": "normal",
+          "listItem": "number",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "8334fc3ea524",
+              "text": "**Unallocated numbers** — numbers not yet assigned by the North American Numbering Plan Administrator",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "e84c5cd410de",
+          "style": "normal",
+          "listItem": "number",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "312b28e5b8f5",
+              "text": "**Unused numbers** — numbers allocated but not currently in service",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "c105c4ab878e",
+          "style": "normal",
+          "listItem": "number",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "c5e4fe0b06ca",
+              "text": "**Inbound-only numbers** — numbers explicitly allocated for receiving calls only, such as certain government or service numbers",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "03bafba80841",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "54a65613aeeb",
+              "text": "The FCC cautioned that it may \"deem unreasonable a list so limited in scope that it leaves out obvious numbers that could be included with little effort.\"[3] Providers must also **constantly update DNO lists**, particularly for unused numbers that may transition into active service.[3]",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "ceaaea0c42f5",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "28c19ec5eecd",
+              "text": "Relationship to STIR/SHAKEN",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "bf0aab6719a4",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "282914fc2bbf",
+              "text": "The DNO blocking mandate works in conjunction with **STIR/SHAKEN authentication and industry traceback initiatives** as part of the FCC's broader strategy to combat spoofed and fraudulent traffic.[1] While STIR/SHAKEN focuses on authenticating the legitimacy of caller identity claims, DNO blocking provides an additional layer of defense by preventing calls from originating on numbers that are inherently invalid or unallocated—numbers that cannot legitimately be used for outbound calling regardless of authentication status.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "57d7259fd41a",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "fc22672e2462",
+              "text": "Impact on Toll-Free Numbers",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "514661b4b0a4",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "e4d73172f00c",
+              "text": "The search results do not provide specific details about toll-free number treatment under the DNO mandate. However, one source mentions that Netnumber's Dynamic DNO service \"integrates with the netnumber Services Registry (nnSR), North America's authoritative registry for text-enabling 10-digit and toll-free numbers,\" suggesting that toll-free numbers are included within the scope of DNO compliance systems.[1] The rule extends DNO blocking requirements to SMS and text messaging under 47 CFR § 64.1200(p), which would encompass toll-free messaging services.[1]",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "f605fccc5b08",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "8a79f64400e6",
+              "text": "Enforcement and Compliance Scope",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "b62441ba62f3",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "409cf1585bdb",
+              "text": "**Non-compliance carries severe penalties.** The FCC can impose forfeitures of up to $23,000 per violation under 47 U.S.C. § 503(b), with each day of continuing violation constituting a separate offense.[1] More significantly, the FCC has warned that failure to comply \"may result in the blocking of all traffic from a non-compliant provider,\" meaning compliant downstream providers can refuse to carry traffic from non-compliant carriers, effectively cutting off service.[1]",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "12e5c7c6662a",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "27a251df08db",
+              "text": "The mandate applies to **all providers in the call path**, not just large carriers.[4][5] The FCC acknowledged that smaller voice service providers may utilize less extensive DNO lists than larger carriers, particularly when other providers in the call chain provide blocking functionality.[3]",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "1ae6508e8fb7",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "8ad22744eb7c",
+              "text": "Key Distinction from Previous Rules",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "7cc81dfd562f",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "96ee9429acbb",
+              "text": "The December 15, 2025 rule represents a major expansion from the June 14, 2022 gateway-only requirements.[1] The new mandate extends blocking obligations to **all intermediate and terminating providers** (not just gateways), applies to **domestic calls** (not just international-to-domestic), and creates **multiple checkpoints throughout the network** rather than filtering only at international gateways.[1]",
+              "marks": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "_id": "drafts.draft-article-brn-toll-free-jan-2026",
+      "_type": "post",
+      "title": "Big Changes for Toll-Free Messaging: The January 1, 2026 BRN Rule Explained",
+      "slug": {
+        "_type": "slug",
+        "current": "brn-toll-free-jan-2026"
+      },
+      "noindex": true,
+      "body": [
+        {
+          "_type": "block",
+          "_key": "4937dcd8bf12",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "ed423fbee977",
+              "text": "Starting January 1, 2026, every new toll-free A2P verification submission must include a Business Registration Number, country of registration, and legal entity type. Existing verified numbers are exempt — but new ones without these fields will be rejected. Here's what businesses need to know.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "76865c4919b3",
+          "style": "h3",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "88eab0340371",
+              "text": "Toll-Free Messaging Verification Rule Effective January 2026",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "44fec790f5d3",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "fc4ef8fb658f",
+              "text": "The toll-free messaging verification rule, mandating Business Registration Number (BRN), issuing country, and legal entity type in submissions, stems from **industry-wide carrier requirements** implemented by toll-free service providers and carriers (e.g., via Somos-managed processes), not a direct FCC mandate, though aligned with FCC anti-robocall efforts.[2][3][4][5][6] It takes effect for new verifications starting **January 1, 2026** (with some carriers enforcing by February 17, 2026), as part of aligning toll-free A2P messaging with 10DLC standards to combat spam.[1][2][3][4]",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "8b0ba84a7a42",
+          "style": "h4",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "1706287cfaa0",
+              "text": "1. Issuer of the Rule",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "738a8be836e8",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "ca99c666d2b7",
+              "text": "Industry carriers and toll-free administrators (e.g., Somos ecosystem) are driving the change through updated verification forms, described as \"industry-wide\" and \"carrier requirements\" to enhance trust and reduce fraud, without explicit FCC rulemaking cited.[1][3][4][5][6] No primary FCC docket or Federal Register entry directly mandates it in results; it's positioned as voluntary alignment with FCC goals like robocall mitigation.[2][9]",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "c2ddbf28333a",
+          "style": "h4",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "de793c06746d",
+              "text": "2. Affected Submissions",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "0c89af0e68b2",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "123f051258e2",
+              "text": "Only **new toll-free verifications** (net-new Toll-Free Verified Sender Forms or A2P registrations) require BRN details; existing verified numbers and renewals are exempt—no resubmission needed.[3][4]",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "544e5197e39b",
+          "style": "h4",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "43293234bcf7",
+              "text": "3. Valid BRN Examples",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "f023655bef88",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "45c0279c8073",
+              "text": "**US entities**: Primarily **EIN** (Employer Identification Number) from IRS; sole proprietors without EIN select \"Sole Proprietor\" entity type (US-only, triggers manual review, not guaranteed).[4][2]",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "4c2e7ce62462",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "728663a66568",
+              "text": "**Non-US entities**: Official registration number from local/national authority (e.g., Companies House UK, Corporations Canada/CRA, or equivalent); must include legal name, issuing authority, and ISO 3166-1 Alpha-2 country code (e.g., CA, GB).[4][6]",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "31fd7ee7fcaf",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "c57a090cbd40",
+              "text": "Other mentions: DUNS possible but not primary; state licenses not specified as valid standalone.[4][7] Fields: BRN, Registration Type (e.g., EIN/CRA), Country code, Entity Type (e.g., for-profit, non-profit).[1][4][6]",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "fcd5dedd3302",
+          "style": "h4",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "cd642d98d3b7",
+              "text": "4. Non-Compliance Penalties",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "105966c13c35",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "58a958cff654",
+              "text": "Submissions **may be rejected** without BRN; potential **messaging traffic block/suspension** if verification fails, though some providers note solutions for lacking BRN to avoid full service removal.[2][3][5] Processing may delay for manual sole proprietor reviews.[4]",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "51f3d40c67db",
+          "style": "h4",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "21b79f114739",
+              "text": "5. Timeline and Grace Period",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "dc3565ea0825",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "6d614bb6d6c0",
+              "text": "**Prep phase**: Fields available/optional from September 30/October 1, 2025.[4][5][6]",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "b2f1772f7402",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "bd55caaab6e3",
+              "text": "**Mandatory**: January 1, 2026 (industry standard); some carriers February 17, 2026.[1][2][3][4][6]",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "cbab0580103d",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "c917311eb772",
+              "text": "No explicit grace period post-enforcement; providers urge early collection to avoid disruptions.[3][5]",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "53dd687db9d9",
+          "style": "h4",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "8efd95d6e9e7",
+              "text": "6. Relation to 10DLC Vetting",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "58e25d72b05b",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "db39d4c04623",
+              "text": "Mirrors **10DLC standards** by adding business vetting (BRN scrutiny) to toll-free, previously focused on message content; aims for equivalent spam/phishing reduction, deliverability, and compliance with opt-in/out policies.[3][7]",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "3a3b15f96dc3",
+          "style": "h4",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "85bc36884896",
+              "text": "7. Industry Reaction and Concerns",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "3cac5bf16073",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "1122760d2b04",
+              "text": "Sources frame positively as anti-spam/trust-building, with no direct critiques in results; indirect concerns via sole proprietor manual processes (delays, US-only) and onboarding burdens for international/small businesses implied by prep advice.[4][5] No explicit small business/international backlash cited; focus on \"future-proofing\" via providers.[3]",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "fb3c27ccc6bc",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "4cd832ac1def",
+              "text": "**Sources**: All details from listed results; no FCC/Somos primary docs (e.g., somos.com, fcc.gov dockets) in results—industry blogs/carrier pages dominate, potentially lacking official confirmation. Verify via Somos or FCC for article publication.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "a114e20f3514",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "3f6bff24c394",
+              "text": "[1] https://educate.dentalintel.com/en/articles/13709498-updated-toll-free-verification-requirements-effective-february-17-2026",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "16dc0359e74d",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "57d679e13700",
+              "text": "[2] https://intercom.help/whippy/en/articles/13178812-u-s-sms-regulations-2023-2026-and-what-you-need-to-know",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "e3020821596b",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "60ed80bd03b6",
+              "text": "[3] https://www.telgorithm.com/news/toll-free-verification-is-changing-in-2026-heres-what-you-need-to-know",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "dfe00427db68",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "e4242394c953",
+              "text": "[4] https://www.bandwidth.com/support/en/articles/12823241-business-registration-number-requirements-for-toll-free-verification",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "77297d98c881",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "2f5597b16f4d",
+              "text": "[5] https://www.twilio.com/en-us/blog/toll-free-verification-policy",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "1a9c1326a863",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "5ee8ca1d0580",
+              "text": "[6] https://galaxy.maropost.com/kb/articles/2283-business-registration-number-brn-requirements-for-toll-free-verification",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "49d9e45ccd83",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "a600b9b0718a",
+              "text": "[7] https://signalhouse.io/guides/toll-free-a2p-messaging-is-changing-in-2026/",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "7edb856dc66b",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "0041e16cd0b9",
+              "text": "[9] https://www.federalregister.gov/documents/2025/12/05/2025-22063/advanced-methods-to-target-and-eliminate-robocalls",
+              "marks": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "_id": "drafts.draft-article-somos-tfna-primer",
+      "_type": "post",
+      "title": "Who Manages America's Toll-Free Numbers? A Primer on Somos and the FCC's TFNA Designation",
+      "slug": {
+        "_type": "slug",
+        "current": "somos-tfna-primer"
+      },
+      "noindex": true,
+      "body": [
+        {
+          "_type": "block",
+          "_key": "9391ad6efdda",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "62efefe44ac0",
+              "text": "Somos, Inc. has run the federally-designated Toll-Free Numbering database since 2013, managing more than 42 million toll-free numbers. But how did they get the role, when does their designation come up for renewal, and why isn't that calendar more public? Here's what we know — and what we don't.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "52ce1a2f418b",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "522c2ea06324",
+              "text": "**Somos, Inc. continues to serve as the federally-designated Toll-Free Numbering Administrator (TFNA), also known as the SMS/800 Number Administrator, managing the Toll-Free Numbering database since its selection by the FCC in 2013.** No information in the available search results confirms the exact date of the last TFNA-specific renewal, the next renewal date, or any active FCC proceeding/RFP for this role as of the 2020 data provided[1][2][3].",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "1a6bc3c89a7c",
+          "style": "h3",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "4f2bb6a3ff9e",
+              "text": "1. Current FCC Contract/Designation Status",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "9f0d1d7eac86",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "ac5552570f07",
+              "text": "Search results lack details on a specific TFNA contract renewal post-2013 or any timeline for the next one; they focus on related roles (NANPA, PA, RNDA) awarded to SomosGov (a Somos subsidiary) via competitive bidding.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "7f1261724456",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "577a0dc28794",
+              "text": "The most recent contract mentioned is a **five-year award to SomosGov on December 1, 2020**, for NANPA, Pooling Administrator (PA), and Reassigned Numbers Database Administrator (RNDA), with FCC options to extend up to eight years total. This would potentially run through 2025-2028, but no explicit link to TFNA renewal[1][2][4][5][6].",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "7ffe47ca5693",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "cbceb778c61a",
+              "text": "No active proceedings, RFPs, or renewal notices for TFNA appear in results; concrete information on TFNA contract specifics is absent beyond Somos holding the role since 2013[1][2][3].",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "45d8c5f85389",
+          "style": "h3",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "01db06ba662a",
+              "text": "2. FCC Dockets, NPRMs, or Orders on TFNA (Past 24 Months)",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "01695f4b36ec",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "02c3b2348694",
+              "text": "No FCC dockets, NPRMs, orders, or Federal Register notices concerning the TFNA role are identified in the search results for the past 24 months (or any recent period).",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "eabaa372e5ca",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "ddce990b1563",
+              "text": "Indirect context: FCC progress on Reassigned Numbers Database (proposed June 2017, approved December 2018) led to the 2020 SomosGov RNDA award, but no docket numbers provided and not TFNA-specific[6].",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "d3963b4e89eb",
+          "style": "h3",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "32a65154119d",
+              "text": "3. Proposals by Other Entities or Challenges to Somos Performance",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "527d15b71fa6",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "c5ee1812222f",
+              "text": "No evidence of other entities proposing to take over the TFNA role or challenges to Somos's performance.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "e17f2b0e7d18",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "3dc8bdd25288",
+              "text": "All contracts (TFNA since 2013, NANPA/PA bridge in 2018, full NANPA/PA/RNDA in 2020) resulted from **FCC competitive bidding processes**, implying competition existed but Somos/SomosGov prevailed each time[1][2][3].",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "483c7d59cb73",
+          "style": "h3",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "29382c6e9b52",
+              "text": "4. History of Somos's Role (DSMI / SMS/800 Transition)",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "4e54f5675853",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "89dd32e222c8",
+              "text": "Somos, Inc. was **selected by the FCC in 2013** as the neutral TFNA to manage the Toll-Free Numbering database (SMS/800 TFN Registry) for North America, covering over 42 million toll-free numbers[1][2][3].",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "9541dd516607",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "54d30deb581b",
+              "text": "Search results do not detail the prior DSMI-to-SMS/800 transition era or how Somos specifically assumed the role; they confirm only the 2013 start via FCC selection, following industry shifts to neutral administration[1][2][3].",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "729c66637512",
+          "style": "normal",
+          "listItem": "bullet",
+          "level": 1,
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "a560ec744162",
+              "text": "Somos later expanded: 2018 bridge contract for NANPA/PA, extended to full contracts in 2018 and 2020 via SomosGov[1][2][3][4].",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "bab0b5bbad26",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "8306a01322c4",
+              "text": "**Limitations**: Results are from 2018-2020 and lack FCC dockets, Federal Register notices, or updates beyond the 2020 NANPA/PA/RNDA contract. No concrete data on TFNA renewal timelines, recent proceedings, or transition history; primary sources like fcc.gov, ecfsapi.fcc.gov, or somos.com post-2020 are not reflected here. Trade press (Telecompetitor, TransNexus) confirms Somos's ongoing role without challenges[4][5].",
+              "marks": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

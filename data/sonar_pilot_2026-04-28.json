@@ -1,0 +1,552 @@
+{
+  "generated_at": "2026-04-30T19:47:47.801666Z",
+  "model": "perplexity/sonar-pro",
+  "resporgs": [
+    {
+      "tier": 1,
+      "code": "JYT01",
+      "name": "Bandwidth",
+      "website": "https://www.bandwidth.com",
+      "tier_note": "Tier 1 — publicly-traded major carrier (NASDAQ: BAND). Should yield rich coverage.",
+      "response": {
+        "content": "{\n  \"overview\": \"Bandwidth Inc. (NASDAQ: BAND) is a cloud-based communications platform-as-a-service (CPaaS) provider offering APIs for voice, messaging, and emergency services via its global IP network, primarily generating revenue from usage-based fees.[1][2][3] Founded in 1999 by CEO David Morken and headquartered in Raleigh, North Carolina, it has no parent or holding company and employs about 1,000 people.[3][4]\",\n  \"recent_news\": [    {\n      \"date\": \"2026-04-30\",\n      \"title\": \"Bandwidth Reports Record Q1 2026 Revenue and Raises Full-Year Guidance\",\n      \"snippet\": \"Reported record Q1 2026 revenue of $209 million (+20% YoY) and raised full-year guidance to $880–$900 million revenue and $119–$125 million Adjusted EBITDA.\",\n      \"source_domain\": \"stocktitan.net\",\n      \"source_url\": \"https://www.stocktitan.net/overview/BAND/\"\n    },\n    {\n      \"date\": \"2024-08-01\",\n      \"title\": \"Bandwidth Moves to New Headquarters Campus\",\n      \"snippet\": \"Moved to a new, purpose-built 40-acre headquarters campus at 2230 Bandmate Way in Raleigh, maintaining a workforce of about 1,000 employees.\",\n      \"source_domain\": \"en.wikipedia.org\",\n      \"source_url\": \"https://en.wikipedia.org/wiki/Bandwidth_Inc.\"\n    },\n    {\n      \"date\": \"2024-12-31\",\n      \"title\": \"Bandwidth 2024 Financial Results\",\n      \"snippet\": \"2024 revenue was $748.49 million, an increase of 24.52% from $601.12 million in 2023; losses reduced to -$6.52 million.\",\n      \"source_domain\": \"stockanalysis.com\",\n      \"source_url\": \"https://stockanalysis.com/stocks/band/\"\n    }\n  ],\n  \"toll_free_specific\": \"No significant news found\",\n  \"affiliations\": \"No significant news found\"\n}",
+        "citations": [],
+        "usage": {
+          "prompt_tokens": 315,
+          "completion_tokens": 449,
+          "total_tokens": 764,
+          "cost": 0.0135432,
+          "is_byok": false,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "cost_details": {
+            "upstream_inference_cost": 0.01368,
+            "upstream_inference_prompt_cost": 0.000945,
+            "upstream_inference_completions_cost": 0.012735
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "image_tokens": 0,
+            "audio_tokens": 0
+          }
+        },
+        "model": "perplexity/sonar-pro",
+        "raw": {
+          "id": "gen-1777578469-jOobigowx3TX83oCXUHj",
+          "object": "chat.completion",
+          "created": 1777578469,
+          "model": "perplexity/sonar-pro",
+          "provider": "Perplexity",
+          "system_fingerprint": null,
+          "choices": [
+            {
+              "index": 0,
+              "logprobs": null,
+              "finish_reason": "stop",
+              "native_finish_reason": "stop",
+              "message": {
+                "role": "assistant",
+                "content": "{\n  \"overview\": \"Bandwidth Inc. (NASDAQ: BAND) is a cloud-based communications platform-as-a-service (CPaaS) provider offering APIs for voice, messaging, and emergency services via its global IP network, primarily generating revenue from usage-based fees.[1][2][3] Founded in 1999 by CEO David Morken and headquartered in Raleigh, North Carolina, it has no parent or holding company and employs about 1,000 people.[3][4]\",\n  \"recent_news\": [    {\n      \"date\": \"2026-04-30\",\n      \"title\": \"Bandwidth Reports Record Q1 2026 Revenue and Raises Full-Year Guidance\",\n      \"snippet\": \"Reported record Q1 2026 revenue of $209 million (+20% YoY) and raised full-year guidance to $880–$900 million revenue and $119–$125 million Adjusted EBITDA.\",\n      \"source_domain\": \"stocktitan.net\",\n      \"source_url\": \"https://www.stocktitan.net/overview/BAND/\"\n    },\n    {\n      \"date\": \"2024-08-01\",\n      \"title\": \"Bandwidth Moves to New Headquarters Campus\",\n      \"snippet\": \"Moved to a new, purpose-built 40-acre headquarters campus at 2230 Bandmate Way in Raleigh, maintaining a workforce of about 1,000 employees.\",\n      \"source_domain\": \"en.wikipedia.org\",\n      \"source_url\": \"https://en.wikipedia.org/wiki/Bandwidth_Inc.\"\n    },\n    {\n      \"date\": \"2024-12-31\",\n      \"title\": \"Bandwidth 2024 Financial Results\",\n      \"snippet\": \"2024 revenue was $748.49 million, an increase of 24.52% from $601.12 million in 2023; losses reduced to -$6.52 million.\",\n      \"source_domain\": \"stockanalysis.com\",\n      \"source_url\": \"https://stockanalysis.com/stocks/band/\"\n    }\n  ],\n  \"toll_free_specific\": \"No significant news found\",\n  \"affiliations\": \"No significant news found\"\n}",
+                "refusal": null,
+                "reasoning": null,
+                "annotations": [
+                  {
+                    "type": "url_citation",
+                    "url_citation": {
+                      "url": "https://stockanalysis.com/stocks/band/",
+                      "title": "Bandwidth (BAND) Stock Price & Overview",
+                      "start_index": 0,
+                      "end_index": 0
+                    }
+                  },
+                  {
+                    "type": "url_citation",
+                    "url_citation": {
+                      "url": "https://www.stocktitan.net/overview/BAND/",
+                      "title": "BAND Stock Price, News & Analysis | Bandwidth",
+                      "start_index": 0,
+                      "end_index": 0
+                    }
+                  },
+                  {
+                    "type": "url_citation",
+                    "url_citation": {
+                      "url": "https://en.wikipedia.org/wiki/Bandwidth_Inc.",
+                      "title": "Bandwidth Inc. - Wikipedia",
+                      "start_index": 0,
+                      "end_index": 0
+                    }
+                  },
+                  {
+                    "type": "url_citation",
+                    "url_citation": {
+                      "url": "https://www.bandwidth.com/company/",
+                      "title": "Company - Bandwidth",
+                      "start_index": 0,
+                      "end_index": 0
+                    }
+                  },
+                  {
+                    "type": "url_citation",
+                    "url_citation": {
+                      "url": "https://www.nasdaq.com/market-activity/stocks/band/institutional-holdings",
+                      "title": "Bandwidth Inc. Class A Common Stock (BAND) Institutional Holdings",
+                      "start_index": 0,
+                      "end_index": 0
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 315,
+            "completion_tokens": 449,
+            "total_tokens": 764,
+            "cost": 0.0135432,
+            "is_byok": false,
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "audio_tokens": 0,
+              "video_tokens": 0
+            },
+            "cost_details": {
+              "upstream_inference_cost": 0.01368,
+              "upstream_inference_prompt_cost": 0.000945,
+              "upstream_inference_completions_cost": 0.012735
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "image_tokens": 0,
+              "audio_tokens": 0
+            }
+          }
+        }
+      }
+    },
+    {
+      "tier": 2,
+      "code": "YPT01",
+      "name": "HelloSpoke",
+      "website": "https://hellospoke.com",
+      "tier_note": "Tier 2 — small/mid voice service provider, Louisville KY. Expect limited but real coverage.",
+      "response": {
+        "content": "{\n  \"overview\": \"HelloSpoke is a small VoIP telephony and AI-driven property management answering service provider specializing in automated call handling, business VoIP, contact centers, and integrations for multifamily properties, senior living, and SMBs.[1][2][4] The privately owned company, with fewer than 25 employees and revenue under $5 million, is headquartered at 118 E Main St Ste 100, Louisville, Kentucky.[1][2]\",\n  \"recent_news\": [    {\n      \"date\": \"2024\",\n      \"title\": \"HelloSpoke cuts maintenance call volume by 30% with voice agents\",\n      \"snippet\": \"By combining a proprietary resident communication and maintenance automation platform with ElevenLabs’ voice agents, HelloSpoke reduces operational workload, increases resident satisfaction, and drives retention.\",\n      \"source_domain\": \"elevenlabs.io\",\n      \"source_url\": \"https://elevenlabs.io/blog/hellospoke\"\n    }\n  ],\n  \"toll_free_specific\": \"No significant news found\",\n  \"affiliations\": \"No significant news found\"\n}",
+        "citations": [],
+        "usage": {
+          "prompt_tokens": 316,
+          "completion_tokens": 235,
+          "total_tokens": 551,
+          "cost": 0.0103653,
+          "is_byok": false,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "cost_details": {
+            "upstream_inference_cost": 0.01047,
+            "upstream_inference_prompt_cost": 0.000948,
+            "upstream_inference_completions_cost": 0.009522
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "image_tokens": 0,
+            "audio_tokens": 0
+          }
+        },
+        "model": "perplexity/sonar-pro",
+        "raw": {
+          "id": "gen-1777578474-rJVGdp9MLCGrPTqYMc9t",
+          "object": "chat.completion",
+          "created": 1777578474,
+          "model": "perplexity/sonar-pro",
+          "provider": "Perplexity",
+          "system_fingerprint": null,
+          "choices": [
+            {
+              "index": 0,
+              "logprobs": null,
+              "finish_reason": "stop",
+              "native_finish_reason": "stop",
+              "message": {
+                "role": "assistant",
+                "content": "{\n  \"overview\": \"HelloSpoke is a small VoIP telephony and AI-driven property management answering service provider specializing in automated call handling, business VoIP, contact centers, and integrations for multifamily properties, senior living, and SMBs.[1][2][4] The privately owned company, with fewer than 25 employees and revenue under $5 million, is headquartered at 118 E Main St Ste 100, Louisville, Kentucky.[1][2]\",\n  \"recent_news\": [    {\n      \"date\": \"2024\",\n      \"title\": \"HelloSpoke cuts maintenance call volume by 30% with voice agents\",\n      \"snippet\": \"By combining a proprietary resident communication and maintenance automation platform with ElevenLabs’ voice agents, HelloSpoke reduces operational workload, increases resident satisfaction, and drives retention.\",\n      \"source_domain\": \"elevenlabs.io\",\n      \"source_url\": \"https://elevenlabs.io/blog/hellospoke\"\n    }\n  ],\n  \"toll_free_specific\": \"No significant news found\",\n  \"affiliations\": \"No significant news found\"\n}",
+                "refusal": null,
+                "reasoning": null,
+                "annotations": [
+                  {
+                    "type": "url_citation",
+                    "url_citation": {
+                      "url": "https://www.zoominfo.com/c/hellospoke/437433648",
+                      "title": "HelloSpoke - Overview, News & Similar companies | ZoomInfo.com",
+                      "start_index": 0,
+                      "end_index": 0
+                    }
+                  },
+                  {
+                    "type": "url_citation",
+                    "url_citation": {
+                      "url": "https://www.enghouseinteractive.com/news/hellospoke-brings-cloud-contact-center-market-enghouse-interactive-ccsp/",
+                      "title": "HelloSpoke Brings Cloud Contact Center - - Enghouse Interactive",
+                      "start_index": 0,
+                      "end_index": 0
+                    }
+                  },
+                  {
+                    "type": "url_citation",
+                    "url_citation": {
+                      "url": "https://elevenlabs.io/blog/hellospoke",
+                      "title": "HelloSpoke cuts maintenance call volume by 30% with voice agents",
+                      "start_index": 0,
+                      "end_index": 0
+                    }
+                  },
+                  {
+                    "type": "url_citation",
+                    "url_citation": {
+                      "url": "https://www.hellospoke.com",
+                      "title": "HelloSpoke | AI-Powered Property Communication",
+                      "start_index": 0,
+                      "end_index": 0
+                    }
+                  },
+                  {
+                    "type": "url_citation",
+                    "url_citation": {
+                      "url": "https://leadiq.com/c/hellospoke/5a1d9ddb23000052008dc342",
+                      "title": "hellospoke Company Overview, Contact Details & Competitors",
+                      "start_index": 0,
+                      "end_index": 0
+                    }
+                  },
+                  {
+                    "type": "url_citation",
+                    "url_citation": {
+                      "url": "https://www.hellospoke.com/core/",
+                      "title": "More Than an Apartment Answering Service - HelloSpoke",
+                      "start_index": 0,
+                      "end_index": 0
+                    }
+                  },
+                  {
+                    "type": "url_citation",
+                    "url_citation": {
+                      "url": "https://www.hellospoke.com/contact/",
+                      "title": "Automated Answering for Prop Tech Companies - Call HelloSpoke",
+                      "start_index": 0,
+                      "end_index": 0
+                    }
+                  },
+                  {
+                    "type": "url_citation",
+                    "url_citation": {
+                      "url": "https://www.hellospoke.com/dialtone/",
+                      "title": "Dialtone - HelloSpoke",
+                      "start_index": 0,
+                      "end_index": 0
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 316,
+            "completion_tokens": 235,
+            "total_tokens": 551,
+            "cost": 0.0103653,
+            "is_byok": false,
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "audio_tokens": 0,
+              "video_tokens": 0
+            },
+            "cost_details": {
+              "upstream_inference_cost": 0.01047,
+              "upstream_inference_prompt_cost": 0.000948,
+              "upstream_inference_completions_cost": 0.009522
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "image_tokens": 0,
+              "audio_tokens": 0
+            }
+          }
+        }
+      }
+    },
+    {
+      "tier": 3,
+      "code": "MYR01",
+      "name": "Mayfair Communication",
+      "website": "",
+      "tier_note": "Tier 3 — long-tail RespOrg, suspected misdial-marketing operator. Expect minimal news; FCC complaints would be the most likely hit.",
+      "response": {
+        "content": "{\n  \"overview\": \"Mayfair Communication is a RespOrg (code MYR01) categorized as a **Tier 3 long-tail operator** specializing in **misdial marketing**, also operating under the additional name Primetel. No information found on parent/holding company, year founded, or HQ location.[2]\",\n  \"recent_news\": [],\n  \"toll_free_specific\": \"Listed as a RespOrg on tollfreenumbers.com with misdial marketing categorization and alias Primetel; included in RespOrg lists with code MYR01.[1][2][3][4] No specific developments, FCC filings, approvals, or regulatory actions identified.\",\n  \"affiliations\": \"Additional name/alias: Primetel; grouped under Primetel RespOrgs.[2][3]\"\n}",
+        "citations": [],
+        "usage": {
+          "prompt_tokens": 320,
+          "completion_tokens": 177,
+          "total_tokens": 497,
+          "cost": 0.0095238,
+          "is_byok": false,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "cost_details": {
+            "upstream_inference_cost": 0.00962,
+            "upstream_inference_prompt_cost": 0.00096,
+            "upstream_inference_completions_cost": 0.00866
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "image_tokens": 0,
+            "audio_tokens": 0
+          }
+        },
+        "model": "perplexity/sonar-pro",
+        "raw": {
+          "id": "gen-1777578477-LgK02DcIf3lvPzV3LACH",
+          "object": "chat.completion",
+          "created": 1777578477,
+          "model": "perplexity/sonar-pro",
+          "provider": "Perplexity",
+          "system_fingerprint": null,
+          "choices": [
+            {
+              "index": 0,
+              "logprobs": null,
+              "finish_reason": "stop",
+              "native_finish_reason": "stop",
+              "message": {
+                "role": "assistant",
+                "content": "{\n  \"overview\": \"Mayfair Communication is a RespOrg (code MYR01) categorized as a **Tier 3 long-tail operator** specializing in **misdial marketing**, also operating under the additional name Primetel. No information found on parent/holding company, year founded, or HQ location.[2]\",\n  \"recent_news\": [],\n  \"toll_free_specific\": \"Listed as a RespOrg on tollfreenumbers.com with misdial marketing categorization and alias Primetel; included in RespOrg lists with code MYR01.[1][2][3][4] No specific developments, FCC filings, approvals, or regulatory actions identified.\",\n  \"affiliations\": \"Additional name/alias: Primetel; grouped under Primetel RespOrgs.[2][3]\"\n}",
+                "refusal": null,
+                "reasoning": null,
+                "annotations": [
+                  {
+                    "type": "url_citation",
+                    "url_citation": {
+                      "url": "https://tollfreenumbers.com/resporgs/",
+                      "title": "Resporgs | TollFreeNumbers.com",
+                      "start_index": 0,
+                      "end_index": 0
+                    }
+                  },
+                  {
+                    "type": "url_citation",
+                    "url_citation": {
+                      "url": "https://tollfreenumbers.com/resporgs/mayfair/",
+                      "title": "Mayfair Communication - TollFreeNumbers.com",
+                      "start_index": 0,
+                      "end_index": 0
+                    }
+                  },
+                  {
+                    "type": "url_citation",
+                    "url_citation": {
+                      "url": "https://tollfreenumbers.com/resporgs/groups/primetel/",
+                      "title": "Primetel Resporgs - TollFreeNumbers.com",
+                      "start_index": 0,
+                      "end_index": 0
+                    }
+                  },
+                  {
+                    "type": "url_citation",
+                    "url_citation": {
+                      "url": "https://800tollfreenow.com/porting-request/list-of-resporg-ids.html",
+                      "title": "List of Resporg Id's",
+                      "start_index": 0,
+                      "end_index": 0
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 320,
+            "completion_tokens": 177,
+            "total_tokens": 497,
+            "cost": 0.0095238,
+            "is_byok": false,
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "audio_tokens": 0,
+              "video_tokens": 0
+            },
+            "cost_details": {
+              "upstream_inference_cost": 0.00962,
+              "upstream_inference_prompt_cost": 0.00096,
+              "upstream_inference_completions_cost": 0.00866
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "image_tokens": 0,
+              "audio_tokens": 0
+            }
+          }
+        }
+      }
+    }
+  ],
+  "industry": {
+    "content": "I cannot provide the comprehensive deep-dive you've requested. The search results provided contain only limited information on toll-free industry developments, and they do not support a full JSON response across all six sections you've outlined.\n\n## What the search results cover:\n\n**Texting / 10DLC convergence** — The results contain substantive information here. Starting **January 1, 2026, new toll-free verification submissions must include a Business Registration Number (BRN), issuing country of registration, and legal entity type**[1][3]. This requirement applies only to new verifications; existing verified toll-free numbers are not affected[1]. Submissions missing these fields after January 1, 2026 will be rejected or delayed[1]. This represents a convergence toward stricter standards similar to 10DLC[3][5].\n\n**FCC robocall/DNO policy** — The results mention the FCC's December 15, 2025 DNO (do-not-originate) blocking mandate requiring voice providers to block calls from invalid or unallocated numbers[2], though this applies more broadly than toll-free specifically.\n\n## What the search results do NOT cover:\n\nThe search results contain **no information** on:\n- Somos or RespOrg policy changes, audits, FCC orders, or revocations/approvals\n- Toll-free number inventory status, area-code exhaustion, or SAC openings\n- Misdial-marketing enforcement actions or litigation\n- Industry M&A activity in the toll-free space\n- Customer disputes over number reassignment\n\nTo fulfill your request properly, I would need search results from Somos.com, FCC dockets, SEC filings, and telecom trade publications (Light Reading, FierceTelecom, Comm Daily) covering the October 2024–April 2026 period. The current results are insufficient for a credible JSON response.",
+    "citations": [],
+    "usage": {
+      "prompt_tokens": 343,
+      "completion_tokens": 407,
+      "total_tokens": 750,
+      "cost": 0.0129987,
+      "is_byok": false,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0,
+        "video_tokens": 0
+      },
+      "cost_details": {
+        "upstream_inference_cost": 0.01313,
+        "upstream_inference_prompt_cost": 0.001029,
+        "upstream_inference_completions_cost": 0.012101
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "image_tokens": 0,
+        "audio_tokens": 0
+      }
+    },
+    "model": "perplexity/sonar-pro",
+    "raw": {
+      "id": "gen-1777578483-Rp072wLdyvL6O4aWv5JM",
+      "object": "chat.completion",
+      "created": 1777578483,
+      "model": "perplexity/sonar-pro",
+      "provider": "Perplexity",
+      "system_fingerprint": null,
+      "choices": [
+        {
+          "index": 0,
+          "logprobs": null,
+          "finish_reason": "stop",
+          "native_finish_reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": "I cannot provide the comprehensive deep-dive you've requested. The search results provided contain only limited information on toll-free industry developments, and they do not support a full JSON response across all six sections you've outlined.\n\n## What the search results cover:\n\n**Texting / 10DLC convergence** — The results contain substantive information here. Starting **January 1, 2026, new toll-free verification submissions must include a Business Registration Number (BRN), issuing country of registration, and legal entity type**[1][3]. This requirement applies only to new verifications; existing verified toll-free numbers are not affected[1]. Submissions missing these fields after January 1, 2026 will be rejected or delayed[1]. This represents a convergence toward stricter standards similar to 10DLC[3][5].\n\n**FCC robocall/DNO policy** — The results mention the FCC's December 15, 2025 DNO (do-not-originate) blocking mandate requiring voice providers to block calls from invalid or unallocated numbers[2], though this applies more broadly than toll-free specifically.\n\n## What the search results do NOT cover:\n\nThe search results contain **no information** on:\n- Somos or RespOrg policy changes, audits, FCC orders, or revocations/approvals\n- Toll-free number inventory status, area-code exhaustion, or SAC openings\n- Misdial-marketing enforcement actions or litigation\n- Industry M&A activity in the toll-free space\n- Customer disputes over number reassignment\n\nTo fulfill your request properly, I would need search results from Somos.com, FCC dockets, SEC filings, and telecom trade publications (Light Reading, FierceTelecom, Comm Daily) covering the October 2024–April 2026 period. The current results are insufficient for a credible JSON response.",
+            "refusal": null,
+            "reasoning": null,
+            "annotations": [
+              {
+                "type": "url_citation",
+                "url_citation": {
+                  "url": "https://signalwire.com/blogs/industry/toll-free-messaging-changes-2026",
+                  "title": "Important Toll-Free Messaging Changes Coming in 2026 - SignalWire",
+                  "start_index": 0,
+                  "end_index": 0
+                }
+              },
+              {
+                "type": "url_citation",
+                "url_citation": {
+                  "url": "https://netnumber.com/fcc-dno-blocking-deadline-december-15-2025/",
+                  "title": "FCC DNO Blocking Deadline: December 15, 2025 Compliance Guide",
+                  "start_index": 0,
+                  "end_index": 0
+                }
+              },
+              {
+                "type": "url_citation",
+                "url_citation": {
+                  "url": "https://www.telgorithm.com/news/toll-free-verification-is-changing-in-2026-heres-what-you-need-to-know",
+                  "title": "Toll-Free Verification Changes Coming in 2026: What to Know",
+                  "start_index": 0,
+                  "end_index": 0
+                }
+              },
+              {
+                "type": "url_citation",
+                "url_citation": {
+                  "url": "https://commlawgroup.com/2026/fcc-proposes-significant-changes-to-numbering-policies-targeting-robocalls-and-number-resale/",
+                  "title": "FCC Proposes Significant Changes to Numbering Policies Targeting ...",
+                  "start_index": 0,
+                  "end_index": 0
+                }
+              },
+              {
+                "type": "url_citation",
+                "url_citation": {
+                  "url": "https://signalhouse.io/guides/toll-free-a2p-messaging-is-changing-in-2026/",
+                  "title": "Toll Free A2P Messaging is Changing in 2026 - Signal House",
+                  "start_index": 0,
+                  "end_index": 0
+                }
+              },
+              {
+                "type": "url_citation",
+                "url_citation": {
+                  "url": "https://www.bclplaw.com/en-US/events-insights-news/the-tcpas-new-opt-out-rules-take-effect-on-april-11-2025-what-does-this-mean-for-businesses.html",
+                  "title": "The TCPA's New Opt-Out Rules Take Effect on April 11, 2025 - BCLP",
+                  "start_index": 0,
+                  "end_index": 0
+                }
+              },
+              {
+                "type": "url_citation",
+                "url_citation": {
+                  "url": "https://www.federalregister.gov/documents/2026/02/17/2026-03066/numbering-policies-for-modern-communications?a522bd19_page=4&wtime=%7Bseek_to_second_number%7D&wtime=%7Bseek_to_second_number%7D",
+                  "title": "Numbering Policies for Modern Communications - Federal Register",
+                  "start_index": 0,
+                  "end_index": 0
+                }
+              },
+              {
+                "type": "url_citation",
+                "url_citation": {
+                  "url": "https://pubs.naruc.org/pub/0CFAB9E5-CC00-D558-D278-2CBA85370EB1",
+                  "title": "[PDF] Perspectives and Recommendations on How Telephone - NARUC",
+                  "start_index": 0,
+                  "end_index": 0
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 343,
+        "completion_tokens": 407,
+        "total_tokens": 750,
+        "cost": 0.0129987,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.01313,
+          "upstream_inference_prompt_cost": 0.001029,
+          "upstream_inference_completions_cost": 0.012101
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      }
+    }
+  }
+}

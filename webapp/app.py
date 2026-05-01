@@ -1821,6 +1821,93 @@ def profile(rpfx):
     return render_template("profile.html", **data)
 
 
+@app.route("/robots.txt")
+def robots_txt():
+    """Explicit robots policy. AI search crawlers welcomed by name so they
+    know they can cite us — research shows 6.5x higher citation rate when
+    AI bots are explicitly allowed vs. just not blocked."""
+    body = (
+        "# Resporgs.com robots policy\n"
+        "User-agent: *\n"
+        "Allow: /\n"
+        "\n"
+        "# AI search crawlers — explicitly welcomed for citation\n"
+        "User-agent: GPTBot\n"
+        "Allow: /\n"
+        "User-agent: ChatGPT-User\n"
+        "Allow: /\n"
+        "User-agent: PerplexityBot\n"
+        "Allow: /\n"
+        "User-agent: Perplexity-User\n"
+        "Allow: /\n"
+        "User-agent: ClaudeBot\n"
+        "Allow: /\n"
+        "User-agent: anthropic-ai\n"
+        "Allow: /\n"
+        "User-agent: Google-Extended\n"
+        "Allow: /\n"
+        "User-agent: Applebot-Extended\n"
+        "Allow: /\n"
+        "User-agent: Bingbot\n"
+        "Allow: /\n"
+        "User-agent: CCBot\n"
+        "Allow: /\n"
+        "\n"
+        "Sitemap: https://resporgs.com/sitemap.xml\n"
+    )
+    return app.response_class(body, mimetype="text/plain")
+
+
+@app.route("/sitemap.xml")
+def sitemap_xml():
+    """Dynamic sitemap covering all 313 resporg profiles + all category /
+    group pages + static pages. Lastmod uses the latest scan_month so
+    crawlers know to re-fetch monthly."""
+    base = "https://resporgs.com"
+    latest = _latest_month() or ""
+    # latest is YYYY-MM; pad to YYYY-MM-01 for proper W3C datetime
+    lastmod = f"{latest}-01" if latest else ""
+
+    urls = []
+    # Static
+    for path in ("/", "/directory", "/news", "/pool", "/categories", "/groups",
+                 "/transferring", "/faq"):
+        urls.append((base + path, lastmod, "weekly", "0.8"))
+
+    # Per-resporg profiles
+    seen_pfx = set()
+    for d in RESPORG_DOCS:
+        code = (d.get("codeTwoDigit") or "").strip().upper()
+        pfx = code[:2]
+        if not pfx or pfx in seen_pfx: continue
+        seen_pfx.add(pfx)
+        urls.append((f"{base}/r/{pfx}", lastmod, "monthly", "0.7"))
+
+    # Per-category
+    for c in CATEGORY_DOCS:
+        slug = ((c.get("slug") or {}).get("current") or "").strip()
+        if slug:
+            urls.append((f"{base}/category/{slug}", lastmod, "monthly", "0.6"))
+
+    # Per-group
+    for g in GROUP_DOCS:
+        slug = ((g.get("slug") or {}).get("current") or "").strip()
+        if slug:
+            urls.append((f"{base}/group/{slug}", lastmod, "monthly", "0.6"))
+
+    xml = ['<?xml version="1.0" encoding="UTF-8"?>',
+           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for loc, lm, freq, prio in urls:
+        xml.append("  <url>")
+        xml.append(f"    <loc>{loc}</loc>")
+        if lm: xml.append(f"    <lastmod>{lm}</lastmod>")
+        xml.append(f"    <changefreq>{freq}</changefreq>")
+        xml.append(f"    <priority>{prio}</priority>")
+        xml.append("  </url>")
+    xml.append("</urlset>")
+    return app.response_class("\n".join(xml), mimetype="application/xml")
+
+
 @app.route("/news")
 def news():
     """Aggregated industry-news view — every resporg's recentNews items in one

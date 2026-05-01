@@ -1,5 +1,131 @@
 {% extends "base.html" %}
-{% block title %}{{ title }} ({{ rpfx }}) · Resporgs.com{% endblock %}
+{% block title %}{{ title }} ({{ rpfx }}) — Toll-Free RespOrg Profile · Resporgs.com{% endblock %}
+
+{% block meta_description -%}
+{%- if ai_overview -%}
+{{ ai_overview[:155] }}{% if ai_overview|length > 155 %}…{% endif %}
+{%- else -%}
+{{ title }} (RespOrg code {{ rpfx }}) operates {{ "{:,}".format(total_inv) }} toll-free numbers in the US. Profile, inventory history, contact info, and request-a-number form on Resporgs.com.
+{%- endif -%}
+{%- endblock %}
+{% block og_type %}profile{% endblock %}
+{% block og_title %}{{ title }} ({{ rpfx }}) — Toll-Free RespOrg Profile{% endblock %}
+{% block og_url %}https://resporgs.com/r/{{ rpfx }}{% endblock %}
+{% block og_image %}{% if logo %}<meta property="og:image" content="{{ logo }}">{% elif screenshot %}<meta property="og:image" content="{{ screenshot }}">{% endif %}{% endblock %}
+{% block twitter_card_extra %}{% if logo or screenshot %}_large_image{% endif %}{% endblock %}
+
+{% block schema %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://resporgs.com/r/{{ rpfx }}#organization",
+      "name": {{ title|tojson }},
+      "alternateName": "{{ rpfx }}",
+      "description": {% if ai_overview %}{{ ai_overview|tojson }}{% else %}"{{ title|e }} (RespOrg code {{ rpfx }}) operates {{ '{:,}'.format(total_inv) }} toll-free numbers in the US."{% endif %}
+      {%- if website %},
+      "url": {{ website|tojson }},
+      "sameAs": [{{ website|tojson }}]
+      {%- endif %}
+      {%- if logo %},
+      "logo": {{ logo|tojson }}
+      {%- endif %}
+      {%- if city or state %},
+      "address": {
+        "@type": "PostalAddress"{% if city %},
+        "addressLocality": {{ city|tojson }}{% endif %}{% if state %},
+        "addressRegion": {{ state|tojson }}{% endif %},
+        "addressCountry": "US"
+      }
+      {%- endif %}
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://resporgs.com/r/{{ rpfx }}#webpage",
+      "url": "https://resporgs.com/r/{{ rpfx }}",
+      "name": {{ (title ~ ' (' ~ rpfx ~ ') — Toll-Free RespOrg Profile')|tojson }},
+      "isPartOf": {"@id": "https://resporgs.com#website"},
+      "about": {"@id": "https://resporgs.com/r/{{ rpfx }}#organization"},
+      "mainEntity": {"@id": "https://resporgs.com/r/{{ rpfx }}#organization"},
+      "inLanguage": "en-US"
+      {%- if ai_overview_updated %},
+      "dateModified": "{{ ai_overview_updated[:10] }}"
+      {%- endif %}
+    }
+    {%- if recent_news %},
+    {
+      "@type": "ItemList",
+      "@id": "https://resporgs.com/r/{{ rpfx }}#news",
+      "name": "Recent news about {{ title|e }}",
+      "numberOfItems": {{ recent_news|length }},
+      "itemListElement": [
+        {%- for n in recent_news %}
+        {
+          "@type": "ListItem",
+          "position": {{ loop.index }},
+          "item": {
+            "@type": "NewsArticle",
+            "headline": {{ (n.title or '')|tojson }},
+            "datePublished": {{ (n.date or '')|tojson }},
+            "description": {{ (n.snippet or '')|tojson }}
+            {%- if n.sourceUrl %},
+            "url": {{ n.sourceUrl|tojson }}
+            {%- endif %}
+            {%- if n.sourceDomain %},
+            "publisher": {"@type": "Organization", "name": {{ n.sourceDomain|tojson }}}
+            {%- endif %}
+          }
+        }{% if not loop.last %},{% endif %}
+        {%- endfor %}
+      ]
+    }
+    {%- endif %},
+    {
+      "@type": "FAQPage",
+      "@id": "https://resporgs.com/r/{{ rpfx }}#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is {{ title|e }}?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": {% if ai_overview %}{{ ai_overview|tojson }}{% else %}"{{ title|e }} is a US toll-free Responsible Organization (RespOrg) identified by code {{ rpfx }}. They manage and assign toll-free numbers on behalf of business customers."{% endif %}
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How many toll-free numbers does {{ title|e }} have?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "{{ title|e }} ({{ rpfx }}) manages {{ '{:,}'.format(total_inv) }} active toll-free numbers as of {{ month }}, according to the Somos toll-free registry tracked by Resporgs.com."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I request a specific toll-free number from {{ title|e }}?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Resporgs.com hosts a request form for {{ title|e }} at https://resporgs.com/ask/{{ rpfx }}. Fill in the number you want and your contact details; we'll route the request to the appropriate party."
+          }
+        }
+        {%- if ai_affiliations %},
+        {
+          "@type": "Question",
+          "name": "Who owns {{ title|e }}?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": {{ ai_affiliations|tojson }}
+          }
+        }
+        {%- endif %}
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
 
 {% block content %}
 <article class="profile">

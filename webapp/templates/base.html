@@ -4,6 +4,17 @@
   <meta charset="utf-8">
   <title>{% block title %}Resporgs.com — Toll-free RespOrg directory{% endblock %}</title>
   {% block robots %}<meta name="robots" content="index,follow">{% endblock %}
+  {% block meta %}
+  <meta name="description" content="{% block meta_description %}Resporgs.com is the public directory of every US toll-free RespOrg. Search 313 carriers, view per-RespOrg inventory, history, and request-a-number forms. Updated monthly from the Somos toll-free registry.{% endblock %}">
+  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+  <meta property="og:title" content="{% block og_title %}Resporgs.com — Toll-free RespOrg directory{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}{{ self.meta_description() }}{% endblock %}">
+  <meta property="og:url" content="{% block og_url %}https://resporgs.com{% endblock %}">
+  <meta property="og:site_name" content="Resporgs.com">
+  {% block og_image %}{% endblock %}
+  <meta name="twitter:card" content="summary{% block twitter_card_extra %}{% endblock %}">
+  {% endblock %}
+  {% block schema %}{% endblock %}
   <link rel="stylesheet" href="/static/style.css?v={{ css_version }}">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
