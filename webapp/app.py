@@ -1821,6 +1821,77 @@ def profile(rpfx):
     return render_template("profile.html", **data)
 
 
+@app.route("/news")
+def news():
+    """Aggregated industry-news view — every resporg's recentNews items in one
+    place, sorted by date, plus any post documents tagged as articles. Lets
+    visitors scan latest developments without clicking through 313 profiles.
+    """
+    items = []
+
+    # Resporg news items — pulled from each resporg's recentNews[] array
+    # populated by scripts/sonar_enrich_resporgs.py + sonar_push_to_sanity.py
+    for r in RESPORG_DOCS:
+        rn = r.get("recentNews") or []
+        if not rn: continue
+        rpfx = (r.get("codeTwoDigit") or "").strip().upper()[:2]
+        if not rpfx: continue
+        for n in rn:
+            if not isinstance(n, dict): continue
+            items.append({
+                "kind":          "company-news",
+                "date":          (n.get("date") or "").strip(),
+                "title":         (n.get("title") or "").strip(),
+                "snippet":       (n.get("snippet") or "").strip(),
+                "source_domain": (n.get("sourceDomain") or "").strip(),
+                "source_url":    (n.get("sourceUrl") or "").strip(),
+                "resporg_title": r.get("title", ""),
+                "resporg_pfx":   rpfx,
+            })
+
+    # In-depth industry articles authored for resporgs.com.
+    #
+    # We do NOT include the existing post collection because those posts are
+    # TollFreeNumbers.com blog content (different site) and would 404 here.
+    # Articles created by scripts/save_article_drafts.py have IDs that start
+    # with `draft-article-` (or `drafts.draft-article-` if still unpublished
+    # in Sanity Studio). Filter strictly on that prefix.
+    try:
+        post_docs = json.loads((CLEAN / "post.json").read_text(encoding="utf-8"))
+    except Exception:
+        post_docs = []
+    for p in post_docs:
+        pid = (p.get("_id") or "").removeprefix("drafts.")
+        if not pid.startswith("draft-article-"):
+            continue
+        if p.get("noindex"):    # respect Sanity's noindex flag
+            continue
+        slug = ((p.get("slug") or {}).get("current") or "").strip()
+        if not slug: continue
+        date = p.get("_publishedAt") or p.get("_updatedAt") or p.get("_createdAt") or ""
+        items.append({
+            "kind":         "article",
+            "date":         date[:10] if isinstance(date, str) else "",
+            "title":        (p.get("title") or "").strip(),
+            "snippet":      (p.get("excerpt") or "").strip(),
+            "source_url":   f"/article/{slug}",
+            "article_slug": slug,
+        })
+
+    items.sort(key=lambda x: (x.get("date") or "0000-00-00"), reverse=True)
+    articles     = [i for i in items if i["kind"] == "article"]
+    company_news = [i for i in items if i["kind"] == "company-news"]
+
+    return render_template(
+        "news.html",
+        articles=articles,
+        company_news=company_news,
+        total=len(items),
+        month=_latest_month(),
+        total_resporgs=len(RESPORG_DOCS),
+    )
+
+
 @app.route("/assets/<path:filename>")
 def assets(filename):
     return send_from_directory(ASSET_ROOT, filename)

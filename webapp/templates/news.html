@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}News — Toll-Free Industry · Resporgs.com{% endblock %}
+
+{% block content %}
+<article class="news-page">
+  <header class="news-head">
+    <h1>Toll-Free Industry News</h1>
+    <p class="dim">{{ total }} items · {{ articles|length }} in-depth article{% if articles|length != 1 %}s{% endif %} · {{ company_news|length }} from RespOrgs.</p>
+  </header>
+
+  {% if articles %}
+  <section class="news-section">
+    <h2>In-depth articles</h2>
+    <div class="article-grid">
+      {% for a in articles %}
+      <article class="article-card">
+        <h3><a href="{{ a.source_url }}">{{ a.title }}</a></h3>
+        {% if a.date %}<p class="dim" style="font-size:0.85em;">{{ a.date }}</p>{% endif %}
+        {% if a.snippet %}<p>{{ a.snippet }}</p>{% endif %}
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if company_news %}
+  <section class="news-section">
+    <h2>From the RespOrgs <span class="dim" style="font-weight:normal;font-size:0.7em;">({{ company_news|length }})</span></h2>
+    <ul class="news-list" style="list-style:none;padding-left:0;">
+      {% for n in company_news %}
+      <li class="news-item" style="border-bottom:1px solid #eee;padding:14px 0;">
+        <div style="display:flex;justify-content:space-between;gap:16px;align-items:baseline;">
+          <h3 style="margin:0;font-size:1.05em;">
+            {% if n.source_url %}
+              <a href="{{ n.source_url }}" target="_blank" rel="noopener">{{ n.title }}</a>
+            {% else %}
+              {{ n.title }}
+            {% endif %}
+          </h3>
+          <span class="dim" style="white-space:nowrap;font-size:0.85em;">{{ n.date or '' }}</span>
+        </div>
+        <p class="meta" style="margin:6px 0 4px;font-size:0.9em;">
+          via <a href="/r/{{ n.resporg_pfx }}" class="resporg-link"><strong>{{ n.resporg_title }}</strong></a>
+          {% if n.source_domain %} · <span class="dim">{{ n.source_domain }}</span>{% endif %}
+        </p>
+        {% if n.snippet %}<p style="margin:4px 0 0;">{{ n.snippet }}</p>{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  {% if not articles and not company_news %}
+  <p class="dim">No news items yet. Run the resporg news enrichment to populate this page.</p>
+  {% endif %}
+
+  <section class="news-footer" style="margin-top:32px;padding-top:16px;border-top:1px solid #eee;">
+    <p class="dim" style="font-size:0.85em;">
+      News items are sourced from public web searches and AI-generated summaries.
+      Verify against primary sources before quoting.
+      Refreshed periodically — last update reflected in each RespOrg's profile page.
+    </p>
+  </section>
+</article>
+{% endblock %}
