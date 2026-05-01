@@ -161,13 +161,14 @@
       <h3>Inventory by NPA</h3>
       <div class="npa-bars">
         {% for b in npa_chart %}
-        <div class="npa-bar">
+        <a class="npa-bar" href="/pool/{{ b.npa }}" title="See total {{ b.npa }} pool inventory">
           <div class="npa-bar-count">{{ "{:,}".format(b.count) }}</div>
           <div class="npa-bar-col" style="height: {{ (b.pct_of_max * 140)|round|int }}px;"></div>
           <div class="npa-bar-label">{{ b.npa }}</div>
-        </div>
+        </a>
         {% endfor %}
       </div>
+      <p class="chart-note dim" style="margin-top:8px;font-size:11px;">Click any NPA for total pool inventory across the industry.</p>
     </div>
 
     <div class="chart-box">
@@ -354,6 +355,45 @@
   <section class="summary-block">
     <h2>Summary</h2>
     <p>{{ summary|replace('\n\n','</p><p>')|safe }}</p>
+  </section>
+  {% endif %}
+
+  {% if ai_overview %}
+  <section class="ai-overview-block" style="background: #fafbfd; border-left: 3px solid #4f7cc4; border-radius: 4px; padding: 14px 18px; margin: 24px 0;">
+    <h2 style="margin-top: 0; font-size: 1.1em;">About {{ title }}</h2>
+    <p>{{ ai_overview }}</p>
+    {% if ai_affiliations %}
+    <p><strong>Affiliations:</strong> {{ ai_affiliations }}</p>
+    {% endif %}
+    {% if ai_toll_free_specific %}
+    <p><strong>Toll-free / RespOrg activity:</strong> {{ ai_toll_free_specific }}</p>
+    {% endif %}
+    <p class="dim" style="font-size: 0.85em; margin-top: 10px; margin-bottom: 0;">
+      AI-generated summary
+      {%- if ai_overview_confidence %} (confidence: {{ ai_overview_confidence }}){% endif -%}
+      {%- if ai_overview_updated %}, last updated {{ ai_overview_updated[:10] }}{% endif -%}.
+      Verify against primary sources before quoting.
+    </p>
+  </section>
+  {% endif %}
+
+  {% if recent_news %}
+  <section class="recent-news-block" style="margin: 24px 0;">
+    <h2>Recent news <span class="dim" style="font-weight: normal; font-size: 0.7em;">({{ recent_news|length }})</span></h2>
+    <ul style="list-style: none; padding-left: 0;">
+    {% for n in recent_news %}
+      <li style="border-bottom: 1px solid #eee; padding: 12px 0;">
+        <div style="display: flex; justify-content: space-between; gap: 16px; align-items: baseline;">
+          <strong>
+            {% if n.source_url %}<a href="{{ n.source_url }}" target="_blank" rel="noopener">{{ n.title }}</a>{% else %}{{ n.title }}{% endif %}
+          </strong>
+          <span class="dim" style="white-space: nowrap; font-size: 0.85em;">{{ n.date or '' }}</span>
+        </div>
+        {% if n.snippet %}<p style="margin: 6px 0 4px;">{{ n.snippet }}</p>{% endif %}
+        {% if n.source_domain %}<p class="dim" style="font-size: 0.8em; margin: 0;">{{ n.source_domain }}</p>{% endif %}
+      </li>
+    {% endfor %}
+    </ul>
   </section>
   {% endif %}
 

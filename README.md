@@ -11,22 +11,29 @@ of them visible.
 
 ## What's here
 
-- **Profiles** for ~500 RespOrgs — inventory, 4-year trajectory, Opportunism
+- **Profiles** for ~535 RespOrgs — 9-year inventory trajectory, Opportunism
   Index, vanity holdings, visual context (logo, website screenshot, street
   view, satellite)
 - **Group pages** — aggregate inventory across shell-network members
   (e.g. Primetel operates under 18 different RespOrg codes)
 - **Category pages** — 18 classifications from "Large Telcom" to
   "Misdial Marketing," with aggregate behavior
-- **Number lookup** — paste any toll-free number for its 4-year ownership
+- **The Pool** (`/pool`) — industry-wide weekly toll-free inventory:
+  current % in use, per-NPA fill, 9-year stacked-area of the spare pool,
+  and a six-line fan chart of every concurrent exhaust-date forecast
+  Somos has published since 2017
+- **Number lookup** — paste any toll-free number for its 9-year ownership
   history
 - **Lead capture** for number-watch, question-asking, and manual history
   requests
 
 ## Data sources
 
-- Monthly Somos Number Status Report (42 consecutive snapshots, 2022-06
-  through 2026-04) — parsed into columnar Parquet for fast analytics
+- **Monthly** Somos Number Status Report (81 snapshots, 2018-03 through
+  2026-04) — drives all per-RespOrg analytics, parsed into columnar Parquet
+- **Weekly** Somos Number Administration Summary (258 PDFs, 2017-10 through
+  2026-04) — drives The Pool section. Refreshed by the local `/somos-weekly`
+  skill when each Monday's email arrives.
 - Sanity CMS export (Bill's 20-year curated directory: logos, addresses,
   human-assigned categories and groups)
 - Master Million vanity dataset (for intersecting working inventory with
@@ -48,12 +55,20 @@ directories populated (not in git — regenerable via scripts).
 
 ```
 scripts/          # Data-pipeline Python (all idempotent)
+  extract_somos_pdfs.py   # weekly NUM-YY-WW PDFs out of email zips
+  parse_somos_pdfs.py     # weekly PDFs -> 3 parquets for /pool
+  rebuild.sh              # monthly orchestrator (events, ranks, etc.)
 webapp/           # Flask app + Jinja templates + CSS + images
-  app.py
+  app.py                  # routes: /, /r/<rpfx>, /pool, /pool/<npa>, /pool/exhaust ...
   templates/
   static/
 data/             # Derived Parquet event tables + lead sqlite
-cache/            # Monthly Parquet snapshots (1 per month)
+  resporg_month.parquet                # monthly per-rpfx
+  somos_weekly_npa.parquet             # weekly per-NPA snapshot
+  somos_weekly_pool.parquet            # weekly pool flow
+  somos_exhaust_forecasts.parquet      # weekly 6-horizon forecasts
+cache/            # Monthly raw Parquet snapshots (1 per month)
+somos_pdfs/       # Raw weekly PDF cache (gitignored)
 sanity-export/    # CMS dump (re-export as needed)
 plan.md           # Living design doc
 ```

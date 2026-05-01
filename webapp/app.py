@@ -3192,6 +3192,36 @@ def pool_npa(npa: int):
     # Per-NPA editorial copy
     pool_copy = _load_pool_copy().get(str(npa), {})
 
+    # Top resporgs holding this NPA (cross-link from inventory side back to
+    # ownership side). Read precomputed rpfx_snapshot.parquet — sums working
+    # inventory across all sub-statuses per (rpfx, prefix).
+    top_holders: list[dict] = []
+    snap_path = DATA / "rpfx_snapshot.parquet"
+    if snap_path.exists():
+        rows = con.execute(
+            f"""
+            SELECT rpfx, SUM(n) AS n
+            FROM read_parquet('{snap_path.as_posix()}')
+            WHERE prefix = ? AND status = 1
+            GROUP BY rpfx
+            ORDER BY n DESC
+            LIMIT 15
+            """,
+            [npa],
+        ).fetchall()
+        npa_total_working = latest.get("working") or 0
+        for rpfx, n in rows:
+            if _is_hidden(rpfx):
+                continue
+            top_holders.append({
+                "rpfx": rpfx,
+                "title": _name_for(rpfx),
+                "count": int(n),
+                "pct": (n / npa_total_working) if npa_total_working else 0,
+            })
+            if len(top_holders) >= 10:
+                break
+
     return render_template(
         "pool_npa.html",
         npa=npa,
@@ -3201,6 +3231,7 @@ def pool_npa(npa: int):
         status_legend=status_legend,
         pct_svg=pct_svg,
         pool_copy=pool_copy,
+        top_holders=top_holders,
         npa_palette=NPA_PALETTE,
         all_npas=NPA_PREFIXES,
         month=_latest_month(),

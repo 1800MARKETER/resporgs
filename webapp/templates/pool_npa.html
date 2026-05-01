@@ -70,6 +70,34 @@
   </div>
 </section>
 
+{% if top_holders %}
+<section>
+  <h2>Top RespOrgs holding NPA {{ npa }}</h2>
+  <p class="summary">
+    Ten RespOrgs sit on most of NPA {{ npa }}'s working inventory. Click any name for their full profile:
+    trajectory, opportunism index, vanity holdings, and how their NPA mix compares to the industry total above.
+  </p>
+  <table class="directory">
+    <thead>
+      <tr>
+        <th>RespOrg</th>
+        <th class="num">Numbers in NPA {{ npa }}</th>
+        <th class="num">Share of working inventory</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for h in top_holders %}
+      <tr>
+        <td><a href="/r/{{ h.rpfx }}"><strong>{{ h.title }}</strong> <span class="dim">({{ h.rpfx }})</span></a></td>
+        <td class="num">{{ "{:,}".format(h.count) }}</td>
+        <td class="num">{{ "{:.1f}%".format(h.pct * 100) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
+
 <section>
   <h2>Compare other NPAs</h2>
   <div class="pool-card-grid">

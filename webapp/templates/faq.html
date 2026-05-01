@@ -176,8 +176,62 @@
     <p>
       Somos publishes a "Number Status Report" monthly containing the status and current RespOrg of every active toll-free number
       in the registry. We subscribe to that report, parse it, and compute diffs between consecutive months to reveal transfers,
-      disconnects, first-assignments, and harvest events. The analysis on this site covers 42 monthly snapshots from June 2022
-      through April 2026 — roughly 4 years of complete industry activity.
+      disconnects, first-assignments, and harvest events. The per-RespOrg analysis on this site uses 81 monthly snapshots from
+      March 2018 through April 2026 — roughly 9 years of industry activity.
+    </p>
+    <p>
+      The <a href="/pool">Pool section</a> uses a separate weekly Somos report — the
+      <em>Number Administration Summary</em> — which covers 258 weekly snapshots from October 2017 through April 2026.
+    </p>
+  </details>
+
+  <h2 id="pool">The Pool — toll-free inventory</h2>
+
+  <details>
+    <summary>What is "The Pool"?</summary>
+    <p>
+      "The Pool" is the total inventory of every toll-free number in North America — across all seven prefixes
+      (800, 833, 844, 855, 866, 877, 888). Every Saturday at 11:59 PM Eastern, Somos takes a snapshot of how many numbers
+      are in each status (working, assigned, reserved, disconnect, transit, unavailable, suspend) versus the spare pool
+      that's still available to assign. The <a href="/pool">Pool section</a> tracks that snapshot every week.
+    </p>
+    <p>
+      Where the rest of this site shows <em>who</em> owns numbers (the ownership side), the Pool section shows
+      <em>how many are left</em> (the inventory side). They're two views of the same industry.
+    </p>
+  </details>
+
+  <details>
+    <summary>Are we running out of toll-free numbers?</summary>
+    <p>
+      It depends entirely on which forecast you trust. Every Monday morning, Somos publishes
+      <strong>six different exhaust-date predictions</strong>, each based on a different historical window — the last
+      year, the last 2, 3, 5, 7, and 9 years. They wildly disagree.
+    </p>
+    <p>
+      As of late April 2026, the <em>12-month-window</em> regression says we'll exhaust toll-free numbers in
+      <strong>February 2028</strong>. The <em>108-month-window</em> regression says <strong>November 2038</strong>.
+      Both came from the same data on the same week. The short-window forecast is sensitive to recent surges; the
+      long-window forecast smooths across multi-year cycles. <a href="/pool/exhaust">See how those predictions have evolved</a>.
+    </p>
+    <p>
+      Today the entire pool is about 87% in use. The 800 prefix has been fully assigned since 1996; 888 is at 99%; 833
+      (the newest, opened 2017) is the only NPA with meaningful headroom and even it has crossed 84%.
+      When 833 fills, the industry will need a new prefix — 822 and 880 have both been reserved for that purpose.
+    </p>
+  </details>
+
+  <details>
+    <summary>What's the difference between disconnect, transit, and spare?</summary>
+    <ul>
+      <li><strong>Disconnect</strong> — a customer released the number; it's now aging in a Somos-held pool for ~45–90 days. After aging it becomes spare.</li>
+      <li><strong>Transit</strong> — the number is mid-port between two RespOrgs. Brief intermediate state during a transfer.</li>
+      <li><strong>Spare</strong> — fully unassigned. Available for any RespOrg to claim from Somos's pool. Spare is what shrinks when an industry growth spurt happens; it grows when a wholesale carrier dumps a large block of disconnects faster than the industry can re-claim them.</li>
+    </ul>
+    <p>
+      Watch the <a href="/pool">last-2-years weekly chart</a> for the rhythm — most weeks the spare pool shrinks
+      (more numbers got assigned than freed), but every few weeks a wholesale disconnect event releases a big block
+      and the bar flips green.
     </p>
   </details>
 </section>

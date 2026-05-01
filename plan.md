@@ -983,3 +983,49 @@ Deliverable from the spike: a short report validating the pipeline logic against
 - Does the spike happen before or after Phase 1 starts?
 - Are Phase 1 and Phase 2 sequential or overlapping?
 - Is Phase 3 (group resolution) the real marquee feature that should be teased from Day 1 even if it ships last?
+
+---
+
+## 10. The Pool section (shipped 2026-04-30)
+
+### What and why
+A separate top-level section presenting the **inventory side** of the toll-free industry — complement to the ownership-side work that the rest of the site covers. Source data is the weekly Somos *Number Administration Summary* PDF that arrives by email every Monday from `notification@somos.com`. 258 weekly PDFs spanning 2017-10 → 2026-04 in the archive (with two ~year-long gaps in 2019-2022 that are Bill's archive holes, not Somos outages).
+
+Three pages at `/pool`, `/pool/<npa>`, `/pool/exhaust`:
+
+- **`/pool`** — current overall fill (~87% in use), 7 per-NPA cards (each linking to its detail page), 9-year stacked-area of spare-pool by NPA, last-2-years weekly diverging-bar of net pool growth.
+- **`/pool/<npa>`** — per-NPA detail. Status decomposition stacked area (Working/Assigned/Reserved/Disconnect/Transit/Unavail/Suspend), fill-% trend line, per-NPA editorial copy, **top 10 RespOrgs holding this NPA** (cross-link back to ownership side).
+- **`/pool/exhaust`** — fan chart of all six concurrent exhaust-date forecasts (12/24/36/60/84/108 mo regression windows) plotted across all 258 weeks. Shows how short-window forecasts panic while long-window forecasts stay calm. Companion table of forecasts whose dates have already passed. Distinctive — no competitor publishes this view.
+
+### Pipeline
+1. **Source** — Bill's `bill@tollfreenumbers.com (N).zip` Roundcube exports drop into Downloads.
+2. **`scripts/extract_somos_pdfs.py`** — walks each zip's `.eml` files, extracts `NUM-*.pdf` attachments into `RESPORGS/somos_pdfs/`. Idempotent.
+3. **`scripts/parse_somos_pdfs.py`** — uses `pdfplumber`. Writes three parquets to `data/`:
+   - `somos_weekly_npa.parquet` (~1,800 rows = 7 NPAs × ~258 weeks)
+   - `somos_weekly_pool.parquet` (~305 unique weeks of trailing-6-week trend rows)
+   - `somos_exhaust_forecasts.parquet` (~1,548 rows = 6 horizons × ~258 weeks)
+4. **Pipeline runs LOCALLY** — droplet venv does NOT need pdfplumber. Three parquets are scp'd to `/var/www/resporgs/data/` after each weekly run. The local `/somos-weekly` skill drives this end-to-end.
+
+### Code surface
+- `webapp/app.py` — three new routes (`pool_index`, `pool_npa`, `pool_exhaust`); four new server-side SVG renderers (`render_stacked_area_svg`, `render_fan_chart_svg`, `_render_weekly_diverging_svg`, `_render_pct_trend_svg`); `NPA_PALETTE` constant; `inject_static_versions` context processor for CSS cache-busting.
+- `webapp/templates/pool.html`, `pool_npa.html`, `pool_exhaust.html` — three new templates, all extending `base.html`.
+- `webapp/templates/base.html` — one-line nav addition: "The Pool" between Groups and Number lookup.
+- `webapp/templates/profile.html` — NPA inventory bars are now anchor links to `/pool/<npa>` (cross-link from ownership side back to inventory side).
+- `webapp/templates/faq.html` — three new entries under heading "The Pool — toll-free inventory".
+- `webapp/static/style.css` — appended `.pool-hero`, `.pool-card`, `.pc-*`, `.breadcrumb`, `.stacked-chart`, `.fan-chart`, `.pct-trend`, `.weekly-diverging`.
+- `clean/poolNpaCopy.json` — per-NPA editorial copy (tagline + history) for all 7 NPAs.
+
+### Important quirks discovered while building
+- **DuckDB MAX() on VARCHAR truncates** to ~8 chars — appears to read the parquet column statistics' truncated bound. Use `ORDER BY week_ending DESC LIMIT 1` instead of `MAX(week_ending)`.
+- **Doubled-character PDFs** (NUM-17-45, NUM-18-12, NUM-18-45) render the subject line as `SSuubbjjeecctt::`. Parser collapses doubled characters as a fallback before regex-matching the date.
+- **Saturday-derive fallback** — when neither the regular nor the doubled-char regex matches, walk back from the email's Date header to the most recent Saturday. Covers any unknown future font glitch.
+- **CSS cache (nginx 7-day)** — without versioning, CSS edits don't appear for users until the cache TTL expires. Fixed via `inject_static_versions` context processor + `?v={{ css_version }}` on the link tag — file-mtime is the version.
+
+### Skill: `/somos-weekly`
+Lives at `~/.claude/skills/somos-weekly/SKILL.md`. The Monday email IS the user's reminder — replaces "should we automate this" with "skill the user calls when the data arrives." The skill ingests the attached `.eml` / `.pdf` / `.zip`, runs the parser, queries the new parquets, and reports headline % in use + notable shifts (NPA crossing 90/95/99%, 12-month forecast moving ≥3 months, biggest-disconnect-week record, etc.). Self-contained — knows the pipeline, the parquet shape, the parser pitfalls above, and what "notable shifts" means.
+
+### Future enhancements (not blocking, listed for next session)
+- Email Somos requesting the missing 2019-08 → 2022-08 PDFs (they archive these). Would close the two visible gaps in the 9-year stacked-area chart.
+- Public API endpoint at `/api/pool/weekly.json` exposing the parquets as JSON. Useful for industry press / blog citations.
+- Cross-reference with the LERG/NANPA local-block project once that data lands — combined inventory dashboard for both toll-free and local.
+- A "doomsday clock" embed widget for blog posts elsewhere.
