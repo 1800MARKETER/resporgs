@@ -1029,3 +1029,47 @@ Lives at `~/.claude/skills/somos-weekly/SKILL.md`. The Monday email IS the user'
 - Public API endpoint at `/api/pool/weekly.json` exposing the parquets as JSON. Useful for industry press / blog citations.
 - Cross-reference with the LERG/NANPA local-block project once that data lands — combined inventory dashboard for both toll-free and local.
 - A "doomsday clock" embed widget for blog posts elsewhere.
+
+---
+
+## 11. Hybrid rebuild path (memory pressure on the droplet)
+
+### What happened
+On 2026-05-06 we tried to run `scripts/rebuild.sh` on the droplet after uploading `cache/2026-05.parquet`. `build_events.py` was OOM-killed in step 1. Root cause: the droplet has 1.9 GB RAM, no swap, and `build_events.py` does a duckdb FULL OUTER JOIN twice per pair across 81 consecutive monthly parquets. Per-pair join needs roughly 1.5–2 GB peak. With the historical archive grown to 82 months, the droplet cannot do this rebuild — and won't be able to until its RAM is bumped up.
+
+### Two equally-valid rebuild paths
+
+**Path A: rebuild on the droplet (`scripts/rebuild.sh`).** Works when the droplet has ~4 GB+ available. The natural path once the server is bumped up. Now self-aware — refuses with a clear message if `MemAvailable` is below 4 GB, pointing at path B.
+
+**Path B: rebuild locally, then scp.** Run each builder on a workstation with plenty of RAM, then scp the ~16 derived parquets to `/var/www/resporgs/data/` and `systemctl restart resporgs`. Approximate sequence:
+
+```
+python scripts/build_events.py            # ~50 min on full archive
+python scripts/build_flow_graph.py        # ~10 min
+python scripts/enrich_profiles.py         # ~10 sec
+python scripts/build_disconnect_episodes.py  # ~2 min
+python scripts/build_ranks.py             # ~1 sec
+python scripts/build_flow_precompute.py   # ~1 sec
+python scripts/build_rpfx_snapshot.py     # ~1 sec
+python scripts/build_category_trajectories.py
+python scripts/build_group_trajectories.py
+python scripts/build_vanity_precompute.py # ~7 min (SLOW)
+
+scp data/{pair_totals,resporg_month,flow_graph,enrichment_current,
+          enrichment_vanity_hits,disconnect_episodes,disconnect_summary,
+          ranks,flow_totals,flow_top_partners,rpfx_snapshot,rpfx_subcodes,
+          category_trajectories,group_trajectories,vanity_top,
+          vanity_categories}.parquet \
+    root@<droplet>:/var/www/resporgs/data/
+ssh root@<droplet> 'cd /var/www/resporgs/data && chown www-data:www-data *.parquet && systemctl restart resporgs'
+```
+
+### Why both paths stay alive (even after the server bump)
+
+The constraint that drove path B is RAM, but a second, durable reason exists: a rebuild competes with everything else the droplet is running — Flask serving live traffic, the planned Somos API watcher, future periodic jobs. Even with plenty of headroom, a 1+ hour rebuild can degrade live response. Path B is the no-disruption option permanently. Treat the choice as "fire-and-forget on a fat box" (A) vs "keep the live site responsive while rebuilding" (B).
+
+### Future enhancements
+
+- The double FULL OUTER JOIN in `build_events.py` is the most expensive step. A single pass that materialises the join once and runs both queries against the temp table would roughly halve runtime — worth ~50 min savings on the full archive.
+- `cache_months.py` could read its archive root from `RESPORGS_ARCHIVE_ROOT` instead of the hardcoded `D:\resporgs` (already done as of commit `55b963e`).
+- When the Somos API watcher lands, its monitoring story is independent of this rebuild plumbing — long-lived service with steady working set, not a periodic spike. Different lifecycle, different constraints.

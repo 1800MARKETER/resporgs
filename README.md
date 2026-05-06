@@ -51,6 +51,18 @@ python webapp/app.py
 Requires: the Parquet `cache/`, `data/`, and `webapp/static/streetview/`
 directories populated (not in git — regenerable via scripts).
 
+## Refreshing data after a new monthly Somos snapshot
+
+`cache/YYYY-MM.parquet` is built locally from the per-prefix CD-ROM files
+(`scripts/cache_months.py`). The ~16 derived parquets in `data/` are then
+rebuilt by chaining the builder scripts — see `scripts/rebuild.sh` for the
+canonical order. Two equally-valid rebuild paths are documented in
+`plan.md` section 11:
+- **On the droplet** via `rebuild.sh` (needs ~4 GB free RAM; the script
+  guards against OOM and refuses cleanly if there isn't enough).
+- **Locally, then scp** the 16 derived parquets to the droplet — the
+  no-disruption path even on a larger server.
+
 ## Layout
 
 ```
