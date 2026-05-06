@@ -24,7 +24,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterator
 
-ARCHIVE_ROOT = Path(r"D:\resporgs")
+ARCHIVE_ROOT = Path(os.environ.get("RESPORGS_ARCHIVE_ROOT", r"D:\resporgs"))
 PREFIXES = ("800", "833", "844", "855", "866", "877", "888")
 
 CD_ROM_RE = re.compile(
