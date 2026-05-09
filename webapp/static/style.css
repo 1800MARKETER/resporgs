@@ -93,6 +93,43 @@ table.directory th, .profile table th {
 table.directory tr:hover td, .profile table tr:hover td { background: #f9fafb; }
 .profile table.compact th, .profile table.compact td { padding: 5px 10px; font-size: 13.5px; }
 
+/* Number-context card — shown when /r/<rpfx>?n=<digits> is hit so the
+   visitor sees their searched number's status before scanning the page. */
+.number-context-card {
+  border: 1px solid #d6d6d6;
+  border-left: 4px solid #2c5aa0;
+  background: #f6f9ff;
+  padding: 14px 18px;
+  margin: 0 0 22px;
+  border-radius: 6px;
+  font-size: 16px;
+  line-height: 1.45;
+}
+.number-context-card.status-working,
+.number-context-card.status-assigned,
+.number-context-card.status-feature { border-left-color: #2e7d32; background: #f1faf2; }
+.number-context-card.status-reserved,
+.number-context-card.status-request { border-left-color: #c9862a; background: #fff8e8; }
+.number-context-card.status-unavail,
+.number-context-card.status-suspend { border-left-color: #b14141; background: #fbe0e0; }
+.number-context-card.status-disconn,
+.number-context-card.status-transit { border-left-color: #8a5800; background: #fce8a8; }
+.number-context-card .ncc-line strong.ncc-number  { font-size: 18px; }
+.number-context-card .ncc-line strong.ncc-status,
+.number-context-card .ncc-line strong.ncc-resporg { color: #1d2944; }
+.number-context-card .ncc-note {
+  font-size: 13px;
+  color: #555;
+  margin-top: 6px;
+}
+.number-context-card .ncc-actions { margin-top: 8px; font-size: 13px; }
+.number-context-card .ncc-history {
+  color: #2c5aa0;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+}
+.number-context-card .ncc-history:hover { text-decoration-thickness: 2px; }
+
 /* Profile */
 .profile-head {
   display: flex;

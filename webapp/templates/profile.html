@@ -129,6 +129,31 @@
 
 {% block content %}
 <article class="profile">
+  {# Number-context card — shown when /r/<rpfx>?n=<10-digit> is hit, e.g.
+     from a VanityNumbers.com toll-free row. Tells the visitor exactly what
+     this resporg's relationship to the searched number is, before they
+     have to scan the rest of the profile. #}
+  {% if number_context %}
+  <aside class="number-context-card status-{{ number_context.status_name|lower }}">
+    <div class="ncc-line">
+      <strong class="ncc-number">{{ number_context.formatted }}</strong>
+      is in
+      <strong class="ncc-status">{{ number_context.status_name }}</strong>
+      status with
+      <strong class="ncc-resporg">{{ number_context.resporg_display or number_context.resporg_id }}</strong>
+      {% if number_context.last_change %}as of <strong>{{ number_context.last_change }}</strong>{% endif %}.
+    </div>
+    {% if not number_context.rpfx_match %}
+    <div class="ncc-note">
+      Note: this number is currently held by <em>{{ number_context.row_rpfx }}</em>, not <em>{{ rpfx }}</em>.
+      <a href="/r/{{ number_context.row_rpfx }}?n={{ number_context.tfn_int }}">Open the holder's profile &rarr;</a>
+    </div>
+    {% endif %}
+    <div class="ncc-actions">
+      <a class="ncc-history" href="{{ number_context.history_url }}">View full history &rarr;</a>
+    </div>
+  </aside>
+  {% endif %}
   <header class="profile-head">
     {% if logo %}
       <div class="logo-wrap"><img src="{{ logo }}" alt="{{ title }} logo" class="logo"></div>

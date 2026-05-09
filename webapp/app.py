@@ -16,6 +16,7 @@ import json
 import re
 import sys
 from collections import defaultdict
+from datetime import datetime
 from pathlib import Path
 
 import duckdb
@@ -1813,11 +1814,64 @@ def transferring():
                            total_resporgs=len(RESPORG_DOCS))
 
 
+def _number_context_for_profile(rpfx: str, tfn: str) -> dict | None:
+    """If `tfn` is a valid 10-digit number, return a dict the profile
+    template renders as an "<NUMBER> is <STATUS> with <Company> as of
+    <month>" card. Returns None for invalid input or no scan match.
+
+    The dict is intentionally lightweight — it shows whatever the LATEST
+    parquet says about that number; the full month-by-month history
+    lives at /number/<tfn>.
+    """
+    normalized = _normalize_tfn(tfn) if tfn else None
+    if not normalized:
+        return None
+    num_int = int(normalized)
+    month = _latest_month()
+    if not month:
+        return None
+    curr = (CACHE / f"{month}.parquet").as_posix()
+    con = duckdb.connect()
+    row = con.execute(
+        f"""
+        SELECT rpfx, resporg, status, yy, mm, dd
+        FROM read_parquet('{curr}')
+        WHERE number = {num_int}
+        LIMIT 1
+        """
+    ).fetchone()
+    if not row:
+        return None
+    row_rpfx, resporg_id, status_code, yy, mm, dd = row
+    status_name = STATUS_NAMES.get(status_code, "?")
+    last_change = ""
+    try:
+        if yy:
+            last_change = datetime(2000 + int(yy), int(mm), 1).strftime("%b %Y")
+    except (TypeError, ValueError):
+        last_change = ""
+    matched_pfx = (row_rpfx or "").strip().upper()
+    return {
+        "tfn_int": num_int,
+        "formatted": format_tfn(num_int),
+        "status_name": status_name,
+        "resporg_id": (resporg_id or "").strip(),
+        "row_rpfx": matched_pfx,
+        "rpfx_match": matched_pfx == rpfx.upper(),
+        "resporg_display": _name_for(matched_pfx) if matched_pfx else "",
+        "last_change": last_change,
+        "history_url": f"/number/{normalized}",
+    }
+
+
 @app.route("/r/<rpfx>")
 def profile(rpfx):
     data = build_profile(rpfx)
     if data is None:
         abort(404)
+    n = (request.args.get("n") or "").strip()
+    if n:
+        data["number_context"] = _number_context_for_profile(rpfx, n)
     return render_template("profile.html", **data)
 
 
