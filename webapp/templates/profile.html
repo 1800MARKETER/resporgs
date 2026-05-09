@@ -470,6 +470,35 @@
   </section>
   {% endif %}
 
+  {# Description blocks (summary + AI overview) — moved here so visitors
+     read the human description right after the visual charts above,
+     before scanning the lower-density tables below. #}
+  {% if summary %}
+  <section class="summary-block">
+    <h2>Summary</h2>
+    <p>{{ summary|replace('\n\n','</p><p>')|safe }}</p>
+  </section>
+  {% endif %}
+
+  {% if ai_overview %}
+  <section class="ai-overview-block" style="background: #fafbfd; border-left: 3px solid #4f7cc4; border-radius: 4px; padding: 14px 18px; margin: 24px 0;">
+    <h2 style="margin-top: 0; font-size: 1.1em;">About {{ title }}</h2>
+    <p>{{ ai_overview }}</p>
+    {% if ai_affiliations %}
+    <p><strong>Affiliations:</strong> {{ ai_affiliations }}</p>
+    {% endif %}
+    {% if ai_toll_free_specific %}
+    <p><strong>Toll-free / RespOrg activity:</strong> {{ ai_toll_free_specific }}</p>
+    {% endif %}
+    <p class="dim" style="font-size: 0.85em; margin-top: 10px; margin-bottom: 0;">
+      AI-generated summary
+      {%- if ai_overview_confidence %} (confidence: {{ ai_overview_confidence }}){% endif -%}
+      {%- if ai_overview_updated %}, last updated {{ ai_overview_updated[:10] }}{% endif -%}.
+      Verify against primary sources before quoting.
+    </p>
+  </section>
+  {% endif %}
+
   {% if vanity_hits or vanity_cats %}
   <section class="vanity">
     <div class="vanity-head">
@@ -499,32 +528,6 @@
     {% else %}
     <p class="dim">No vanity holdings in this category.</p>
     {% endif %}
-  </section>
-  {% endif %}
-
-  {% if summary %}
-  <section class="summary-block">
-    <h2>Summary</h2>
-    <p>{{ summary|replace('\n\n','</p><p>')|safe }}</p>
-  </section>
-  {% endif %}
-
-  {% if ai_overview %}
-  <section class="ai-overview-block" style="background: #fafbfd; border-left: 3px solid #4f7cc4; border-radius: 4px; padding: 14px 18px; margin: 24px 0;">
-    <h2 style="margin-top: 0; font-size: 1.1em;">About {{ title }}</h2>
-    <p>{{ ai_overview }}</p>
-    {% if ai_affiliations %}
-    <p><strong>Affiliations:</strong> {{ ai_affiliations }}</p>
-    {% endif %}
-    {% if ai_toll_free_specific %}
-    <p><strong>Toll-free / RespOrg activity:</strong> {{ ai_toll_free_specific }}</p>
-    {% endif %}
-    <p class="dim" style="font-size: 0.85em; margin-top: 10px; margin-bottom: 0;">
-      AI-generated summary
-      {%- if ai_overview_confidence %} (confidence: {{ ai_overview_confidence }}){% endif -%}
-      {%- if ai_overview_updated %}, last updated {{ ai_overview_updated[:10] }}{% endif -%}.
-      Verify against primary sources before quoting.
-    </p>
   </section>
   {% endif %}
 
