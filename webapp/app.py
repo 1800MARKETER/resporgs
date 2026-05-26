@@ -1814,6 +1814,13 @@ def transferring():
                            total_resporgs=len(RESPORG_DOCS))
 
 
+@app.route("/about")
+def about():
+    return render_template("about.html",
+                           month=_latest_month(),
+                           total_resporgs=len(RESPORG_DOCS))
+
+
 def _number_context_for_profile(rpfx: str, tfn: str) -> dict | None:
     """If `tfn` is a valid 10-digit number, return a dict the profile
     template renders as an "<NUMBER> is <STATUS> with <Company> as of

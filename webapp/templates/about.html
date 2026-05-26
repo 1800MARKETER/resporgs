@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}About Resporgs.com — Bill Quimby and the vanity number network{% endblock %}
+{% block meta_description -%}
+Resporgs.com is the public RespOrg directory in Bill Quimby's vanity number network. Online since 1995. Bill, the network of 12 sites, and TollFreeNumbers.com's 30-year legacy.
+{%- endblock %}
+{% block og_title %}About Resporgs.com — the only public RespOrg directory{% endblock %}
+{% block og_url %}https://resporgs.com/about{% endblock %}
+
+{% block content %}
+
+<section class="hero-text">
+  <h1>About Resporgs.com</h1>
+  <p class="hero-sub">
+    Resporgs.com is one site in a network of 12, all built by one person, all aimed at making every
+    toll-free and local vanity number in North America visible. This page is where that bigger picture lives.
+  </p>
+</section>
+
+<!-- ============ DIAL NETWORK DIAGRAM ============ -->
+<h2 class="sec">The network Resporgs.com lives in</h2>
+<p class="sec-note">Hover any finger&#8209;hole to visit that site. Resporgs.com is the only public RespOrg directory in the network — the reference data layer beneath every number lookup.</p>
+<div class="dialpad">
+  <img src="/static/img/dialpad3a.webp"
+       alt="The vanity number network laid out as a rotary telephone dial. Center: VanityNumbers.com. Position 1: TollFreeNumbers.com. Position 2: LocalVanityNumbers.com. Position 3: VanityCellular.com. Position 4: 1800AVAILABLE.com. Positions 5-9: the five directories (TollFreeNumbers.org, LocalVanityNumbers.org, RespOrgs.com, NewLocalNumbers.com, 800numbers.com). Position 0: OPERATOR, with a portrait of Bill Quimby. Built by Bill Quimby, online since 1995.">
+  <a class="hole" href="https://tollfreenumbers.com"      title="TollFreeNumbers.com — the original, online since 1995"                                       style="left:55.8%; top:28.2%"></a>
+  <a class="hole" href="https://localvanitynumbers.com"   title="LocalVanityNumbers.com — where you buy local vanity numbers"                                style="left:64.8%; top:32.8%"></a>
+  <a class="hole" href="https://vanitycellular.com"       title="VanityCellular.com — the free consumer tool"                                                style="left:69.8%; top:43.2%"></a>
+  <a class="hole" href="https://1800available.com"        title="1800AVAILABLE.com — numbers available right now"                                            style="left:60.6%; top:53.6%"></a>
+  <a class="hole" href="https://tollfreenumbers.org"      title="TollFreeNumbers.org — toll free numbers paired with matching .com domains"                  style="left:60.3%; top:64.6%"></a>
+  <a class="hole" href="https://localvanitynumbers.org"   title="LocalVanityNumbers.org — local vanity numbers paired with matching .com domains"            style="left:48.3%; top:67.5%"></a>
+  <a class="hole hole-self" href="/"                      title="You are here — Resporgs.com is the only public RespOrg directory"                           style="left:37.6%; top:63.1%"></a>
+  <a class="hole" href="https://newlocalnumbers.com"      title="NewLocalNumbers.com — local-carrier (OCN) directory with age-tier lookup"                   style="left:31.0%; top:53.4%"></a>
+  <a class="hole" href="https://800numbers.com"           title="800numbers.com — a growing directory of vanity number owners"                               style="left:29.7%; top:42.0%"></a>
+  <span class="hole operator"                              title="The OPERATOR. There's a real person at this exchange: Bill Quimby, online since 1995."     style="left:44.6%; top:28.3%"></span>
+  <a class="hole" href="https://vanitynumbers.com" title="VanityNumbers.com — the exchange every site connects through" style="left:50%; top:47%; width:18%; height:14%; border-radius:6px"></a>
+  <p class="caption">The center plate goes to VanityNumbers.com. The 7&#8209;o&#8217;clock hole is the one you&#8217;re standing on.</p>
+</div>
+
+<!-- THE PERSON -->
+<h2 class="sec">The person behind it all</h2>
+<div class="bill">
+  <div class="bill-intro">
+    <div class="bill-photo">
+      <img src="/static/img/Bill-realistic-line-drawing.webp"
+           alt="Portrait of Bill Quimby, the original 1-800 MARKETER, founder of TollFreeNumbers.com and the vanity number network, online since 1995">
+    </div>
+    <div class="bill-text">
+      <h3>Bill Quimby</h3>
+      <p class="bill-tagline">The original 1-800 MARKETER. Online since 1995.</p>
+      <p><strong>Bill Quimby</strong> has been in the vanity number business
+      since 1995, when he registered TollFreeNumbers.com. He's been the
+      leading independent source and voice for toll free and local vanity
+      numbers for over three decades. He hasn't just gotten a lot of vanity
+      numbers for customers, he's helped them get the numbers themselves, and
+      helped the whole industry. The site has been online and evolving the
+      whole time, from a keypad of links in the 1990s to a whole network of
+      big data sites powering the best lookup tool in the industry today.</p>
+      <p>Resporgs.com is the public directory layer beneath that work — the
+      only place anywhere that names every Responsible Organization in the
+      toll-free system, shows what they hold, and traces how numbers move
+      between them.</p>
+    </div>
+  </div>
+</div>
+
+<!-- LEGACY -->
+<h2 class="sec">Legacy</h2>
+<p class="sec-note">TollFreeNumbers.com, the original site, and its documented run since 1995. The same hand that built it is the hand that built Resporgs.com.</p>
+<div class="legacy-wrap">
+  <div class="ncard" style="max-width:380px;margin-bottom:16px">
+    <div class="role">Legacy</div>
+    <div class="name">TollFreeNumbers.com</div>
+    <div class="b">The original site. Folds into VanityNumbers.com, carrying 30 years of domain authority.</div>
+  </div>
+  <img class="archive-chart" onclick="openShot(this.src)"
+       src="/static/img/tfnc-archive.webp"
+       alt="Internet Archive record for TollFreeNumbers.com, over 1,700 captures since 1996">
+  <div class="bill-cap">
+    The Internet Archive's record of TollFreeNumbers.com: over 1,700 captures
+    since 1996, a continuous trail of nearly 30 years online.
+  </div>
+  <div class="tfn-thumbs">
+    <img class="tfn-thumb" onclick="openShot(this.src)" src="/static/img/tfn1-1996.webp" alt="TollFreeNumbers.com in 1996">
+    <img class="tfn-thumb" onclick="openShot(this.src)" src="/static/img/tfn2-1998.webp" alt="TollFreeNumbers.com in 1998">
+    <img class="tfn-thumb" onclick="openShot(this.src)" src="/static/img/tfn3-2002.webp" alt="TollFreeNumbers.com in 2002">
+    <img class="tfn-thumb" onclick="openShot(this.src)" src="/static/img/tfn4-2004.webp" alt="TollFreeNumbers.com in 2004">
+    <img class="tfn-thumb" onclick="openShot(this.src)" src="/static/img/tfn5-2006.webp" alt="TollFreeNumbers.com in 2006">
+    <img class="tfn-thumb" onclick="openShot(this.src)" src="/static/img/tfn6-2015.webp" alt="TollFreeNumbers.com in 2015">
+    <img class="tfn-thumb" onclick="openShot(this.src)" src="/static/img/tfn7-2017.webp" alt="TollFreeNumbers.com in 2017">
+  </div>
+  <div class="tfn-axis">
+    <div class="tfn-tick"><i></i><b>1996</b></div>
+    <div class="tfn-tick"><i></i><b>1998</b></div>
+    <div class="tfn-tick"><i></i><b>2002</b></div>
+    <div class="tfn-tick"><i></i><b>2004</b></div>
+    <div class="tfn-tick"><i></i><b>2006</b></div>
+    <div class="tfn-tick"><i></i><b>2015</b></div>
+    <div class="tfn-tick"><i></i><b>2017</b></div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="this.style.display='none'">
+  <img id="lightbox-img" alt="Screenshot, full size">
+</div>
+<script>
+  function openShot(src){
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox').style.display = 'flex';
+  }
+</script>
+
+{% endblock %}

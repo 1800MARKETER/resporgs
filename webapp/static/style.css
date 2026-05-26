@@ -979,3 +979,224 @@ details.trajectory-table summary { cursor: pointer; color: var(--muted); padding
   height: auto;
   display: block;
 }
+
+/* ============================================================
+ * /about page — adapted from 1800marketer.com
+ * Uses 1800marketer's earthy hand-drawn palette (orange + cream) for
+ * this page only, to read as a coherent piece of that network.
+ * Imports two display fonts from Google Fonts via @import inline above.
+ * ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;700&family=Nanum+Pen+Script&display=swap');
+
+/* Section heading */
+.sec {
+  font-family: 'Nanum Pen Script', cursive;
+  font-size: 34px;
+  color: #1f1d1a;
+  margin: 42px 0 4px;
+  border-bottom: 3px dashed #d8d2c4;
+  padding-bottom: 3px;
+  font-weight: normal;
+}
+.sec-note {
+  color: #6b6864;
+  font-size: 13.5px;
+  margin: 0 0 16px;
+}
+
+/* Dialpad — rotary phone navigation */
+.dialpad {
+  position: relative;
+  max-width: 760px;
+  margin: 42px auto 6px;
+}
+.dialpad img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid #d8d2c4;
+  box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+}
+.dialpad .hole {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 10%;
+  height: 10%;
+  border-radius: 50%;
+  background: transparent;
+  transition: background-color 0.15s, box-shadow 0.15s;
+  text-decoration: none;
+}
+.dialpad .hole:hover,
+.dialpad .hole:focus-visible {
+  background: rgba(243, 142, 28, 0.18);
+  box-shadow: 0 0 0 3px rgba(243, 142, 28, 0.55);
+  outline: none;
+}
+.dialpad .hole.hole-self {
+  /* "you are here" — the Resporgs.com hole stays subtly highlighted */
+  background: rgba(243, 142, 28, 0.22);
+  box-shadow: 0 0 0 2px rgba(243, 142, 28, 0.6);
+}
+.dialpad .hole.operator {
+  cursor: default;
+}
+.dialpad .caption {
+  font-family: 'Caveat', cursive;
+  font-weight: 500;
+  font-size: 17px;
+  color: #6b6864;
+  text-align: center;
+  margin: 10px 0 0;
+}
+
+/* "The person behind it all" — Bill's bio card */
+.bill {
+  background: #fff;
+  border: 1.5px solid #d8d2c4;
+  border-radius: 12px;
+  padding: 18px 20px;
+  box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.05);
+}
+.bill-intro {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.bill-photo {
+  flex: 0 0 320px;
+}
+.bill-photo img {
+  width: 100%;
+  display: block;
+  border: 1.5px solid #d8d2c4;
+  border-radius: 8px;
+}
+.bill-text {
+  flex: 1;
+  min-width: 280px;
+  font-size: 14.5px;
+  line-height: 1.62;
+}
+.bill-text h3 {
+  font-family: 'Nanum Pen Script', cursive;
+  font-size: 36px;
+  color: #f38e1c;
+  margin: 0 0 2px;
+  font-weight: normal;
+  line-height: 1;
+}
+.bill-text .bill-tagline {
+  font-family: 'Caveat', cursive;
+  font-weight: 500;
+  font-size: 18px;
+  color: #6b6864;
+  margin: 0 0 10px;
+}
+
+/* Network card — used in the Legacy section */
+.ncard {
+  background: #fff;
+  border: 1.5px solid #d8d2c4;
+  border-radius: 11px;
+  padding: 12px 15px;
+  box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.05);
+}
+.ncard .name { font-weight: 700; font-size: 15px; }
+.ncard .role {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #f38e1c;
+}
+.ncard .b { font-size: 12.5px; color: #6b6864; margin-top: 4px; }
+
+/* Legacy — archive chart + screenshots-through-the-years */
+.archive-chart {
+  width: 100%;
+  max-width: 800px;
+  border: 1.5px solid #d8d2c4;
+  border-radius: 6px;
+  display: block;
+  cursor: zoom-in;
+  transition: border-color 0.12s;
+}
+.archive-chart:hover { border-color: #f38e1c; }
+.bill-cap {
+  font-size: 12.5px;
+  color: #6b6864;
+  margin-top: 10px;
+  font-style: italic;
+}
+.legacy-wrap { max-width: 820px; }
+.tfn-thumbs { display: flex; gap: 8px; margin-top: 18px; }
+.tfn-thumb {
+  flex: 1;
+  width: 0;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  object-position: top;
+  border: 1.5px solid #d8d2c4;
+  border-radius: 5px;
+  cursor: zoom-in;
+  transition: border-color 0.12s;
+}
+.tfn-thumb:hover { border-color: #f38e1c; }
+.tfn-axis {
+  display: flex;
+  gap: 8px;
+  margin-top: 9px;
+  position: relative;
+}
+.tfn-axis::before {
+  content: "";
+  position: absolute;
+  left: 7%;
+  right: 7%;
+  top: 4px;
+  height: 2px;
+  background: #e6dfce;
+}
+.tfn-tick {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.tfn-tick i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #f38e1c;
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+.tfn-tick b {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1f1d1a;
+  margin-top: 4px;
+}
+
+/* Lightbox for full-size screenshot view */
+.lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.86);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  cursor: zoom-out;
+}
+.lightbox img {
+  max-width: 100%;
+  max-height: 100%;
+  border: 3px solid #fff;
+  border-radius: 4px;
+}
