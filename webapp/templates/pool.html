@@ -12,7 +12,13 @@
 </section>
 
 {% if summary %}
-<section class="pool-hero">
+<div class="pool-hero-row" style="display: flex; flex-wrap: wrap; gap: 24px; align-items: center; margin: 24px 0 32px;">
+  <div class="pool-hero-fridge" style="flex: 0 0 auto; max-width: 220px;">
+    <img src="/static/img/fridge-empty.svg"
+         alt="Empty fridge — visual metaphor for the toll-free spare pool running on empty"
+         style="width: 100%; height: auto;">
+  </div>
+<section class="pool-hero" style="flex: 1 1 0; min-width: 280px; margin: 0;">
   <div class="pool-hero-stat pool-hero-stat-big">
     <div class="phs-value">{{ "{:.2f}%".format(summary.pct_in_use) }}</div>
     <div class="phs-label">of all toll-free numbers in use</div>
@@ -39,6 +45,22 @@
     <div class="phs-label">weeks since spare pool last grew</div>
   </div>
 </section>
+</div>
+{% endif %}
+
+{% if stacked_svg %}
+<section>
+  <h2>Spare pool by NPA, over time</h2>
+  <p class="summary">
+    A 9-year view of the world's toll-free spare pool, split by NPA. Watch 833 (the newest prefix) shrink from a giant
+    green wedge of unused inventory in 2017 down to almost nothing today. The spare pool is what you're drawing from when
+    you ask for a new toll-free number.
+  </p>
+  <div class="chart-box">
+    <div class="chart-wrap">{{ stacked_svg|safe }}</div>
+    <ul class="pie-legend multi-legend">{{ stacked_legend|safe }}</ul>
+  </div>
+</section>
 {% endif %}
 
 {% if cards %}
@@ -60,21 +82,6 @@
       </div>
     </a>
     {% endfor %}
-  </div>
-</section>
-{% endif %}
-
-{% if stacked_svg %}
-<section>
-  <h2>Spare pool by NPA, over time</h2>
-  <p class="summary">
-    A 9-year view of the world's toll-free spare pool, split by NPA. Watch 833 (the newest prefix) shrink from a giant
-    green wedge of unused inventory in 2017 down to almost nothing today. The spare pool is what you're drawing from when
-    you ask for a new toll-free number.
-  </p>
-  <div class="chart-box">
-    <div class="chart-wrap">{{ stacked_svg|safe }}</div>
-    <ul class="pie-legend multi-legend">{{ stacked_legend|safe }}</ul>
   </div>
 </section>
 {% endif %}

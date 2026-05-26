@@ -1,5 +1,6 @@
 # Secrets
 apikey.env
+somos.env
 .env
 .env.local
 
